@@ -154,12 +154,12 @@
     </div>
 
     <script>
-        // ★★★ 1. 구글 스크립트 주소 ★★★
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwmxa961KsJpXgQzzS7S1ZoFTkYH5wsV2xDUgUoxLsEqV5AYuidgYAq9Ozb1XvZWQDnYg/exec"; 
+        // ★★★ 1. 구글 스크립트 주소를 입력하세요! ★★★
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw-QnFh6uqBIvsURFqypFMYAucK7sBIiA3znyEwFp4OGWFaLFhQFNAXrQYt26rFiWSuOA/exec"; 
         
         // ★★★ 2. 우리 반 학생 이름 (28명) ★★★
         const studentNames = [
-"강하영", "김루하", "김소은", "김지유", "남시하", "손유하", "윤수아", "윤승아", "이하민", "임아윤",
+            "강하영", "김루하", "김소은", "김지유", "남시하", "손유하", "윤수아", "윤승아", "이하민", "임아윤",
             "전서현", "조율희", "최한별", "한지원", "김동빈", "김시윤", "김주원", "김효찬", "남지후", "노시온",
             "방준영", "송건우", "임환희", "조유찬", "주은호", "한진우", "허시준", "서현우"
         ];
@@ -178,7 +178,7 @@
             { id: 8, tag: "[디지털 기기 관리]", text: "안 쓰는 파일 지우기 및 충전 완료 시 플러그 뽑기를 실천했나요?", icon: "🔌" }
         ];
 
-        let selectedScores = { 1:-1, 2:-1, 3:-1, 4:-1, 5:-1, 6:-1, 7:-1, 8:-1 }; // 초기값 -1 (선택안함 상태)
+        let selectedScores = { 1:-1, 2:-1, 3:-1, 4:-1, 5:-1, 6:-1, 7:-1, 8:-1 };
 
         function renderMissions() {
             const container = document.getElementById('mission-list-container'); container.innerHTML = "";
@@ -221,18 +221,13 @@
             const btn10 = document.getElementById(`btn-${id}-10`); 
             const fill = document.getElementById(`fill-${id}`);
             
-            // 모든 버튼 비활성화 초기화
             btn0.classList.remove('active-0'); btn5.classList.remove('active-5'); btn10.classList.remove('active-10');
-
             selectedScores[id] = score;
 
-            if (score === 0) { 
-                btn0.classList.add('active-0'); fill.style.height = "0%"; 
-            } else if (score === 5) { 
-                btn5.classList.add('active-5'); fill.style.height = "50%"; 
-            } else if (score === 10) { 
-                btn10.classList.add('active-10'); fill.style.height = "100%"; 
-            }
+            if (score === 0) { btn0.classList.add('active-0'); fill.style.height = "0%"; } 
+            else if (score === 5) { btn5.classList.add('active-5'); fill.style.height = "50%"; } 
+            else if (score === 10) { btn10.classList.add('active-10'); fill.style.height = "100%"; }
+            
             calculateScore();
         }
 
@@ -242,16 +237,13 @@
             document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점`;
             
             let missionTotal = 0; 
-            missions.forEach(m => {
-                if(selectedScores[m.id] > 0) missionTotal += selectedScores[m.id];
-            });
+            missions.forEach(m => { if(selectedScores[m.id] > 0) missionTotal += selectedScores[m.id]; });
             let totalScore = mealScore + missionTotal;
             document.getElementById('total-score').innerText = totalScore + "점";
             return totalScore;
         }
 
         async function saveToday() {
-            // 모든 항목을 체크했는지 확인 (선택하지 않은 항목 방지)
             for(let i=1; i<=8; i++) {
                 if(selectedScores[i] === -1) {
                     alert("체크하지 않은 미션이 있습니다! 모두 스스로 반성해보고 선택해주세요.");
@@ -268,7 +260,7 @@
 
             try {
                 await fetch(WEB_APP_URL, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
-                await fetchClassData();
+                await fetchClassData(); // 저장 직후 최신 데이터 다시 받아오기
                 showPopup();
             } catch (error) { alert("저장 실패. 앱스 스크립트 URL을 확인하세요."); } 
             finally { document.getElementById('loader').style.display = 'none'; }
@@ -328,6 +320,15 @@
             renderDashboard();
         }
 
+        // 달력 넘기기 기능
+        function changeMonth(delta) {
+            viewMonth += delta;
+            if(viewMonth > 12) { viewMonth = 1; viewYear++; }
+            if(viewMonth < 1) { viewMonth = 12; viewYear--; }
+            renderDashboard();
+        }
+
+        // [핵심] 대시보드 그리기 로직 완벽 분리
         function renderDashboard() {
             document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
             
@@ -337,9 +338,12 @@
                 monthlyScores[i] = { name: name, score: 0 };
             }
 
+            // 날짜 해석 로직
             classData.forEach(row => {
+                if(!row.date || !row.no || !row.score) return;
+
                 const d = new Date(row.date);
-                if(d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
+                if(!isNaN(d.getTime()) && d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
                     const no = parseInt(row.no);
                     if(monthlyScores[no]) {
                         if(row.name && row.name !== "학생") monthlyScores[no].name = row.name; 
@@ -348,69 +352,19 @@
                 }
             });
 
+            // 최고 점수 계산 (그래프 그리기 용도)
             let maxScore = 1;
             for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
 
             const tbody = document.getElementById('rank-table-body');
             tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
 
-            for(let i=1; i<=28; i++) {
-                const s = monthlyScores[i];
-                const percent = (s.score / maxScore) * 100;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${i}</td>
-                        <td style="font-weight:bold;">${s.name}</td>
-                        <td><div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div></td>
-                        <td style="font-weight:bold; color:var(--primary-color);">${s.score}</td>
-                    </tr>
-                `;
-            }
-        }
-
-        function changeMonth(delta) {
-            viewMonth += delta;
-            if(viewMonth > 12) { viewMonth = 1; viewYear++; }
-            if(viewMonth < 1) { viewMonth = 12; viewYear--; }
-            function renderDashboard() {
-            document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
-            
-            let monthlyScores = {};
-            for(let i=1; i<=28; i++) {
-                let name = studentNames[i-1] ? studentNames[i-1] : "학생" + i;
-                monthlyScores[i] = { name: name, score: 0 };
-            }
-
-            // [핵심 변경] 날짜 해석 및 에러 방지 로직 강화
-            classData.forEach(row => {
-                if(!row.date || !row.no || !row.score) return; // 빈 데이터 무시
-
-                // 구글 시트의 다양한 날짜 형식을 안전하게 변환
-                const d = new Date(row.date);
-                
-                // 유효한 날짜이고, 선택한 연도/월과 일치할 때만 점수 합산
-                if(!isNaN(d.getTime()) && d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
-                    const no = parseInt(row.no);
-                    if(monthlyScores[no]) {
-                        if(row.name && row.name !== "학생") monthlyScores[no].name = row.name; 
-                        monthlyScores[no].score += Number(row.score); // 텍스트를 확실히 숫자로 변환
-                    }
-                }
-            });
-
-            // 최고 점수 계산 (그래프 비율 계산용)
-            let maxScore = 1;
-            for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
-
-            const tbody = document.getElementById('rank-table-body');
-            tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
-
-            // 표 그리기
+            // 그래프 그리기
             for(let i=1; i<=28; i++) {
                 const s = monthlyScores[i];
                 const percent = (s.score / maxScore) * 100;
                 
-                // 점수가 0점이면 막대그래프를 숨기고, 점수가 있으면 예쁘게 그림
+                // 점수가 0점이면 빈칸으로, 점수가 있으면 막대그래프 출력
                 const barHtml = s.score > 0 
                     ? `<div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div>`
                     : `<div style="color:#ccc; font-size:12px;">기록 없음</div>`;
@@ -424,7 +378,6 @@
                     </tr>
                 `;
             }
-        };
         }
     </script>
 </body>
