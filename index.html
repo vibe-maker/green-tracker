@@ -6,215 +6,86 @@
     <title>초록 지구 지킴이</title>
     <style>
         :root {
-            --primary-color: #2e7d32;
-            --secondary-color: #81c784;
-            --bg-color: #f1f8e9;
-            --tray-color: #cfd8dc;
-            --accent-color: #4caf50;
+            --primary-color: #2e7d32; --secondary-color: #81c784; --bg-color: #f1f8e9;
+            --tray-color: #cfd8dc; --accent-color: #4caf50;
         }
-
-        body {
-            font-family: 'Malgun Gothic', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #333;
-        }
-
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: #333; }
         h1 { color: var(--primary-color); margin-bottom: 10px; text-align: center; }
-        
-        /* 로그인 섹션 */
-        .login-container {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-        .login-inputs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        input {
-            padding: 12px;
-            border: 2px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            text-align: center;
-        }
-        #user-no { width: 80px; }
-        #user-name { width: 140px; }
-        .example-text { font-size: 13px; color: #777; margin-top: -5px; margin-bottom: 15px; }
-        
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        button:hover { background-color: #1b5e20; }
-
-        /* 메인 컨텐츠 */
-        #main-content { display: none; width: 100%; max-width: 600px; }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 600px; box-sizing: border-box;}
         h2 { border-left: 5px solid var(--primary-color); padding-left: 10px; margin-top: 0; font-size: 18px; }
-
-        /* 급식판 스타일 */
-        .meal-tray {
-            background-color: var(--tray-color);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.2);
-        }
+        
+        /* 로그인, 버튼, 기존 CSS 생략 없이 유지 */
+        .login-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; max-width: 400px; width: 100%; }
+        .login-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        input { padding: 12px; border: 2px solid #ccc; border-radius: 6px; font-size: 16px; text-align: center; }
+        #user-no { width: 80px; } #user-name { width: 140px; }
+        button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        
+        #main-content, #dashboard-content { display: none; width: 100%; max-width: 600px; }
+        .meal-tray { background-color: var(--tray-color); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
         .tray-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
-        
-        .food-slot {
-            background-color: #ffffff;
-            border: 3px solid #b0bec5;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            font-size: 14px;
-            color: #78909c;
-            box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-        }
-        .top-row .food-slot { width: 80px; height: 80px; }
-        .bottom-row .food-slot { width: 120px; height: 120px; font-size: 18px; }
-
-        .food-slot.eaten {
-            background-color: #c8e6c9;
-            border-color: var(--accent-color);
-            color: var(--primary-color);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        /* 미션 리스트 영역 */
-        .mission-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #edf2f7;
-        }
-        .mission-item:last-child { border-bottom: none; }
-        
-        .mission-info { flex: 1; padding-right: 15px; }
-        .mission-tag { font-weight: bold; color: var(--primary-color); display: block; margin-bottom: 4px; }
-        .mission-text { margin: 0; font-size: 14px; color: #4a5568; line-height: 1.4; }
-
-        /* 점수 시각화 계량기 물통형 박스 */
-        .visual-container {
-            position: relative;
-            width: 50px;
-            height: 60px;
-            background-color: #edf2f7;
-            border: 2px solid #cbd5e0;
-            border-radius: 6px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-right: 15px;
-        }
-        .visual-fill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 0%;
-            background-color: #a5d6a7;
-            transition: height 0.4s ease;
-            z-index: 1;
-        }
-        .visual-fill.full { background-color: var(--secondary-color); }
-        .visual-icon { position: relative; z-index: 2; user-select: none; }
-
-        /* 점수 선택 버튼 그룹 */
+        .food-slot { background-color: #ffffff; border: 3px solid #b0bec5; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 14px; color: #78909c; }
+        .top-row .food-slot { width: 80px; height: 80px; } .bottom-row .food-slot { width: 120px; height: 120px; font-size: 18px; }
+        .food-slot.eaten { background-color: #c8e6c9; border-color: var(--accent-color); color: var(--primary-color); }
+        .mission-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
+        .mission-info { flex: 1; padding-right: 15px; } .mission-tag { font-weight: bold; color: var(--primary-color); display: block; } .mission-text { margin: 0; font-size: 14px; }
+        .visual-container { position: relative; width: 50px; height: 60px; background-color: #edf2f7; border: 2px solid #cbd5e0; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
+        .visual-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background-color: #a5d6a7; transition: height 0.4s ease; z-index: 1; }
+        .visual-fill.full { background-color: var(--secondary-color); } .visual-icon { position: relative; z-index: 2; }
         .btn-group { display: flex; flex-direction: column; gap: 5px; }
-        .score-btn {
-            background-color: #f7fafc;
-            border: 1px solid #cbd5e0;
-            color: #4a5568;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        .score-btn.active-5 { background-color: #e6fffa; border-color: #319795; color: #234e52; }
-        .score-btn.active-10 { background-color: #e6fffa; border-color: var(--primary-color); color: var(--primary-color); }
-
-        /* 달력 스타일 */
-        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .calendar-header { font-weight: bold; padding: 5px; background: var(--secondary-color); color: white; border-radius: 4px;}
-        .calendar-day {
-            padding: 8px 4px; background: #f9f9f9; border-radius: 6px; min-height: 55px;
-            display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; border: 1px solid #eee;
-        }
-        .day-num { font-weight: bold; font-size: 13px; }
-        .day-score { color: var(--primary-color); font-weight: bold; margin-top: 5px; }
-
+        .score-btn { background-color: #f7fafc; border: 1px solid #cbd5e0; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .score-btn.active-5 { background-color: #e6fffa; border-color: #319795; color: #234e52; } .score-btn.active-10 { background-color: #e6fffa; border-color: var(--primary-color); color: var(--primary-color); }
         .score-display { text-align: center; font-size: 28px; font-weight: bold; color: var(--primary-color); margin: 10px 0; }
+        
+        /* 팝업 모달 스타일 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; position: relative; overflow: hidden;}
+        .polar-bear-area { height: 150px; background: linear-gradient(to bottom, #e0f7fa, #b2ebf2); position: relative; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #4dd0e1;}
+        .water-level { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(33, 150, 243, 0.7); transition: height 2s ease-out; }
+        .bear-emoji { position: absolute; font-size: 50px; left: 50%; transform: translateX(-50%); transition: bottom 2s ease-out; z-index: 2;}
+        .ice-emoji { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); font-size: 60px; z-index: 1;}
+        .tree-area { font-size: 24px; min-height: 50px; margin: 15px 0; background: #f1f8e9; border-radius: 10px; padding: 10px;}
+        .highlight-text { color: #1565c0; font-weight: bold; font-size: 18px;}
+        .go-dashboard-btn { position: absolute; bottom: 15px; right: 15px; background: #ff9800; padding: 8px 15px; font-size: 14px; }
+        
+        /* 대시보드(전체 랭킹) 스타일 */
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;}
+        .rank-table th, .rank-table td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+        .bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 15px; overflow: hidden;}
+        .bar-fill { background: var(--primary-color); height: 100%; }
+        .month-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 20px; color: var(--primary-color);}
+        .month-btn { background: #eee; color: #333; padding: 5px 15px; border-radius: 20px;}
+        
+        /* 로딩 스피너 */
+        #loader { display: none; color: var(--primary-color); font-weight: bold; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>🌿 초록 지구 지킴이 🌿</h1>
+    <h1 onclick="goHome()" style="cursor:pointer;">🌿 초록 지구 지킴이 🌿</h1>
+    
+    <div id="loader">구글 시트와 통신 중입니다... 잠시만 기다려주세요! ⏳</div>
 
-    <!-- 로그인 섹션 (번호 + 이름) -->
     <div class="login-container" id="login-box">
         <h3>우리 반 번호와 이름을 입력하세요</h3>
         <div class="login-inputs">
             <input type="number" id="user-no" placeholder="번호">
             <input type="text" id="user-name" placeholder="이름">
         </div>
-        <div class="example-text">💡 입력 예시 — 번호: 01 / 이름: 김긍정</div>
         <button onclick="login()">지킴이 입장하기 🌍</button>
     </div>
 
-    <!-- 메인 대시보드 -->
+    <!-- 개인 입력 화면 -->
     <div id="main-content">
         <div class="card" style="text-align: center;">
-            <h2 id="welcome-msg" style="border:none; padding:0;">안녕하세요!</h2>
-            <div style="font-size: 16px; margin-bottom: 5px; color: #555;">🔋 오늘의 환경 점수</div>
+            <h2 id="welcome-msg" style="border:none; padding:0;"></h2>
+            <div style="font-size: 16px;">🔋 오늘의 환경 점수</div>
             <div class="score-display" id="total-score">0점</div>
-            <div style="color: #666; font-weight: bold;" id="cumulative-score">누적 총 점수: 0점</div>
+            <button onclick="showDashboard()" style="background:#ff9800; font-size:14px; padding:8px 15px;">📊 우리 반 전체 점수 보기</button>
         </div>
 
-        <!-- 1. 급식판 잔반 체크 -->
         <div class="card">
             <h2>🍱 오늘 급식 다 먹기 달성도</h2>
-            <p style="font-size: 13px; color: #666; margin-top:-10px;">다 먹은 식판 칸을 터치해 초록색으로 불을 켜세요! (한 칸당 4점 / 다 먹으면 총 20점)</p>
             <div class="meal-tray">
                 <div class="tray-row top-row">
                     <div class="food-slot" onclick="toggleFood(this)">반찬1</div>
@@ -226,38 +97,66 @@
                     <div class="food-slot" onclick="toggleFood(this)">국</div>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--primary-color);" id="meal-score-text">
-                급식 점수: 0점 / 20점
-            </div>
+            <div style="text-align: center; margin-top: 15px; font-weight: bold;" id="meal-score-text">급식 점수: 0점 / 20점</div>
         </div>
 
-        <!-- 2. 생활 습관 실천 (시각화 계량기 포함) -->
         <div class="card">
             <h2>🌱 오늘 하루 환경 지킴이 미션</h2>
-            <p style="font-size: 13px; color: #666; margin-top:-10px;">스스로 반성하며 5점(절반 성공) 또는 10점(완벽 성공) 버튼을 누르세요.</p>
-            
-            <div id="mission-list-container">
-                <!-- 자바스크립트로 미션이 자동 생성됩니다 -->
-            </div>
+            <div id="mission-list-container"></div>
         </div>
 
-        <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px; border-radius: 10px;">오늘의 초록 점수 저장하기 💾</button>
-        </div>
+        <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 40px;">오늘의 초록 점수 저장하기 💾</button>
+    </div>
 
-        <!-- 3. 환경 달력 -->
+    <!-- 우리반 전체 대시보드 화면 -->
+    <div id="dashboard-content">
         <div class="card">
-            <h2>📅 나의 초록 지구 달력</h2>
-            <div class="calendar" id="calendar-board"></div>
+            <div class="month-nav">
+                <button class="month-btn" onclick="changeMonth(-1)">◀</button>
+                <span id="current-month-display">2026년 5월</span>
+                <button class="month-btn" onclick="changeMonth(1)">▶</button>
+            </div>
+            <h2 style="text-align: center; border:none; padding:0;">🏆 5학년 우리 반 지킴이 현황</h2>
+            <p style="text-align:center; font-size:13px; color:#666;">(5월 18일 ~ 12월 31일 누적 기록)</p>
+            
+            <table class="rank-table" id="rank-table-body">
+                <!-- 자바스크립트로 학생 명단과 막대그래프가 채워집니다. -->
+            </table>
+        </div>
+        <button onclick="goHome()" style="width:100%; margin-bottom:20px;">내 점수 입력하러 가기</button>
+    </div>
+
+    <!-- 저장 완료 팝업 모달 -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal-content">
+            <h2>🌍 멋져요! 기록이 저장되었습니다.</h2>
+            
+            <!-- 북극곰 시각화 -->
+            <div class="polar-bear-area">
+                <div class="ice-emoji">🧊</div>
+                <div class="bear-emoji" id="bear-icon">🐻‍❄️</div>
+                <div class="water-level" id="water-level"></div>
+            </div>
+            <p class="highlight-text" id="sea-level-text"></p>
+
+            <!-- 나무 시각화 -->
+            <div class="tree-area" id="tree-area"></div>
+            <p class="highlight-text" id="tree-text"></p>
+            
+            <p style="font-size:12px; color:#666;">(통계는 어제까지 우리 반이 모은 점수 합산입니다)</p>
+            
+            <button onclick="closeModal()" style="margin-top: 10px;">닫기</button>
+            <button class="go-dashboard-btn" onclick="closeModal(); showDashboard();">우리반 점수 보기 ▶</button>
         </div>
     </div>
 
     <script>
-        let currentUser = "";
-        let currentUserName = "";
-        let studentData = JSON.parse(localStorage.getItem('greenTrackerData')) || {};
+        // ★★★ 1단계에서 복사한 구글 앱스 스크립트 웹 앱 URL을 아래에 반드시 붙여넣으세요! ★★★
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwmxa961KsJpXgQzzS7S1ZoFTkYH5wsV2xDUgUoxLsEqV5AYuidgYAq9Ozb1XvZWQDnYg/exec"; 
         
-        // 미션 데이터 정의 (교실 위주로 순서 및 내용 업데이트)
+        let currentUserNo = ""; let currentUserName = ""; let classData = [];
+        let viewYear = 2026; let viewMonth = 5; // 기본 보기: 2026년 5월
+
         const missions = [
             { id: 1, tag: "[주변 환경 관리]", text: "내 자리 주변과 교실을 깨끗하게 정리정돈했나요?", icon: "🧹" },
             { id: 2, tag: "[식물 가꾸기]", text: "학급 식물을 정성껏 돌보았나요? (물, 햇빛, 공기, 흙 관리)", icon: "🪴" },
@@ -265,184 +164,204 @@
             { id: 4, tag: "[전기 절약]", text: "빈 방(이나 교실) 전등을 껐나요?", icon: "💡" },
             { id: 5, tag: "[물 절약]", text: "손에 비누칠 할 때 물을 잠그고, 양치할 때 양치컵을 사용했나요?", icon: "💧" },
             { id: 6, tag: "[다회용품 사용]", text: "다회용 개인 물컵(텀블러)을 사용했나요?", icon: "🥤" },
-            { id: 7, tag: "[플라스틱 다이어트]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
-            { id: 8, tag: "[디지털 기기 관리]", text: "디지털 기기에서 안 쓰는 파일이나 사진을 바로 지워 '디지털 탄소'를 줄이고, 충전이 끝나면 바로 충전기를 콘센트에서 뽑아 두었나요?", icon: "🔌" }
+            { id: 7, tag: "[일회용품 줄이기]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
+            { id: 8, tag: "[디지털 기기 관리]", text: "안 쓰는 파일 지우기 및 충전 완료 시 플러그 뽑기를 실천했나요?", icon: "🔌" }
         ];
 
         let selectedScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
 
         function renderMissions() {
-            const container = document.getElementById('mission-list-container');
-            container.innerHTML = "";
-            
+            const container = document.getElementById('mission-list-container'); container.innerHTML = "";
             missions.forEach(m => {
-                const item = document.createElement('div');
-                item.className = 'mission-item';
-                item.innerHTML = `
-                    <div class="visual-container">
-                        <div class="visual-fill" id="fill-${m.id}"></div>
-                        <div class="visual-icon">${m.icon}</div>
-                    </div>
-                    <div class="mission-info">
-                        <span class="mission-tag">${m.tag}</span>
-                        <p class="mission-text">${m.text}</p>
-                    </div>
-                    <div class="btn-group">
-                        <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">5점</button>
-                        <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">10점</button>
-                    </div>
-                `;
-                container.appendChild(item);
+                container.innerHTML += `
+                    <div class="mission-item">
+                        <div class="visual-container"><div class="visual-fill" id="fill-${m.id}"></div><div class="visual-icon">${m.icon}</div></div>
+                        <div class="mission-info"><span class="mission-tag">${m.tag}</span><p class="mission-text">${m.text}</p></div>
+                        <div class="btn-group">
+                            <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">5점</button>
+                            <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">10점</button>
+                        </div>
+                    </div>`;
             });
         }
 
         function login() {
             const no = document.getElementById('user-no').value;
             const name = document.getElementById('user-name').value.trim();
-
             if(!no || !name) { alert("번호와 이름을 모두 입력하세요."); return; }
             
-            currentUser = "student_" + no;
-            currentUserName = name;
-            
-            if(!studentData[currentUser]) {
-                studentData[currentUser] = { name: name, scores: {} };
-            } else {
-                studentData[currentUser].name = name;
-            }
-
-            localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
+            currentUserNo = no; currentUserName = name;
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             document.getElementById('welcome-msg').innerText = `👋 반갑습니다, ${no}번 ${name} 어린이!`;
             
             renderMissions();
-            initCalendar();
-            loadTodayData();
+            fetchClassData(); // 로그인 시 구글 시트에서 전체 데이터 불러오기
         }
 
-        function toggleFood(element) {
-            element.classList.toggle('eaten');
-            calculateScore();
+        function goHome() {
+            document.getElementById('dashboard-content').style.display = 'none';
+            if(currentUserNo) document.getElementById('main-content').style.display = 'block';
+            else document.getElementById('login-box').style.display = 'block';
         }
+
+        function showDashboard() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            renderDashboard();
+        }
+
+        function toggleFood(element) { element.classList.toggle('eaten'); calculateScore(); }
 
         function setMissionScore(id, score) {
-            const btn5 = document.getElementById(`btn-${id}-5`);
-            const btn10 = document.getElementById(`btn-${id}-10`);
-            const fill = document.getElementById(`fill-${id}`);
-
+            const btn5 = document.getElementById(`btn-${id}-5`); const btn10 = document.getElementById(`btn-${id}-10`); const fill = document.getElementById(`fill-${id}`);
             if (selectedScores[id] === score) {
-                selectedScores[id] = 0;
-                btn5.classList.remove('active-5');
-                btn10.classList.remove('active-10');
-                fill.style.height = "0%";
-                fill.classList.remove('full');
+                selectedScores[id] = 0; btn5.classList.remove('active-5'); btn10.classList.remove('active-10'); fill.style.height = "0%";
             } else {
                 selectedScores[id] = score;
-                if (score === 5) {
-                    btn5.classList.add('active-5');
-                    btn10.classList.remove('active-10');
-                    fill.style.height = "50%";
-                    fill.classList.remove('full');
-                } else if (score === 10) {
-                    btn5.classList.remove('active-5');
-                    btn10.classList.add('active-10');
-                    fill.style.height = "100%";
-                    fill.classList.add('full');
-                }
+                if (score === 5) { btn5.classList.add('active-5'); btn10.classList.remove('active-10'); fill.style.height = "50%"; } 
+                else { btn5.classList.remove('active-5'); btn10.classList.add('active-10'); fill.style.height = "100%"; }
             }
             calculateScore();
         }
 
         function calculateScore() {
-            // 1. 급식 점수 계산 (각 칸 당 4점, 최대 20점)
             const eatenCount = document.querySelectorAll('.food-slot.eaten').length;
             const mealScore = eatenCount * 4;
-            
-            document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점 (달성 칸 수: ${eatenCount}칸)`;
+            document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점`;
 
-            // 2. 미션 점수 합산 (최대 80점)
-            let missionTotal = 0;
-            missions.forEach(m => {
-                missionTotal += selectedScores[m.id];
-            });
-
-            // 3. 종합 점수 (최대 100점)
+            let missionTotal = 0; missions.forEach(m => missionTotal += selectedScores[m.id]);
             let totalScore = mealScore + missionTotal;
             document.getElementById('total-score').innerText = totalScore + "점";
-            
             return totalScore;
         }
 
-        function saveToday() {
+        // 구글 시트로 데이터 전송 (저장)
+        async function saveToday() {
             const score = calculateScore();
-            const today = new Date().getDate();
+            if(score === 0) { alert("입력된 점수가 없습니다!"); return; }
 
-            studentData[currentUser].scores[today] = {
-                score: score,
-                meal: document.querySelectorAll('.food-slot.eaten').length,
-                missions: { ...selectedScores }
-            };
-            
-            localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
-            alert("오늘의 초록 점수가 성공적으로 기록되었습니다! 달력을 확인해 보세요.");
-            initCalendar();
-        }
+            // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-        function loadTodayData() {
-            const today = new Date().getDate();
-            const userData = studentData[currentUser].scores[today];
+            document.getElementById('loader').style.display = 'block';
 
-            if(userData) {
-                selectedScores = userData.missions || { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
-                missions.forEach(m => {
-                    const score = selectedScores[m.id];
-                    if(score > 0) setMissionScore(m.id, score);
+            const payload = { date: dateStr, no: currentUserNo, name: currentUserName, score: score };
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain" },
+                    body: JSON.stringify(payload)
                 });
-
-                const slots = document.querySelectorAll('.food-slot');
-                for(let i=0; i<userData.meal; i++) {
-                    if(slots[i]) slots[i].classList.add('eaten');
-                }
+                await fetchClassData(); // 저장 후 전체 데이터 다시 불러오기 (통계 갱신)
+                showPopup(); // 팝업 띄우기
+            } catch (error) {
+                alert("저장 중 오류가 발생했습니다. 구글 앱스 스크립트 주소를 확인해주세요.");
+            } finally {
+                document.getElementById('loader').style.display = 'none';
             }
-            calculateScore();
         }
 
-        function initCalendar() {
-            const calendarBoard = document.getElementById('calendar-board');
-            calendarBoard.innerHTML = "";
+        // 구글 시트에서 반 전체 데이터 불러오기
+        async function fetchClassData() {
+            if(WEB_APP_URL === "https://script.google.com/macros/s/AKfycbwmxa961KsJpXgQzzS7S1ZoFTkYH5wsV2xDUgUoxLsEqV5AYuidgYAq9Ozb1XvZWQDnYg/exec") return;
+            try {
+                const response = await fetch(WEB_APP_URL);
+                classData = await response.json();
+            } catch (error) { console.error("데이터 불러오기 실패", error); }
+        }
 
-            const weeks = ['일', '월', '화', '수', '목', '금', '토'];
-            weeks.forEach(w => {
-                const header = document.createElement('div');
-                header.className = 'calendar-header';
-                header.innerText = w;
-                calendarBoard.appendChild(header);
+        // 팝업 애니메이션 및 통계 계산 로직
+        function showPopup() {
+            const modal = document.getElementById('success-modal');
+            modal.style.display = 'flex';
+
+            // 어제까지의 점수 합산 계산
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            let pastTotalScore = 0;
+            classData.forEach(row => {
+                const rowDate = new Date(row.date);
+                if(rowDate < today) pastTotalScore += Number(row.score);
             });
 
-            const totalDays = 31;
-            const userScores = studentData[currentUser].scores || {};
-            let cumulativeScore = 0;
+            // 시각화 공식: 100점당 해수면 1cm 감소 / 500점당 나무 1그루 (수정 가능)
+            const seaLevelDrop = Math.floor(pastTotalScore / 100); 
+            const treeCount = Math.floor(pastTotalScore / 500);
 
-            for (let i = 1; i <= totalDays; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'calendar-day';
-                
-                const numSpan = document.createElement('span');
-                numSpan.className = 'day-num';
-                numSpan.innerText = i;
-                dayDiv.appendChild(numSpan);
+            // 해수면 애니메이션 (최대 100% 높이에서 시작해 줄어듦)
+            const waterLevel = document.getElementById('water-level');
+            const bearIcon = document.getElementById('bear-icon');
+            let startWaterHeight = 100 - (seaLevelDrop * 2); // 1cm당 2%씩 줄어들게 시각화
+            if(startWaterHeight < 10) startWaterHeight = 10; // 최소 수심 보장
 
-                if (userScores[i] !== undefined) {
-                    const scoreSpan = document.createElement('span');
-                    scoreSpan.className = 'day-score';
-                    scoreSpan.innerText = userScores[i].score + "점";
-                    dayDiv.appendChild(scoreSpan);
-                    cumulativeScore += userScores[i].score;
-                }
-                calendarBoard.appendChild(dayDiv);
+            setTimeout(() => {
+                waterLevel.style.height = `${startWaterHeight}%`;
+                bearIcon.style.bottom = `${startWaterHeight - 10}%`; // 곰돌이 위치 강하
+            }, 100);
+
+            document.getElementById('sea-level-text').innerText = `우리 반 활동으로 해수면이 ${seaLevelDrop}cm 줄었습니다!`;
+
+            // 나무 이모지 추가
+            let trees = "";
+            for(let i=0; i<Math.min(treeCount, 30); i++) { trees += "🌳"; } // 최대 30그루까지만 화면 표시
+            document.getElementById('tree-area').innerText = trees || "🌱 (아직 새싹입니다)";
+            document.getElementById('tree-text').innerText = `우리 반 활동으로 나무가 ${treeCount}그루 심어졌습니다!`;
+        }
+
+        function closeModal() { document.getElementById('success-modal').style.display = 'none'; }
+
+        // 대시보드(전체 랭킹) 렌더링
+        function renderDashboard() {
+            document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
+            
+            // 1번부터 28번까지 학생 명부 초기화
+            let monthlyScores = {};
+            for(let i=1; i<=28; i++) {
+                monthlyScores[i] = { name: "학생" + i, score: 0 };
             }
-            document.getElementById('cumulative-score').innerText = `누적 총 점수: ${cumulativeScore}점`;
+
+            // 선택한 월의 데이터만 필터링하여 점수 누적
+            classData.forEach(row => {
+                const d = new Date(row.date);
+                if(d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
+                    const no = parseInt(row.no);
+                    if(monthlyScores[no]) {
+                        monthlyScores[no].name = row.name; // 저장된 이름으로 업데이트
+                        monthlyScores[no].score += Number(row.score);
+                    }
+                }
+            });
+
+            // 해당 달의 최고 점수 찾기 (막대그래프 비율용)
+            let maxScore = 1;
+            for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
+
+            const tbody = document.getElementById('rank-table-body');
+            tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
+
+            for(let i=1; i<=28; i++) {
+                const s = monthlyScores[i];
+                const percent = (s.score / maxScore) * 100;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i}</td>
+                        <td>${s.name}</td>
+                        <td><div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div></td>
+                        <td style="font-weight:bold; color:var(--primary-color);">${s.score}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function changeMonth(delta) {
+            viewMonth += delta;
+            if(viewMonth > 12) { viewMonth = 1; viewYear++; }
+            if(viewMonth < 1) { viewMonth = 12; viewYear--; }
+            renderDashboard();
         }
     </script>
 </body>
