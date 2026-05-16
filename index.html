@@ -109,7 +109,6 @@
         .top-row .food-slot { width: 80px; height: 80px; }
         .bottom-row .food-slot { width: 120px; height: 120px; font-size: 18px; }
 
-        /* 다 먹었을 때 초록색 활성화 */
         .food-slot.eaten {
             background-color: #c8e6c9;
             border-color: var(--accent-color);
@@ -192,6 +191,7 @@
 
     <h1>🌿 초록 지구 지킴이 🌿</h1>
 
+    <!-- 로그인 섹션 (번호 + 이름) -->
     <div class="login-container" id="login-box">
         <h3>우리 반 번호와 이름을 입력하세요</h3>
         <div class="login-inputs">
@@ -202,6 +202,7 @@
         <button onclick="login()">지킴이 입장하기 🌍</button>
     </div>
 
+    <!-- 메인 대시보드 -->
     <div id="main-content">
         <div class="card" style="text-align: center;">
             <h2 id="welcome-msg" style="border:none; padding:0;">안녕하세요!</h2>
@@ -210,9 +211,10 @@
             <div style="color: #666; font-weight: bold;" id="cumulative-score">누적 총 점수: 0점</div>
         </div>
 
+        <!-- 1. 급식판 잔반 체크 -->
         <div class="card">
             <h2>🍱 오늘 급식 다 먹기 달성도</h2>
-            <p style="font-size: 13px; color: #666; margin-top:-10px;">다 먹은 식판 칸을 터치해 초록색으로 불을 켜세요! (한 칸당 5점 / 다 먹으면 보너스 포함 총 20점)</p>
+            <p style="font-size: 13px; color: #666; margin-top:-10px;">다 먹은 식판 칸을 터치해 초록색으로 불을 켜세요! (한 칸당 4점 / 다 먹으면 총 20점)</p>
             <div class="meal-tray">
                 <div class="tray-row top-row">
                     <div class="food-slot" onclick="toggleFood(this)">반찬1</div>
@@ -229,18 +231,21 @@
             </div>
         </div>
 
+        <!-- 2. 생활 습관 실천 (시각화 계량기 포함) -->
         <div class="card">
             <h2>🌱 오늘 하루 환경 지킴이 미션</h2>
             <p style="font-size: 13px; color: #666; margin-top:-10px;">스스로 반성하며 5점(절반 성공) 또는 10점(완벽 성공) 버튼을 누르세요.</p>
             
             <div id="mission-list-container">
-                </div>
+                <!-- 자바스크립트로 미션이 자동 생성됩니다 -->
+            </div>
         </div>
 
         <div style="text-align: center; margin-bottom: 20px;">
             <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px; border-radius: 10px;">오늘의 초록 점수 저장하기 💾</button>
         </div>
 
+        <!-- 3. 환경 달력 -->
         <div class="card">
             <h2>📅 나의 초록 지구 달력</h2>
             <div class="calendar" id="calendar-board"></div>
@@ -252,22 +257,20 @@
         let currentUserName = "";
         let studentData = JSON.parse(localStorage.getItem('greenTrackerData')) || {};
         
-        // 미션 데이터 정의 (아이콘 매칭)
+        // 미션 데이터 정의 (교실 위주로 순서 및 내용 업데이트)
         const missions = [
-            { id: 1, tag: "[물 절약]", text: "손에 비누칠 할 때 물을 잠그고, 양치할 때 양치컵을 사용했나요?", icon: "💧" },
-            { id: 2, tag: "[일회용품 줄이기]", text: "다회용 개인 물컵(텀블러)을 사용했나요?", icon: "🥤" },
-            { id: 3, tag: "[식물 가꾸기]", text: "학급 식물을 정성껏 돌보았나요?", icon: "🪴" },
-            { id: 4, tag: "[자원 재활용]", text: "우유팩을 깨끗하게 씻어서 말렸나요?", icon: "🥛" },
-            { id: 5, tag: "[환경 보호]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
-            { id: 6, tag: "[자원 절약]", text: "면지를 활용하거나 학용품을 아껴 썼나요?", icon: "✏️" },
-            { id: 7, tag: "[전기 절약]", text: "빈 방(이나 교실) 전등을 껐나요?", icon: "💡" },
+            { id: 1, tag: "[주변 환경 관리]", text: "내 자리 주변과 교실을 깨끗하게 정리정돈했나요?", icon: "🧹" },
+            { id: 2, tag: "[식물 가꾸기]", text: "학급 식물을 정성껏 돌보았나요? (물, 햇빛, 공기, 흙 관리)", icon: "🪴" },
+            { id: 3, tag: "[자원 재활용]", text: "우유팩을 깨끗하게 씻어 말리고, 이면지를 활용했나요?", icon: "♻️" },
+            { id: 4, tag: "[전기 절약]", text: "빈 방(이나 교실) 전등을 껐나요?", icon: "💡" },
+            { id: 5, tag: "[물 절약]", text: "손에 비누칠 할 때 물을 잠그고, 양치할 때 양치컵을 사용했나요?", icon: "💧" },
+            { id: 6, tag: "[일회용품 줄이기]", text: "다회용 개인 물컵(텀블러)을 사용했나요?", icon: "🥤" },
+            { id: 7, tag: "[환경 보호]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
             { id: 8, tag: "[디지털 기기 관리]", text: "디지털 기기에서 안 쓰는 파일이나 사진을 바로 지워 디지털 탄소를 줄이고, 충전이 끝나면 바로 충전기를 콘센트에서 뽑아 두었나요?", icon: "🔌" }
         ];
 
-        // 미션별 현재 선택 점수 저장
         let selectedScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
 
-        // 화면 렌더링: 미션 목록 만들기
         function renderMissions() {
             const container = document.getElementById('mission-list-container');
             container.innerHTML = "";
@@ -305,7 +308,7 @@
             if(!studentData[currentUser]) {
                 studentData[currentUser] = { name: name, scores: {} };
             } else {
-                studentData[currentUser].name = name; // 이름 최신화
+                studentData[currentUser].name = name;
             }
 
             localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
@@ -318,20 +321,17 @@
             loadTodayData();
         }
 
-        // 급식판 클릭 토글
         function toggleFood(element) {
             element.classList.toggle('eaten');
             calculateScore();
         }
 
-        // 미션 개별 점수 버튼 설정 및 물 채우기 애니메이션 시각화
         function setMissionScore(id, score) {
             const btn5 = document.getElementById(`btn-${id}-5`);
             const btn10 = document.getElementById(`btn-${id}-10`);
             const fill = document.getElementById(`fill-${id}`);
 
             if (selectedScores[id] === score) {
-                // 이미 채워진 점수를 다시 누르면 0점으로 초기화 (토글)
                 selectedScores[id] = 0;
                 btn5.classList.remove('active-5');
                 btn10.classList.remove('active-10');
@@ -342,31 +342,26 @@
                 if (score === 5) {
                     btn5.classList.add('active-5');
                     btn10.classList.remove('active-10');
-                    fill.style.height = "50%"; // 절반 색칠
+                    fill.style.height = "50%";
                     fill.classList.remove('full');
                 } else if (score === 10) {
                     btn5.classList.remove('active-5');
                     btn10.classList.add('active-10');
-                    fill.style.height = "100%"; // 전체 색칠
+                    fill.style.height = "100%";
                     fill.classList.add('full');
                 }
             }
             calculateScore();
         }
 
-        // 최종 합산 점수 계산
         function calculateScore() {
-            // 1. 급식 점수 계산 (5칸 다 채우면 보너스 포함 총 20점, 아닐 경우 한 칸당 2점)
+            // 1. 급식 점수 계산 (각 칸 당 4점, 최대 20점)
             const eatenCount = document.querySelectorAll('.food-slot.eaten').length;
-            let mealScore = 0;
-            if (eatenCount === 5) {
-                mealScore = 20; // 완판 보너스 포함 20점
-            } else {
-                mealScore = eatenCount * 2; // 한 칸당 2점
-            }
+            const mealScore = eatenCount * 4;
+            
             document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점 (달성 칸 수: ${eatenCount}칸)`;
 
-            // 2. 미션 점수 합산
+            // 2. 미션 점수 합산 (최대 80점)
             let missionTotal = 0;
             missions.forEach(m => {
                 missionTotal += selectedScores[m.id];
@@ -399,7 +394,6 @@
             const userData = studentData[currentUser].scores[today];
 
             if(userData) {
-                // 이전 기록 복원
                 selectedScores = userData.missions || { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
                 missions.forEach(m => {
                     const score = selectedScores[m.id];
@@ -426,7 +420,7 @@
                 calendarBoard.appendChild(header);
             });
 
-            const totalDays = 31; // 예시 기준 31일 설정
+            const totalDays = 31;
             const userScores = studentData[currentUser].scores || {};
             let cumulativeScore = 0;
 
