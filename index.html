@@ -372,7 +372,59 @@
             viewMonth += delta;
             if(viewMonth > 12) { viewMonth = 1; viewYear++; }
             if(viewMonth < 1) { viewMonth = 12; viewYear--; }
-            renderDashboard();
+            function renderDashboard() {
+            document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
+            
+            let monthlyScores = {};
+            for(let i=1; i<=28; i++) {
+                let name = studentNames[i-1] ? studentNames[i-1] : "학생" + i;
+                monthlyScores[i] = { name: name, score: 0 };
+            }
+
+            // [핵심 변경] 날짜 해석 및 에러 방지 로직 강화
+            classData.forEach(row => {
+                if(!row.date || !row.no || !row.score) return; // 빈 데이터 무시
+
+                // 구글 시트의 다양한 날짜 형식을 안전하게 변환
+                const d = new Date(row.date);
+                
+                // 유효한 날짜이고, 선택한 연도/월과 일치할 때만 점수 합산
+                if(!isNaN(d.getTime()) && d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
+                    const no = parseInt(row.no);
+                    if(monthlyScores[no]) {
+                        if(row.name && row.name !== "학생") monthlyScores[no].name = row.name; 
+                        monthlyScores[no].score += Number(row.score); // 텍스트를 확실히 숫자로 변환
+                    }
+                }
+            });
+
+            // 최고 점수 계산 (그래프 비율 계산용)
+            let maxScore = 1;
+            for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
+
+            const tbody = document.getElementById('rank-table-body');
+            tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
+
+            // 표 그리기
+            for(let i=1; i<=28; i++) {
+                const s = monthlyScores[i];
+                const percent = (s.score / maxScore) * 100;
+                
+                // 점수가 0점이면 막대그래프를 숨기고, 점수가 있으면 예쁘게 그림
+                const barHtml = s.score > 0 
+                    ? `<div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div>`
+                    : `<div style="color:#ccc; font-size:12px;">기록 없음</div>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i}</td>
+                        <td style="font-weight:bold;">${s.name}</td>
+                        <td>${barHtml}</td>
+                        <td style="font-weight:bold; color:var(--primary-color);">${s.score}</td>
+                    </tr>
+                `;
+            }
+        };
         }
     </script>
 </body>
