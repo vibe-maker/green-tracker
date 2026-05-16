@@ -10,6 +10,7 @@
             --secondary-color: #81c784;
             --bg-color: #f1f8e9;
             --tray-color: #cfd8dc;
+            --accent-color: #4caf50;
         }
 
         body {
@@ -23,38 +24,49 @@
             color: #333;
         }
 
-        h1 { color: var(--primary-color); margin-bottom: 10px; }
+        h1 { color: var(--primary-color); margin-bottom: 10px; text-align: center; }
         
         /* 로그인 섹션 */
         .login-container {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
         }
         input {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border: 2px solid #ccc;
             border-radius: 6px;
-            width: 80px;
             font-size: 16px;
             text-align: center;
         }
+        #user-no { width: 80px; }
+        #user-name { width: 140px; }
+        .example-text { font-size: 13px; color: #777; margin-top: -5px; margin-bottom: 15px; }
+        
         button {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
         }
         button:hover { background-color: #1b5e20; }
 
-        /* 메인 컨텐츠 (로그인 후 표시) */
+        /* 메인 컨텐츠 */
         #main-content { display: none; width: 100%; max-width: 600px; }
 
         .card {
@@ -65,7 +77,7 @@
             margin-bottom: 20px;
         }
 
-        h2 { border-left: 5px solid var(--primary-color); padding-left: 10px; margin-top: 0; }
+        h2 { border-left: 5px solid var(--primary-color); padding-left: 10px; margin-top: 0; font-size: 18px; }
 
         /* 급식판 스타일 */
         .meal-tray {
@@ -92,104 +104,115 @@
             font-weight: bold;
             font-size: 14px;
             color: #78909c;
+            box-shadow: 0 4px 4px rgba(0,0,0,0.1);
         }
-        /* 위 반찬 3칸 */
         .top-row .food-slot { width: 80px; height: 80px; }
-        /* 아래 밥/국 2칸 */
         .bottom-row .food-slot { width: 120px; height: 120px; font-size: 18px; }
 
-        .food-slot.leftover {
-            background-color: #ffcdd2;
-            border-color: #e57373;
-            color: #c62828;
+        /* 다 먹었을 때 초록색 활성화 */
+        .food-slot.eaten {
+            background-color: #c8e6c9;
+            border-color: var(--accent-color);
+            color: var(--primary-color);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* 체크박스 항목 스타일 */
-        .check-item {
+        /* 미션 리스트 영역 */
+        .mission-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf2f7;
         }
-        .check-item:last-child { border-bottom: none; }
+        .mission-item:last-child { border-bottom: none; }
         
-        /* 토글 스위치 스타일 */
-        .switch {
+        .mission-info { flex: 1; padding-right: 15px; }
+        .mission-tag { font-weight: bold; color: var(--primary-color); display: block; margin-bottom: 4px; }
+        .mission-text { margin: 0; font-size: 14px; color: #4a5568; line-height: 1.4; }
+
+        /* 점수 시각화 계량기 물통형 박스 */
+        .visual-container {
             position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
+            width: 50px;
+            height: 60px;
+            background-color: #edf2f7;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
         }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 34px;
+        .visual-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background-color: #a5d6a7;
+            transition: height 0.4s ease;
+            z-index: 1;
         }
-        .slider:before {
-            position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px;
-            background-color: white; transition: .4s; border-radius: 50%;
+        .visual-fill.full { background-color: var(--secondary-color); }
+        .visual-icon { position: relative; z-index: 2; user-select: none; }
+
+        /* 점수 선택 버튼 그룹 */
+        .btn-group { display: flex; flex-direction: column; gap: 5px; }
+        .score-btn {
+            background-color: #f7fafc;
+            border: 1px solid #cbd5e0;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
         }
-        input:checked + .slider { background-color: var(--primary-color); }
-        input:checked + .slider:before { transform: translateX(26px); }
+        .score-btn.active-5 { background-color: #e6fffa; border-color: #319795; color: #234e52; }
+        .score-btn.active-10 { background-color: #e6fffa; border-color: var(--primary-color); color: var(--primary-color); }
 
         /* 달력 스타일 */
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            text-align: center;
-        }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
         .calendar-header { font-weight: bold; padding: 5px; background: var(--secondary-color); color: white; border-radius: 4px;}
         .calendar-day {
-            padding: 10px 5px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            min-height: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 12px;
-            border: 1px solid #eee;
+            padding: 8px 4px; background: #f9f9f9; border-radius: 6px; min-height: 55px;
+            display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; border: 1px solid #eee;
         }
-        .day-num { font-weight: bold; font-size: 14px; }
+        .day-num { font-weight: bold; font-size: 13px; }
         .day-score { color: var(--primary-color); font-weight: bold; margin-top: 5px; }
 
-        .score-display {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin: 10px 0;
-        }
+        .score-display { text-align: center; font-size: 28px; font-weight: bold; color: var(--primary-color); margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <h1>🌿 초록 지구 지킴이 🌿</h1>
 
-    <!-- 로그인 섹션 -->
     <div class="login-container" id="login-box">
-        <h3>우리 반 번호와 비밀번호를 입력하세요</h3>
-        <input type="number" id="user-no" placeholder="번호" min="1" max="30">
-        <input type="password" id="user-pw" placeholder="비밀번호">
-        <br><br>
-        <button onclick="login()">입장하기</button>
+        <h3>우리 반 번호와 이름을 입력하세요</h3>
+        <div class="login-inputs">
+            <input type="number" id="user-no" placeholder="번호">
+            <input type="text" id="user-name" placeholder="이름">
+        </div>
+        <div class="example-text">💡 입력 예시 — 번호: 01 / 이름: 김긍정</div>
+        <button onclick="login()">지킴이 입장하기 🌍</button>
     </div>
 
-    <!-- 메인 대시보드 -->
     <div id="main-content">
         <div class="card" style="text-align: center;">
-            <h2 id="welcome-msg">안녕하세요!</h2>
-            <div style="font-size: 18px; margin-bottom: 10px;">🔋 오늘의 환경 지킴이 점수</div>
-            <div class="score-display" id="total-score">100점</div>
-            <div style="color: #666;" id="cumulative-score">누적 점수: 0점</div>
+            <h2 id="welcome-msg" style="border:none; padding:0;">안녕하세요!</h2>
+            <div style="font-size: 16px; margin-bottom: 5px; color: #555;">🔋 오늘의 환경 점수</div>
+            <div class="score-display" id="total-score">0점</div>
+            <div style="color: #666; font-weight: bold;" id="cumulative-score">누적 총 점수: 0점</div>
         </div>
 
-        <!-- 1. 급식판 잔반 체크 -->
         <div class="card">
-            <h2>🍱 1. 오늘 급식 잔반 체크</h2>
-            <p style="font-size: 13px; color: #666; margin-top:-10px;">남긴 음식이 있다면 해당하는 식판 칸을 터치해 빨갛게 바꾸세요! (다 비우면 0% 남김)</p>
+            <h2>🍱 오늘 급식 다 먹기 달성도</h2>
+            <p style="font-size: 13px; color: #666; margin-top:-10px;">다 먹은 식판 칸을 터치해 초록색으로 불을 켜세요! (한 칸당 5점 / 다 먹으면 보너스 포함 총 20점)</p>
             <div class="meal-tray">
                 <div class="tray-row top-row">
                     <div class="food-slot" onclick="toggleFood(this)">반찬1</div>
@@ -201,153 +224,200 @@
                     <div class="food-slot" onclick="toggleFood(this)">국</div>
                 </div>
             </div>
-            <div style="text-align: center; margin-top: 15px; font-weight: bold;" id="meal-percent">
-                음식 남김 정도: 0% (감점 0점)
+            <div style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--primary-color);" id="meal-score-text">
+                급식 점수: 0점 / 20점
             </div>
         </div>
 
-        <!-- 2. 생활 습관 체크 -->
         <div class="card">
-            <h2>🌱 2. 오늘 하루 지킴이 활동</h2>
+            <h2>🌱 오늘 하루 환경 지킴이 미션</h2>
+            <p style="font-size: 13px; color: #666; margin-top:-10px;">스스로 반성하며 5점(절반 성공) 또는 10점(완벽 성공) 버튼을 누르세요.</p>
             
-            <div class="check-item">
-                <span>🥤 양치컵을 사용했나요? (+10점)</span>
-                <label class="switch">
-                    <input type="checkbox" id="cup-check" onchange="calculateScore()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="check-item">
-                <span>🥛 다회용 개인 물컵을 사용했나요? (+10점)</span>
-                <label class="switch">
-                    <input type="checkbox" id="multi-cup-check" onchange="calculateScore()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="check-item">
-                <span>🪴 학급 식물을 정성껏 돌보았나요? (+10점)</span>
-                <label class="switch">
-                    <input type="checkbox" id="plant-check" onchange="calculateScore()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="check-item">
-                <span>♻️ 분리수거를 완벽하게 잘했나요? (성공 100점 / 실패 0점)</span>
-                <label class="switch">
-                    <input type="checkbox" id="recycle-check" onchange="calculateScore()">
-                    <span class="slider"></span>
-                </label>
-            </div>
+            <div id="mission-list-container">
+                </div>
         </div>
 
         <div style="text-align: center; margin-bottom: 20px;">
-            <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px;">오늘의 기록 저장하기 💾</button>
+            <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px; border-radius: 10px;">오늘의 초록 점수 저장하기 💾</button>
         </div>
 
-        <!-- 3. 환경 달력 -->
         <div class="card">
-            <h2>📅 나의 초록 지구 달력 (5월)</h2>
-            <div class="calendar" id="calendar-board">
-                <!-- 자바스크립트로 달력 일수가 채워집니다 -->
-            </div>
+            <h2>📅 나의 초록 지구 달력</h2>
+            <div class="calendar" id="calendar-board"></div>
         </div>
     </div>
 
     <script>
-        // 가상의 학생 데이터 (초기 로컬 저장소 세팅용)
         let currentUser = "";
+        let currentUserName = "";
         let studentData = JSON.parse(localStorage.getItem('greenTrackerData')) || {};
+        
+        // 미션 데이터 정의 (아이콘 매칭)
+        const missions = [
+            { id: 1, tag: "[물 절약]", text: "손에 비누칠 할 때 물을 잠그고, 양치할 때 양치컵을 사용했나요?", icon: "💧" },
+            { id: 2, tag: "[일회용품 줄이기]", text: "다회용 개인 물컵(텀블러)을 사용했나요?", icon: "🥤" },
+            { id: 3, tag: "[식물 가꾸기]", text: "학급 식물을 정성껏 돌보았나요?", icon: "🪴" },
+            { id: 4, tag: "[자원 재활용]", text: "우유팩을 깨끗하게 씻어서 말렸나요?", icon: "🥛" },
+            { id: 5, tag: "[환경 보호]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
+            { id: 6, tag: "[자원 절약]", text: "면지를 활용하거나 학용품을 아껴 썼나요?", icon: "✏️" },
+            { id: 7, tag: "[전기 절약]", text: "빈 방(이나 교실) 전등을 껐나요?", icon: "💡" },
+            { id: 8, tag: "[디지털 기기 관리]", text: "디지털 기기에서 안 쓰는 파일이나 사진을 바로 지워 디지털 탄소를 줄이고, 충전이 끝나면 바로 충전기를 콘센트에서 뽑아 두었나요?", icon: "🔌" }
+        ];
+
+        // 미션별 현재 선택 점수 저장
+        let selectedScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
+
+        // 화면 렌더링: 미션 목록 만들기
+        function renderMissions() {
+            const container = document.getElementById('mission-list-container');
+            container.innerHTML = "";
+            
+            missions.forEach(m => {
+                const item = document.createElement('div');
+                item.className = 'mission-item';
+                item.innerHTML = `
+                    <div class="visual-container">
+                        <div class="visual-fill" id="fill-${m.id}"></div>
+                        <div class="visual-icon">${m.icon}</div>
+                    </div>
+                    <div class="mission-info">
+                        <span class="mission-tag">${m.tag}</span>
+                        <p class="mission-text">${m.text}</p>
+                    </div>
+                    <div class="btn-group">
+                        <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">5점</button>
+                        <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">10점</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
 
         function login() {
             const no = document.getElementById('user-no').value;
-            const pw = document.getElementById('user-pw').value;
+            const name = document.getElementById('user-name').value.trim();
 
-            if(!no || !pw) { alert("번호와 비밀번호를 모두 입력하세요."); return; }
+            if(!no || !name) { alert("번호와 이름을 모두 입력하세요."); return; }
             
-            // 번호를 학생 ID로 활용 (예: student_5)
             currentUser = "student_" + no;
+            currentUserName = name;
             
             if(!studentData[currentUser]) {
-                studentData[currentUser] = {
-                    password: pw,
-                    scores: {} // 날짜별 점수 저장용
-                };
-            } else if (studentData[currentUser].password !== pw) {
-                alert("비밀번호가 일치하지 않습니다!");
-                return;
+                studentData[currentUser] = { name: name, scores: {} };
+            } else {
+                studentData[currentUser].name = name; // 이름 최신화
             }
 
             localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `👋 반갑습니다, ${no}번 지킴이 어린이!`;
+            document.getElementById('welcome-msg').innerText = `👋 반갑습니다, ${no}번 ${name} 어린이!`;
             
+            renderMissions();
             initCalendar();
             loadTodayData();
         }
 
-        // 급식판 슬롯 토글
+        // 급식판 클릭 토글
         function toggleFood(element) {
-            element.classList.toggle('leftover');
+            element.classList.toggle('eaten');
             calculateScore();
         }
 
-        // 점수 계산 핵심 로직
-        function calculateScore() {
-            // 1. 급식 잔반 점수 계산
-            const leftovers = document.querySelectorAll('.food-slot.leftover').length;
-            const leftoverPercent = leftovers * 20;
-            document.getElementById('meal-percent').innerText = `음식 남김 정도: ${leftoverPercent}% (감점 ${leftoverPercent}점)`;
+        // 미션 개별 점수 버튼 설정 및 물 채우기 애니메이션 시각화
+        function setMissionScore(id, score) {
+            const btn5 = document.getElementById(`btn-${id}-5`);
+            const btn10 = document.getElementById(`btn-${id}-10`);
+            const fill = document.getElementById(`fill-${id}`);
 
-            // 2. 기타 생활 습관 점수 계산
-            const hasCup = document.getElementById('cup-check').checked ? 10 : 0;
-            const hasMultiCup = document.getElementById('multi-cup-check').checked ? 10 : 0;
-            const hasPlant = document.getElementById('plant-check').checked ? 10 : 0;
-            const hasRecycle = document.getElementById('recycle-check').checked ? 100 : 0;
-
-            // 전체 점수 = 분리수거 점수(100/0) + 양치컵(10) + 물컵(10) + 식물(10) - 잔반 감점(최대 100)
-            let totalScore = hasRecycle + hasCup + hasMultiCup + hasPlant - leftoverPercent;
-            
-            // 점수가 음수로 떨어지지 않도록 보정
-            if (totalScore < 0) totalScore = 0;
-
-            document.getElementById('total-score').innerText = totalScore + "점";
-            return totalScore;
-        }
-
-        // 데이터 저장
-        function saveToday() {
-            const score = calculateScore();
-            const today = new Date().getDate(); // 오늘 날짜 (일자만 간단히 활용)
-
-            studentData[currentUser].scores[today] = score;
-            localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
-            
-            alert("오늘의 초록 점수가 성공적으로 저장되었습니다!");
-            initCalendar(); // 달력 업데이트
-        }
-
-        // 저장된 데이터 불러오기
-        function loadTodayData() {
-            const today = new Date().getDate();
-            const userScores = studentData[currentUser].scores;
-
-            if(userScores && userScores[today] !== undefined) {
-                // 오늘 저장한 기록이 있다면 복원 시뮬레이션 (간소화 버젼)
-                document.getElementById('total-score').innerText = userScores[today] + "점";
+            if (selectedScores[id] === score) {
+                // 이미 채워진 점수를 다시 누르면 0점으로 초기화 (토글)
+                selectedScores[id] = 0;
+                btn5.classList.remove('active-5');
+                btn10.classList.remove('active-10');
+                fill.style.height = "0%";
+                fill.classList.remove('full');
+            } else {
+                selectedScores[id] = score;
+                if (score === 5) {
+                    btn5.classList.add('active-5');
+                    btn10.classList.remove('active-10');
+                    fill.style.height = "50%"; // 절반 색칠
+                    fill.classList.remove('full');
+                } else if (score === 10) {
+                    btn5.classList.remove('active-5');
+                    btn10.classList.add('active-10');
+                    fill.style.height = "100%"; // 전체 색칠
+                    fill.classList.add('full');
+                }
             }
             calculateScore();
         }
 
-        // 달력 그리기 및 누적 점수 계산
+        // 최종 합산 점수 계산
+        function calculateScore() {
+            // 1. 급식 점수 계산 (5칸 다 채우면 보너스 포함 총 20점, 아닐 경우 한 칸당 2점)
+            const eatenCount = document.querySelectorAll('.food-slot.eaten').length;
+            let mealScore = 0;
+            if (eatenCount === 5) {
+                mealScore = 20; // 완판 보너스 포함 20점
+            } else {
+                mealScore = eatenCount * 2; // 한 칸당 2점
+            }
+            document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점 (달성 칸 수: ${eatenCount}칸)`;
+
+            // 2. 미션 점수 합산
+            let missionTotal = 0;
+            missions.forEach(m => {
+                missionTotal += selectedScores[m.id];
+            });
+
+            // 3. 종합 점수 (최대 100점)
+            let totalScore = mealScore + missionTotal;
+            document.getElementById('total-score').innerText = totalScore + "점";
+            
+            return totalScore;
+        }
+
+        function saveToday() {
+            const score = calculateScore();
+            const today = new Date().getDate();
+
+            studentData[currentUser].scores[today] = {
+                score: score,
+                meal: document.querySelectorAll('.food-slot.eaten').length,
+                missions: { ...selectedScores }
+            };
+            
+            localStorage.setItem('greenTrackerData', JSON.stringify(studentData));
+            alert("오늘의 초록 점수가 성공적으로 기록되었습니다! 달력을 확인해 보세요.");
+            initCalendar();
+        }
+
+        function loadTodayData() {
+            const today = new Date().getDate();
+            const userData = studentData[currentUser].scores[today];
+
+            if(userData) {
+                // 이전 기록 복원
+                selectedScores = userData.missions || { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
+                missions.forEach(m => {
+                    const score = selectedScores[m.id];
+                    if(score > 0) setMissionScore(m.id, score);
+                });
+
+                const slots = document.querySelectorAll('.food-slot');
+                for(let i=0; i<userData.meal; i++) {
+                    if(slots[i]) slots[i].classList.add('eaten');
+                }
+            }
+            calculateScore();
+        }
+
         function initCalendar() {
             const calendarBoard = document.getElementById('calendar-board');
-            calendarBoard.innerHTML = ""; // 초기화
+            calendarBoard.innerHTML = "";
 
-            // 요일 헤더 생성
             const weeks = ['일', '월', '화', '수', '목', '금', '토'];
             weeks.forEach(w => {
                 const header = document.createElement('div');
@@ -356,7 +426,7 @@
                 calendarBoard.appendChild(header);
             });
 
-            const totalDays = 31; // 5월 기준 31일
+            const totalDays = 31; // 예시 기준 31일 설정
             const userScores = studentData[currentUser].scores || {};
             let cumulativeScore = 0;
 
@@ -369,18 +439,15 @@
                 numSpan.innerText = i;
                 dayDiv.appendChild(numSpan);
 
-                // 기록된 점수가 있다면 표시
                 if (userScores[i] !== undefined) {
                     const scoreSpan = document.createElement('span');
                     scoreSpan.className = 'day-score';
-                    scoreSpan.innerText = userScores[i] + "점";
+                    scoreSpan.innerText = userScores[i].score + "점";
                     dayDiv.appendChild(scoreSpan);
-                    cumulativeScore += userScores[i];
+                    cumulativeScore += userScores[i].score;
                 }
-
                 calendarBoard.appendChild(dayDiv);
             }
-
             document.getElementById('cumulative-score').innerText = `누적 총 점수: ${cumulativeScore}점`;
         }
     </script>
