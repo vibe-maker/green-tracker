@@ -29,20 +29,23 @@
         .food-slot.eaten { background-color: #c8e6c9; border-color: var(--accent-color); color: var(--primary-color); }
         
         /* 미션 리스트 */
-        .mission-item { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
+        .mission-item { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
+        .mission-top { display: flex; align-items: center; margin-bottom: 10px;}
         .mission-info { flex: 1; padding-right: 15px; } .mission-tag { font-weight: bold; color: var(--primary-color); display: block; } .mission-text { margin: 0; font-size: 14px; }
         .visual-container { position: relative; width: 50px; height: 60px; background-color: #edf2f7; border: 2px solid #cbd5e0; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
         .visual-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background-color: #a5d6a7; transition: height 0.4s ease; z-index: 1; }
         .visual-fill.full { background-color: var(--secondary-color); } .visual-icon { position: relative; z-index: 2; }
         
-        /* 명확한 점수 버튼 스타일 */
-        .btn-group { display: flex; flex-direction: column; gap: 5px; }
-        .score-btn { background-color: white; border: 2px solid #cbd5e0; color: #4a5568; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.2s; }
+        /* 3단 점수 버튼 스타일 (가로 배치) */
+        .btn-group { display: flex; gap: 5px; width: 100%; justify-content: space-between; }
+        .score-btn { flex: 1; background-color: white; border: 2px solid #cbd5e0; color: #4a5568; padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.2s; }
+        .score-btn.active-0 { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; } 
         .score-btn.active-5 { background-color: #e6fffa; border-color: #319795; color: #234e52; } 
         .score-btn.active-10 { background-color: #e6fffa; border-color: var(--primary-color); color: var(--primary-color); }
+        
         .score-display { text-align: center; font-size: 28px; font-weight: bold; color: var(--primary-color); margin: 10px 0; }
         
-        /* 팝업 모달 (크기 확장) */
+        /* 팝업 모달 */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px; border-radius: 15px; width: 95%; max-width: 450px; text-align: center; position: relative; }
         
@@ -70,7 +73,7 @@
 </head>
 <body>
 
-    <h1 style="cursor:pointer;">🌿 초록 지구 지킴이 🌿</h1>
+    <h1 style="cursor:pointer;" onclick="location.reload()">🌿 초록 지구 지킴이 🌿</h1>
     <div id="loader">구글 시트와 통신 중입니다... 잠시만 기다려주세요! ⏳</div>
 
     <!-- 1. 로그인 화면 -->
@@ -110,6 +113,7 @@
 
         <div class="card">
             <h2>🌱 오늘 하루 환경 지킴이 미션</h2>
+            <p style="font-size: 13px; color: #666; margin-top:-10px;">솔직하게 스스로를 돌아보며 버튼을 선택해 보세요.</p>
             <div id="mission-list-container"></div>
         </div>
 
@@ -150,12 +154,12 @@
     </div>
 
     <script>
-        // ★★★ 선생님의 구글 앱스 스크립트 주소를 아래에 넣으세요 ★★★
+        // ★★★ 1. 구글 스크립트 주소 ★★★
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwmxa961KsJpXgQzzS7S1ZoFTkYH5wsV2xDUgUoxLsEqV5AYuidgYAq9Ozb1XvZWQDnYg/exec"; 
         
-        // ★★★ 2번 요청: 학급 학생 이름 미리 세팅 (1번부터 28번 순서대로 적어주세요. 빈칸이면 '학생X'로 나옵니다) ★★★
+        // ★★★ 2. 우리 반 학생 이름 (28명) ★★★
         const studentNames = [
-            "강하영", "김루하", "김소은", "김지유", "남시하", "손유하", "윤수아", "윤승아", "이하민", "임아윤",
+"강하영", "김루하", "김소은", "김지유", "남시하", "손유하", "윤수아", "윤승아", "이하민", "임아윤",
             "전서현", "조율희", "최한별", "한지원", "김동빈", "김시윤", "김주원", "김효찬", "남지후", "노시온",
             "방준영", "송건우", "임환희", "조유찬", "주은호", "한진우", "허시준", "서현우"
         ];
@@ -174,18 +178,21 @@
             { id: 8, tag: "[디지털 기기 관리]", text: "안 쓰는 파일 지우기 및 충전 완료 시 플러그 뽑기를 실천했나요?", icon: "🔌" }
         ];
 
-        let selectedScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0 };
+        let selectedScores = { 1:-1, 2:-1, 3:-1, 4:-1, 5:-1, 6:-1, 7:-1, 8:-1 }; // 초기값 -1 (선택안함 상태)
 
         function renderMissions() {
             const container = document.getElementById('mission-list-container'); container.innerHTML = "";
             missions.forEach(m => {
                 container.innerHTML += `
                     <div class="mission-item">
-                        <div class="visual-container"><div class="visual-fill" id="fill-${m.id}"></div><div class="visual-icon">${m.icon}</div></div>
-                        <div class="mission-info"><span class="mission-tag">${m.tag}</span><p class="mission-text">${m.text}</p></div>
+                        <div class="mission-top">
+                            <div class="visual-container"><div class="visual-fill" id="fill-${m.id}"></div><div class="visual-icon">${m.icon}</div></div>
+                            <div class="mission-info"><span class="mission-tag">${m.tag}</span><p class="mission-text">${m.text}</p></div>
+                        </div>
                         <div class="btn-group">
-                            <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">5점</button>
-                            <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">10점</button>
+                            <button class="score-btn" id="btn-${m.id}-0" onclick="setMissionScore(${m.id}, 0)">❌ 안 했어요(0점)</button>
+                            <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">🔺 조금 했어요(5점)</button>
+                            <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">⭕ 완벽해요(10점)</button>
                         </div>
                     </div>`;
             });
@@ -195,7 +202,7 @@
             const no = document.getElementById('user-no').value;
             let name = document.getElementById('user-name').value.trim();
             if(!no) { alert("번호를 입력하세요."); return; }
-            if(!name) { name = studentNames[parseInt(no)-1] || "학생"; } // 이름 입력 안 하면 배열에서 가져옴
+            if(!name) { name = studentNames[parseInt(no)-1] || "학생"; }
             
             currentUserNo = no; currentUserName = name;
             document.getElementById('login-box').style.display = 'none';
@@ -209,13 +216,22 @@
         function toggleFood(element) { element.classList.toggle('eaten'); calculateScore(); }
 
         function setMissionScore(id, score) {
-            const btn5 = document.getElementById(`btn-${id}-5`); const btn10 = document.getElementById(`btn-${id}-10`); const fill = document.getElementById(`fill-${id}`);
-            if (selectedScores[id] === score) {
-                selectedScores[id] = 0; btn5.classList.remove('active-5'); btn10.classList.remove('active-10'); fill.style.height = "0%";
-            } else {
-                selectedScores[id] = score;
-                if (score === 5) { btn5.classList.add('active-5'); btn10.classList.remove('active-10'); fill.style.height = "50%"; } 
-                else { btn5.classList.remove('active-5'); btn10.classList.add('active-10'); fill.style.height = "100%"; }
+            const btn0 = document.getElementById(`btn-${id}-0`);
+            const btn5 = document.getElementById(`btn-${id}-5`); 
+            const btn10 = document.getElementById(`btn-${id}-10`); 
+            const fill = document.getElementById(`fill-${id}`);
+            
+            // 모든 버튼 비활성화 초기화
+            btn0.classList.remove('active-0'); btn5.classList.remove('active-5'); btn10.classList.remove('active-10');
+
+            selectedScores[id] = score;
+
+            if (score === 0) { 
+                btn0.classList.add('active-0'); fill.style.height = "0%"; 
+            } else if (score === 5) { 
+                btn5.classList.add('active-5'); fill.style.height = "50%"; 
+            } else if (score === 10) { 
+                btn10.classList.add('active-10'); fill.style.height = "100%"; 
             }
             calculateScore();
         }
@@ -224,16 +240,26 @@
             const eatenCount = document.querySelectorAll('.food-slot.eaten').length;
             const mealScore = eatenCount * 4;
             document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점`;
-            let missionTotal = 0; missions.forEach(m => missionTotal += selectedScores[m.id]);
+            
+            let missionTotal = 0; 
+            missions.forEach(m => {
+                if(selectedScores[m.id] > 0) missionTotal += selectedScores[m.id];
+            });
             let totalScore = mealScore + missionTotal;
             document.getElementById('total-score').innerText = totalScore + "점";
             return totalScore;
         }
 
         async function saveToday() {
-            const score = calculateScore();
-            if(score === 0) { alert("입력된 점수가 없습니다!"); return; }
+            // 모든 항목을 체크했는지 확인 (선택하지 않은 항목 방지)
+            for(let i=1; i<=8; i++) {
+                if(selectedScores[i] === -1) {
+                    alert("체크하지 않은 미션이 있습니다! 모두 스스로 반성해보고 선택해주세요.");
+                    return;
+                }
+            }
 
+            const score = calculateScore();
             const today = new Date();
             const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
@@ -249,9 +275,10 @@
         }
 
         async function fetchClassData() {
-            if(WEB_APP_URL === "https://script.google.com/macros/s/AKfycbwmxa961KsJpXgQzzS7S1ZoFTkYH5wsV2xDUgUoxLsEqV5AYuidgYAq9Ozb1XvZWQDnYg/exec") return;
-            try { const response = await fetch(WEB_APP_URL); classData = await response.json(); } 
-            catch (error) { console.error("데이터 실패", error); }
+            try { 
+                const response = await fetch(WEB_APP_URL); 
+                classData = await response.json(); 
+            } catch (error) { console.error("데이터 실패", error); }
         }
 
         function showPopup() {
@@ -265,13 +292,11 @@
                 if(rowDate < today) pastTotalScore += Number(row.score);
             });
 
-            // 5번 요청: 랜덤 테마 & 소수점 5자리 수치
-            const isBearTheme = Math.random() < 0.5; // 50% 확률
+            const isBearTheme = Math.random() < 0.5;
             document.getElementById('polar-bear-area').style.display = isBearTheme ? 'block' : 'none';
             document.getElementById('tree-area').style.display = isBearTheme ? 'none' : 'flex';
             
             if(isBearTheme) {
-                // 1점당 0.00015cm 감소 (소수점 5자리 표현)
                 const seaLevelDrop = (pastTotalScore * 0.00015).toFixed(5);
                 const waterLevel = document.getElementById('water-level');
                 const bearIcon = document.getElementById('bear-icon');
@@ -285,9 +310,8 @@
                 }, 100);
                 document.getElementById('popup-result-text').innerText = `우리 반 활동으로 해수면이 ${seaLevelDrop}cm 줄었습니다!`;
             } else {
-                // 1점당 0.0002 그루 (소수점 5자리) -> 정수 그루수로 화면 표시
                 const treeGrowthVal = (pastTotalScore * 0.0002).toFixed(5);
-                const visualTreeCount = Math.floor(pastTotalScore / 100) + 1; // 100점당 이모지 1개 추가
+                const visualTreeCount = Math.floor(pastTotalScore / 100) + 1; 
                 
                 let trees = "";
                 for(let i=0; i<Math.min(visualTreeCount, 24); i++) { trees += "🌳"; }
@@ -309,12 +333,10 @@
             
             let monthlyScores = {};
             for(let i=1; i<=28; i++) {
-                // 배열 인덱스는 0부터 시작하므로 i-1
                 let name = studentNames[i-1] ? studentNames[i-1] : "학생" + i;
                 monthlyScores[i] = { name: name, score: 0 };
             }
 
-            // 4번 요청: 누적 점수 합산 로직 완벽 적용
             classData.forEach(row => {
                 const d = new Date(row.date);
                 if(d.getFullYear() === viewYear && (d.getMonth() + 1) === viewMonth) {
