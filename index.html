@@ -36,7 +36,7 @@
         .visual-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background-color: #a5d6a7; transition: height 0.4s ease; z-index: 1; }
         .visual-fill.full { background-color: var(--secondary-color); } .visual-icon { position: relative; z-index: 2; }
         
-        /* 3단 점수 버튼 스타일 (가로 배치) */
+        /* 3단 점수 버튼 */
         .btn-group { display: flex; gap: 5px; width: 100%; justify-content: space-between; }
         .score-btn { flex: 1; background-color: white; border: 2px solid #cbd5e0; color: #4a5568; padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.2s; }
         .score-btn.active-0 { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; } 
@@ -49,11 +49,11 @@
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px; border-radius: 15px; width: 95%; max-width: 450px; text-align: center; position: relative; }
         
-        /* 북극곰 시각화 */
-        .polar-bear-area { height: 200px; background: linear-gradient(to bottom, #e0f7fa, #b2ebf2); position: relative; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #4dd0e1; display: none;}
-        .water-level { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(33, 150, 243, 0.7); transition: height 2.5s ease-out; }
-        .bear-emoji { position: absolute; font-size: 60px; left: 50%; transform: translateX(-50%); transition: bottom 2.5s ease-out; z-index: 2;}
-        .ice-emoji { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); font-size: 80px; z-index: 1;}
+        /* 북극곰 & 빙하 시각화 */
+        .polar-bear-area { height: 240px; background: linear-gradient(to bottom, #81d4fa, #e1f5fe); position: relative; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #4dd0e1; display: none;}
+        .glacier { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 160px; height: 100px; background: white; border-radius: 50% 50% 10% 10%; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1); z-index: 1; }
+        .water-level { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(3, 169, 244, 0.85); transition: height 2.5s ease-in-out; z-index: 2; }
+        .bear-emoji { position: absolute; font-size: 65px; left: 50%; transform: translateX(-50%); transition: bottom 2.5s ease-in-out; z-index: 3; }
         
         /* 나무 시각화 */
         .tree-area { min-height: 200px; background: #f1f8e9; border-radius: 10px; padding: 15px; display: none; flex-wrap: wrap; justify-content: center; align-content: center; font-size: 35px; border: 2px solid #aed581; margin-bottom: 20px;}
@@ -83,7 +83,7 @@
             <input type="number" id="user-no" placeholder="번호">
             <input type="text" id="user-name" placeholder="이름">
         </div>
-        <div class="example-text">💡 예시: 01 / 김긍정</div>
+        <div class="example-text">💡 예시: 01 / 김긍정 </div>
         <button onclick="login()">지킴이 입장하기 🌍</button>
     </div>
 
@@ -139,22 +139,22 @@
             <h2>🌍 멋져요! 기록이 저장되었습니다.</h2>
             
             <div class="polar-bear-area" id="polar-bear-area">
-                <div class="ice-emoji">🧊</div>
-                <div class="bear-emoji" id="bear-icon">🐻‍❄️</div>
+                <div class="glacier"></div>
                 <div class="water-level" id="water-level"></div>
+                <div class="bear-emoji" id="bear-icon">🐻‍❄️</div>
             </div>
             
             <div class="tree-area" id="tree-area"></div>
             
             <p class="highlight-text" id="popup-result-text"></p>
-            <p style="font-size:12px; color:#666;">(통계는 어제까지 우리 반이 모은 점수 기준입니다)</p>
+            <p style="font-size:12px; color:#666;">(방금 여러분이 입력한 점수까지 모두 합산된 수치입니다!)</p>
             
             <button class="go-dashboard-btn" onclick="closeModal(); showDashboard();">우리반 전체 점수 보기 📊</button>
         </div>
     </div>
 
     <script>
-        // ★★★ 선생님의 구글 스크립트 웹 앱 주소를 꼭 여기에 붙여넣어 주세요! ★★★
+        // ★★★ 선생님의 구글 스크립트 웹 앱 주소를 꼭 입력하세요! ★★★
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw-QnFh6uqBIvsURFqypFMYAucK7sBIiA3znyEwFp4OGWFaLFhQFNAXrQYt26rFiWSuOA/exec"; 
         
         const studentNames = [
@@ -259,22 +259,20 @@
 
             try {
                 await fetch(WEB_APP_URL, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
-                await fetchClassData(); 
+                await fetchClassData(); // 저장 후 갱신된 전체 데이터 불러오기
                 showPopup();
             } catch (error) { alert("저장 실패. 앱스 스크립트 URL을 확인하세요."); } 
             finally { document.getElementById('loader').style.display = 'none'; }
         }
 
-        // [핵심 변경] 데이터를 못 불러올 경우 대비 안전망 추가
         async function fetchClassData() {
             try { 
                 const response = await fetch(WEB_APP_URL, { redirect: "follow" }); 
                 const text = await response.text();
                 try {
                     classData = JSON.parse(text); 
-                    console.log("데이터 불러오기 성공:", classData.length, "개");
                 } catch(e) {
-                    console.error("데이터 변환 오류. 구글 시트 권한(모든 사용자)을 확인해주세요.", text);
+                    console.error("데이터 변환 오류.", text);
                 }
             } catch (error) { 
                 console.error("서버 연결 실패", error); 
@@ -285,19 +283,13 @@
             const modal = document.getElementById('success-modal');
             modal.style.display = 'flex';
 
-            const today = new Date(); today.setHours(0,0,0,0);
             let pastTotalScore = 0;
             
-            // 모든 헤더 이름을 무시하고 유연하게 찾는 스캐너 로직 적용
             classData.forEach(row => {
-                let rDate, rScore = 0;
-                for(let key in row) {
-                    let k = key.toLowerCase();
-                    if(k.includes('date')) rDate = row[key];
-                    if(k.includes('score')) rScore = row[key];
+                let vals = Object.values(row); 
+                if(vals.length >= 4) {
+                    pastTotalScore += (parseInt(vals[3]) || 0); 
                 }
-                const rowDate = new Date(rDate);
-                if(rowDate < today) pastTotalScore += Number(rScore);
             });
 
             const isBearTheme = Math.random() < 0.5;
@@ -305,24 +297,36 @@
             document.getElementById('tree-area').style.display = isBearTheme ? 'none' : 'flex';
             
             if(isBearTheme) {
-                const seaLevelDrop = (pastTotalScore * 0.00015).toFixed(5);
+                // [해결포인트] 1년 장기 프로젝트 스케일: 1점당 0.00005cm (소수점 5자리 표현)
+                const seaLevelDrop = (pastTotalScore * 0.00005).toFixed(5);
+                
                 const waterLevel = document.getElementById('water-level');
                 const bearIcon = document.getElementById('bear-icon');
                 
-                let startWaterHeight = 100 - (pastTotalScore / 50); 
+                // 물빠짐 애니메이션 (최대 420,000점에서 물이 바닥까지 빠지도록 설정)
+                let startWaterHeight = 100 - (pastTotalScore * 0.0002); 
                 if(startWaterHeight < 20) startWaterHeight = 20; 
+
+                let bearPosition = startWaterHeight - 10;
+                if(bearPosition < 25) bearPosition = 25; 
 
                 setTimeout(() => {
                     waterLevel.style.height = `${startWaterHeight}%`;
-                    bearIcon.style.bottom = `${startWaterHeight - 15}%`;
+                    bearIcon.style.bottom = `${bearPosition}%`;
                 }, 100);
                 document.getElementById('popup-result-text').innerText = `우리 반 활동으로 해수면이 ${seaLevelDrop}cm 줄었습니다!`;
             } else {
-                const treeGrowthVal = (pastTotalScore * 0.0002).toFixed(5);
-                const visualTreeCount = Math.floor(pastTotalScore / 100) + 1; 
+                // [해결포인트] 나무 성장 스케일: 1점당 0.0002그루 성장 (소수점 4자리 표현)
+                const treeGrowthVal = (pastTotalScore * 0.0002).toFixed(4);
+                
+                // 시각적인 이모지 개수: 5,000점당 나무 1개씩 추가되도록 천천히 자라게 설정 (최대 30개 표시)
+                const visualTreeCount = Math.floor(pastTotalScore / 5000) + 1; 
                 
                 let trees = "";
-                for(let i=0; i<Math.min(visualTreeCount, 24); i++) { trees += "🌳"; }
+                if(pastTotalScore === 0) trees = "🌱"; // 0점일 때는 새싹 하나
+                else {
+                    for(let i=0; i<Math.min(visualTreeCount, 30); i++) { trees += "🌳"; }
+                }
                 document.getElementById('tree-area').innerText = trees;
                 document.getElementById('popup-result-text').innerText = `우리 반 활동으로 나무가 ${treeGrowthVal}그루 심어졌습니다!`;
             }
@@ -344,8 +348,7 @@
         }
 
         function renderDashboard() {
-            // 연결된 데이터가 몇 개인지 상단에 표시하여 제대로 들어왔는지 즉시 확인!
-            document.getElementById('dashboard-title').innerHTML = `🏆 우리 반 지킴이 현황<br><span style="font-size:12px; color:#666;">(불러온 데이터: ${classData.length}개)</span>`;
+            document.getElementById('dashboard-title').innerHTML = `🏆 우리 반 지킴이 현황<br><span style="font-size:12px; color:#666;">(데이터 ${classData.length}개 연동 완료)</span>`;
             document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
             
             let monthlyScores = {};
@@ -354,28 +357,21 @@
                 monthlyScores[i] = { name: name, score: 0 };
             }
 
-            // [초강력 스캐너] 열 이름과 날짜 형식이 조금 틀려도 모두 숫자로 변환해서 흡수합니다!
             classData.forEach(row => {
-                let rDate, rNo, rScore = 0;
-                // 열 이름 대소문자 무시 검색
-                for(let key in row) {
-                    let k = key.toLowerCase();
-                    if(k.includes('date')) rDate = row[key];
-                    if(k.includes('no')) rNo = row[key];
-                    if(k.includes('score')) rScore = row[key];
-                }
+                let vals = Object.values(row);
+                if(vals.length < 4) return;
 
-                if(!rDate || !rNo) return;
+                let rDate = vals[0];
+                let rNo = vals[1];
+                let rScore = vals[3];
 
                 let dYear, dMonth;
                 const d = new Date(rDate);
                 
-                // 날짜 추출
                 if(!isNaN(d.getTime())) {
                     dYear = d.getFullYear();
                     dMonth = d.getMonth() + 1;
                 } else if(typeof rDate === 'string') {
-                    // "2026-05-18" 등 텍스트 형식일 경우 수동 추출
                     const parts = rDate.split(/[-/.]/);
                     if(parts.length >= 2) {
                         dYear = parseInt(parts[0]);
@@ -383,7 +379,6 @@
                     }
                 }
 
-                // 월이 일치하면 점수 합산
                 if(dYear === viewYear && dMonth === viewMonth) {
                     const no = parseInt(rNo);
                     if(monthlyScores[no]) {
@@ -392,14 +387,12 @@
                 }
             });
 
-            // 최대 점수 구하기 (그래프용)
             let maxScore = 1;
             for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
 
             const tbody = document.getElementById('rank-table-body');
             tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
 
-            // 그래프 렌더링
             for(let i=1; i<=28; i++) {
                 const s = monthlyScores[i];
                 const percent = (s.score / maxScore) * 100;
