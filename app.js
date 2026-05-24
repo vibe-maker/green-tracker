@@ -1,4 +1,3 @@
-
 /* =========================
 기본 데이터
 ========================= */
@@ -8,22 +7,26 @@ let selectedScores = {};
 let classData = [];
 let todaySaved = false;
 
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkHeM_7ntBjutO-NiRMhKlk5zZvWOee7v1Q7j1fJe1N_ADRXVKYy3RhpZDCvNdBO5Tjg/exec";
+const WEB_APP_URL =
+"https://script.google.com/macros/s/AKfycbzkHeM_7ntBjutO-NiRMhKlk5zZvWOee7v1Q7j1fJe1N_ADRXVKYy3RhpZDCvNdBO5Tjg/exec";
 
 /* =========================
 로그인
 ========================= */
 
-document.getElementById("login-btn").addEventListener("click", login);
-
 function login(){
 
-  const no = document.getElementById("user-no").value.trim();
-  const name = document.getElementById("user-name").value.trim();
+  const no =
+  document.getElementById("user-no").value.trim();
+
+  const name =
+  document.getElementById("user-name").value.trim();
 
   if(!no || !name){
-    alert("번호(00)와 이름(김초록)을 입력하세요!");
+
+    alert("번호와 이름을 입력하세요!");
     return;
+
   }
 
   currentUser = {
@@ -31,15 +34,24 @@ function login(){
     name
   };
 
-  document.getElementById("login-page").classList.add("hidden");
-  document.getElementById("main-page").classList.remove("hidden");
+  document
+  .getElementById("login-page")
+  .classList.add("hidden");
+
+  document
+  .getElementById("main-page")
+  .classList.remove("hidden");
 
   renderMissions();
   setupMealTray();
+
   renderCalendar();
   renderTracker();
   renderBestWorst();
+
   loadClassData();
+
+  calculateTotal();
 
 }
 
@@ -49,7 +61,8 @@ function login(){
 
 function setupMealTray(){
 
-  const slots = document.querySelectorAll(".food-slot");
+  const slots =
+  document.querySelectorAll(".food-slot");
 
   slots.forEach(slot=>{
 
@@ -67,7 +80,8 @@ function setupMealTray(){
 
 function calculateMealScore(){
 
-  const eatenCount = document.querySelectorAll(".food-slot.eaten").length;
+  const eatenCount =
+  document.querySelectorAll(".food-slot.eaten").length;
 
   return eatenCount * 4;
 
@@ -79,7 +93,8 @@ function calculateMealScore(){
 
 function renderMissions(){
 
-  const container = document.getElementById("mission-container");
+  const container =
+  document.getElementById("mission-container");
 
   container.innerHTML = "";
 
@@ -135,7 +150,9 @@ function setMissionScore(id, score, btn){
   const parent = btn.parentElement;
 
   parent.querySelectorAll("button").forEach(b=>{
+
     b.classList.remove("selected-btn");
+
   });
 
   btn.classList.add("selected-btn");
@@ -153,15 +170,16 @@ function calculateTotal(){
   let total = calculateMealScore();
 
   Object.values(selectedScores).forEach(score=>{
+
     total += score;
+
   });
 
-  document.getElementById("total-score").innerText = total + "점";
-
-  const meal = calculateMealScore();
+  document.getElementById("total-score").innerText =
+  total + "점";
 
   document.getElementById("meal-score").innerText =
-  `급식 점수 : ${meal}점 / 20점`;
+  `급식 점수 : ${calculateMealScore()}점 / 20점`;
 
   return total;
 
@@ -171,45 +189,48 @@ function calculateTotal(){
 저장
 ========================= */
 
-const saveBtn = document.querySelector(".save-btn");
-
-if(saveBtn){
-  saveBtn.addEventListener("click", saveToday);
-}
-
 async function saveToday(){
 
   if(todaySaved){
+
     alert("오늘은 이미 저장했어요 😊");
     return;
+
   }
 
   if(Object.keys(selectedScores).length < 8){
+
     alert("모든 미션을 체크해주세요!");
     return;
+
   }
 
   const total = calculateTotal();
 
   const today = new Date();
 
-  const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  const dateStr =
+  `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
   const payload = {
+
     date: dateStr,
     no: currentUser.no,
     name: currentUser.name,
     score: total
+
   };
 
   try{
 
-    const response = await fetch(WEB_APP_URL, {
+    const response = await fetch(WEB_APP_URL,{
+
       method:"POST",
       body:JSON.stringify(payload),
       headers:{
         "Content-Type":"text/plain"
       }
+
     });
 
     const result = await response.text();
@@ -226,43 +247,20 @@ async function saveToday(){
 
     console.error(error);
 
-    alert("저장 실패!\n웹앱 URL 확인 필요");
+    alert("저장 실패!");
 
   }
 
 }
 
 /* =========================
-결과 팝업
+팝업
 ========================= */
 
 function showResultPopup(score){
 
-  const type = Math.floor(Math.random()*3);
-
-  let title = "";
-  let value = "";
-  let emoji = "";
-
-  if(type === 0){
-    title = "🌳 나무 성장";
-    value = "+0.4cm";
-    emoji = "🌳";
-  }
-
-  if(type === 1){
-    title = "🌊 해수면 감소";
-    value = "-0.02cm";
-    emoji = "🐻‍❄️";
-  }
-
-  if(type === 2){
-    title = "🌡️ 지구온도 감소";
-    value = "-0.001℃";
-    emoji = "🌎";
-  }
-
-  const popup = document.createElement("div");
+  const popup =
+  document.createElement("div");
 
   popup.className = "result-popup";
 
@@ -270,12 +268,16 @@ function showResultPopup(score){
 
   <div class="popup-box">
 
-    <div class="popup-emoji">${emoji}</div>
+    <div class="popup-emoji">
+      🌍
+    </div>
 
-    <h2>${title}</h2>
+    <h2>
+      지구가 건강해졌어요!
+    </h2>
 
     <div class="popup-value">
-      ${value}
+      🌳 나무 성장 +0.4cm
     </div>
 
     <div class="popup-score2">
@@ -300,7 +302,8 @@ function showResultPopup(score){
 
 function goDashboard(){
 
-  const popup = document.querySelector(".result-popup");
+  const popup =
+  document.querySelector(".result-popup");
 
   if(popup){
     popup.remove();
@@ -320,8 +323,6 @@ function renderDashboard(){
 
     <div class="card">
 
-      <h2>전체 누적 점수</h2>
-
       <table class="rank-table">
 
         <tr>
@@ -337,9 +338,11 @@ function renderDashboard(){
     html += `
 
     <tr>
+
       <td>${s.no}</td>
       <td>${s.name}</td>
       <td>${s.score}</td>
+
     </tr>
 
     `;
@@ -352,7 +355,7 @@ function renderDashboard(){
 
     </div>
 
-    <button onclick="backToMain()">
+    <button onclick="location.reload()">
       마이페이지로 돌아가기
     </button>
 
@@ -364,21 +367,19 @@ function renderDashboard(){
 
 }
 
-function backToMain(){
-  location.reload();
-}
-
 /* =========================
-구글시트 불러오기
+시트 불러오기
 ========================= */
 
 async function loadClassData(){
 
   try{
 
-    const response = await fetch(WEB_APP_URL);
+    const response =
+    await fetch(WEB_APP_URL);
 
-    classData = await response.json();
+    classData =
+    await response.json();
 
     console.log(classData);
 
@@ -396,16 +397,10 @@ async function loadClassData(){
 
 function renderCalendar(){
 
-  const old = document.getElementById("calendar-card");
-
-  if(old){
-    old.remove();
-  }
-
-  const card = document.createElement("div");
+  const card =
+  document.createElement("div");
 
   card.className = "card";
-  card.id = "calendar-card";
 
   card.innerHTML = `
 
@@ -425,7 +420,9 @@ function renderCalendar(){
 
   `;
 
-  document.getElementById("main-page").appendChild(card);
+  document
+  .getElementById("main-page")
+  .appendChild(card);
 
 }
 
@@ -435,7 +432,8 @@ function renderCalendar(){
 
 function renderTracker(){
 
-  const card = document.createElement("div");
+  const card =
+  document.createElement("div");
 
   card.className = "card";
 
@@ -443,23 +441,34 @@ function renderTracker(){
 
   <h2>📈 이번 달 점수 변화</h2>
 
-  <div style="height:200px;display:flex;align-items:center;justify-content:center;color:#999;">
+  <div style="
+  height:200px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  ">
+
   그래프 준비중
+
   </div>
 
   `;
 
-  document.getElementById("main-page").appendChild(card);
+  document
+  .getElementById("main-page")
+  .appendChild(card);
 
 }
 
 /* =========================
-잘한 항목
+환경 분석
 ========================= */
 
 function renderBestWorst(){
 
-  const card = document.createElement("div");
+  const card =
+  document.createElement("div");
 
   card.className = "card";
 
@@ -467,16 +476,46 @@ function renderBestWorst(){
 
   <h2>🌟 이번 달 환경 분석</h2>
 
-  <div style="margin-bottom:15px;">
-  👍 가장 잘 지킨 행동 : 전기 절약
+  <div style="margin-bottom:10px;">
+  👍 가장 잘 지킨 행동 :
+  전기 절약
   </div>
 
   <div>
-  📌 더 노력하면 좋은 행동 : 재활용
+  📌 더 노력하면 좋은 행동 :
+  재활용
   </div>
 
   `;
 
-  document.getElementById("main-page").appendChild(card);
+  document
+  .getElementById("main-page")
+  .appendChild(card);
 
 }
+
+/* =========================
+초기 실행
+========================= */
+
+window.onload = function(){
+
+  const loginBtn =
+  document.getElementById("login-btn");
+
+  if(loginBtn){
+
+    loginBtn.addEventListener("click", login);
+
+  }
+
+  const saveBtn =
+  document.querySelector(".save-btn");
+
+  if(saveBtn){
+
+    saveBtn.addEventListener("click", saveToday);
+
+  }
+
+};
