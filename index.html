@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -61,6 +63,65 @@ transform:scale(1.03);
 
 .hidden{
 display:none;
+
+  .calendar-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+font-weight:bold;
+font-size:20px;
+color:#2e7d32;
+}
+
+.calendar-header button{
+padding:8px 14px;
+border-radius:50px;
+font-size:16px;
+background:#e8f5e9;
+color:#2e7d32;
+}
+
+.calendar-weekdays{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:8px;
+margin-bottom:8px;
+font-weight:bold;
+text-align:center;
+color:#558b2f;
+}
+
+.calendar-grid{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:8px;
+}
+
+.day-stamp{
+background:#f5f5f5;
+min-height:70px;
+border-radius:14px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:18px;
+padding:5px;
+transition:0.2s;
+}
+
+.day-stamp:hover{
+transform:scale(1.05);
+}
+
+.day-number{
+font-size:13px;
+font-weight:bold;
+margin-bottom:5px;
+color:#666;
+}
+  
 }
 
 /* =========================
@@ -561,7 +622,37 @@ id="meal-score-text">
 
 <h2>📅 나의 환경 달력</h2>
 
+
+<div class="calendar-header">
+
+<button onclick="changeMonth(-1)">
+◀
+</button>
+
+<div id="calendar-title">
+2026년 5월
+</div>
+
+<button onclick="changeMonth(1)">
+▶
+</button>
+
+</div>
+
+<div class="calendar-weekdays">
+
+<div>일</div>
+<div>월</div>
+<div>화</div>
+<div>수</div>
+<div>목</div>
+<div>금</div>
+<div>토</div>
+
+</div>
+
 <div class="calendar-grid" id="calendar-grid"></div>
+
 
 <h2 style="margin-top:25px;">🏅 나의 배지</h2>
 
@@ -687,7 +778,7 @@ TEACHER PAGE
 
 <div id="teacher-page" class="hidden">
 
-<h1>👩‍🏫 교사용 대시보드</h1>
+<h1>📊 우리 반 환경 통계</h1>
 
 <div class="teacher-grid">
 
@@ -946,22 +1037,60 @@ return total;
 
 /* CALENDAR */
 
+let currentMonth = 4;
+let currentYear = 2026;
+
 function renderCalendar(){
 
 const grid=document.getElementById('calendar-grid');
 
-for(let i=1;i<=31;i++){
+grid.innerHTML="";
+
+document.getElementById('calendar-title').innerText=
+`${currentYear}년 ${currentMonth+1}월`;
+
+const firstDay=
+new Date(currentYear,currentMonth,1).getDay();
+
+const lastDate=
+new Date(currentYear,currentMonth+1,0).getDate();
+
+/* 빈칸 */
+
+for(let i=0;i<firstDay;i++){
+
+grid.innerHTML+=`
+<div></div>
+`;
+
+}
+
+/* 날짜 */
+
+for(let d=1; d<=lastDate; d++){
 
 let stamp="";
 
-if(i%5===0) stamp="⭐";
-else if(i%2===0) stamp="🌳";
+/* 예시용 도장 */
+
+if(d%5===0) stamp="⭐";
+else if(d%2===0) stamp="🌳";
 else stamp="🌱";
 
 grid.innerHTML+=`
+
 <div class="day-stamp">
+
+<div class="day-number">
+${d}
+</div>
+
+<div>
 ${stamp}
 </div>
+
+</div>
+
 `;
 
 }
@@ -1123,7 +1252,23 @@ body.innerHTML+=`
 });
 
 }
+function changeMonth(delta){
 
+currentMonth+=delta;
+
+if(currentMonth>11){
+currentMonth=0;
+currentYear++;
+}
+
+if(currentMonth<0){
+currentMonth=11;
+currentYear--;
+}
+
+renderCalendar();
+
+}
 </script>
 
 </body>
