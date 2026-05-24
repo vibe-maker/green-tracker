@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌍 초록 지구 지킴이</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- =========================
+HEADER
+========================= -->
+
+<header class="main-header">
+
+<h1>🌍 초록 지구 지킴이 🌱</h1>
+
+<p class="subtitle">
+우리의 작은 실천이 지구를 지켜요!
+</p>
+
+</header>
+
+<!-- =========================
+LOGIN PAGE
+========================= -->
+
+<section id="login-page" class="page">
+
+<div class="card login-card">
+
+<h2>번호와 이름 입력</h2>
+
+<div class="login-inputs">
+
+<input
+type="number"
+id="user-no"
+placeholder="번호"
+/>
+
+<input
+type="text"
+id="user-name"
+placeholder="이름"
+/>
+
+</div>
+
+<button id="login-btn">
+지킴이 입장하기
+</button>
+
+</div>
+
+</section>
+
+<!-- =========================
+MAIN PAGE
+========================= -->
+
+<section id="main-page" class="page hidden">
+
+<!-- 점수 -->
+
+<div class="sticky-score">
+
+<div class="score-label">
+🌿 오늘의 환경 점수
+</div>
+
+<div class="score-number" id="total-score">
+0점
+</div>
+
+</div>
+
+<!-- 레벨 -->
+
+<div class="card level-card">
+
+<div class="level-title">
+🌱 Lv.1 씨앗 지킴이
+</div>
+
+<div class="level-exp">
+다음 레벨까지 1000점
+</div>
+
+</div>
+
+<!-- 급식판 -->
+
+<div class="card">
+
+<h2>🍱 오늘 급식 다 먹기</h2>
+
+<div class="meal-tray">
+
+<div class="tray-row top-row">
+
+<div class="food-slot">
+반찬1
+</div>
+
+<div class="food-slot">
+반찬2
+</div>
+
+<div class="food-slot">
+반찬3
+</div>
+
+</div>
+
+<div class="tray-row bottom-row">
+
+<div class="food-slot">
+밥
+</div>
+
+<div class="food-slot">
+국
+</div>
+
+</div>
+
+</div>
+
+<div class="meal-score" id="meal-score">
+급식 점수 : 0점 / 20점
+</div>
+
+</div>
+
+<!-- 미션 -->
+
+<div class="card">
+
+<h2>🌎 오늘의 환경 미션</h2>
+
+<div id="mission-container">
+
+<!-- JS가 자동 생성 -->
+
+</div>
+
+</div>
+
+<!-- 저장 버튼 -->
+
+<button class="save-btn">
+
+오늘의 초록 점수 저장하기 💾
+
+</button>
+
+</section>
+
+<script src="data.js"></script>
+<script src="badge.js"></script>
+<script src="sheet.js"></script>
+<script src="quiz.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

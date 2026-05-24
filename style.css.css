@@ -1,0 +1,350 @@
+:root{
+
+--green:#2e7d32;
+--light:#f1f8e9;
+--mint:#81c784;
+--dark:#1b5e20;
+--blue:#4fc3f7;
+--orange:#ff9800;
+
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+
+margin:0;
+padding:20px;
+font-family:'Malgun Gothic',sans-serif;
+
+background:
+linear-gradient(
+to bottom,
+#f1f8e9,
+#e8f5e9
+);
+
+color:#333;
+
+}
+
+/* =========================
+HEADER
+========================= */
+
+.main-header{
+
+text-align:center;
+margin-bottom:30px;
+
+}
+
+.main-header h1{
+
+color:var(--green);
+margin-bottom:10px;
+
+}
+
+.subtitle{
+
+color:#558b2f;
+font-size:15px;
+
+}
+
+/* =========================
+PAGE
+========================= */
+
+.page{
+
+max-width:700px;
+margin:auto;
+
+}
+
+.hidden{
+display:none;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+
+background:white;
+
+padding:20px;
+
+border-radius:22px;
+
+margin-bottom:20px;
+
+box-shadow:
+0 6px 15px rgba(0,0,0,0.08);
+
+}
+
+/* =========================
+LOGIN
+========================= */
+
+.login-card{
+
+text-align:center;
+
+}
+
+.login-inputs{
+
+display:flex;
+justify-content:center;
+gap:10px;
+
+margin:20px 0;
+
+}
+
+#user-no{
+
+width:80px;
+height:50px;
+
+}
+
+#user-name{
+
+width:140px;
+height:50px;
+
+}
+
+.login-inputs input{
+
+border:2px solid #c8e6c9;
+
+border-radius:12px;
+
+padding:10px;
+
+font-size:16px;
+
+text-align:center;
+
+}
+
+/* =========================
+BUTTON
+========================= */
+
+button{
+
+background:var(--green);
+
+color:white;
+
+border:none;
+
+padding:14px 20px;
+
+border-radius:12px;
+
+font-size:16px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.2s;
+
+}
+
+button:hover{
+
+transform:scale(1.03);
+
+}
+
+/* =========================
+STICKY SCORE
+========================= */
+
+.sticky-score{
+
+position:sticky;
+
+top:10px;
+
+z-index:999;
+
+background:
+linear-gradient(
+to right,
+#43a047,
+#66bb6a
+);
+
+color:white;
+
+padding:15px;
+
+border-radius:18px;
+
+text-align:center;
+
+margin-bottom:20px;
+
+box-shadow:
+0 8px 20px rgba(0,0,0,0.2);
+
+}
+
+.score-label{
+
+font-size:16px;
+
+}
+
+.score-number{
+
+font-size:42px;
+font-weight:bold;
+
+}
+
+/* =========================
+LEVEL
+========================= */
+
+.level-card{
+
+background:#e8f5e9;
+
+}
+
+.level-title{
+
+font-size:24px;
+font-weight:bold;
+
+color:var(--green);
+
+margin-bottom:10px;
+
+}
+
+.level-exp{
+
+color:#558b2f;
+
+}
+
+/* =========================
+MEAL TRAY
+========================= */
+
+.meal-tray{
+
+background:#cfd8dc;
+
+border-radius:25px;
+
+padding:20px;
+
+display:flex;
+flex-direction:column;
+gap:20px;
+align-items:center;
+
+}
+
+.tray-row{
+
+display:flex;
+gap:20px;
+
+}
+
+.food-slot{
+
+background:white;
+
+border:4px solid #b0bec5;
+
+border-radius:50%;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.2s;
+
+color:#78909c;
+
+}
+
+.food-slot:hover{
+
+transform:scale(1.05);
+
+}
+
+.food-slot.eaten{
+
+background:#c8e6c9;
+
+border-color:#43a047;
+
+color:#1b5e20;
+
+transform:scale(1.05);
+
+}
+
+.top-row .food-slot{
+
+width:85px;
+height:85px;
+
+}
+
+.bottom-row .food-slot{
+
+width:120px;
+height:120px;
+
+font-size:20px;
+
+}
+
+.meal-score{
+
+text-align:center;
+
+margin-top:15px;
+
+font-weight:bold;
+
+}
+
+/* =========================
+SAVE BUTTON
+========================= */
+
+.save-btn{
+
+width:100%;
+
+font-size:20px;
+
+margin-top:20px;
+
+}
