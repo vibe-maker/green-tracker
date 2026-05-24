@@ -455,7 +455,7 @@ margin-bottom:15px;
 
 <div class="card">
 
-<h2 style="text-align:center;">우리 반 번호와 이름 입력</h2>
+<h2 style="text-align:center;"> 번호와 이름 입력</h2>
 
 <div class="login-inputs">
 
@@ -580,7 +580,7 @@ id="meal-score-text">
 <div style="display:flex;gap:10px;">
 
 <button style="flex:1;" onclick="saveToday()">
-오늘 저장 💾
+점 저장하기 💾
 </button>
 
 <button style="flex:1;background:#ff9800;"
@@ -722,7 +722,7 @@ onclick="goDashboard()">
 구글시트 URL
 ========================= */
 
-const WEB_APP_URL = "여기에_앱스스크립트URL";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwxfF_CGWpdvaUFHCDoXIOr5YYcMl4Du4UfEYTnIOQ60FdUOJBqU0caL6LESAw5ADp5_g/exec";
 
 /* =========================
 미션
@@ -730,14 +730,14 @@ const WEB_APP_URL = "여기에_앱스스크립트URL";
 
 const missions=[
 
-{id:1,icon:"💡",title:"전기 절약"},
-{id:2,icon:"💧",title:"물 절약"},
-{id:3,icon:"♻️",title:"재활용"},
-{id:4,icon:"🥤",title:"다회용컵"},
-{id:5,icon:"🧹",title:"교실 정리"},
-{id:6,icon:"🌱",title:"식물 돌보기"},
-{id:7,icon:"🔌",title:"플러그 뽑기"},
-{id:8,icon:"🛍️",title:"일회용품 줄이기"}
+{id:1,icon:"💡",title:"빈 교실, 빈 방 전등 끄기"},
+{id:2,icon:"💧",title:"이 닦을 때 물컵 사용, 손에 비누칠 할 때 물 끄기"},
+{id:3,icon:"♻️",title:"우유마시고, 우유팩 씻어 말리기"},
+{id:4,icon:"🥤",title:"다회용컵 사용하고, 쓰레기 없는 하루 보내기"},
+{id:5,icon:"🧹",title:"자기 자리 및 교실 깨끗하게 유지하기"},
+{id:6,icon:"🌱",title:"식물 돌보고 식물 소중히 여기기"},
+{id:7,icon:"🔌",title:"안 쓰는 전기기구(예: 충전기) 플러그 뽑기"},
+{id:8,icon:"🛍️",title:"학용품이나 교과서 등 물건 소중히 다루기"}
 
 ];
 
@@ -755,6 +755,8 @@ let selectedScores={};
 let savedDates=[];
 
 let earnedBadges=["🌱 첫 실천"];
+
+let classData = [];  
 
 const studentData=[
 
@@ -805,7 +807,7 @@ document.getElementById('main-page').classList.remove('hidden');
 renderMissions();
 renderCalendar();
 renderBadges();
-
+fetchClassData();
 }
 
 /* MISSIONS */
@@ -1060,9 +1062,14 @@ renderBadges();
 const payload={
 
 date:new Date().toLocaleDateString(),
+
 no:document.getElementById('user-no').value,
+
 name:document.getElementById('user-name').value,
-score:total
+
+score:total,
+
+level:"Lv.1"
 
 };
 
@@ -1086,6 +1093,8 @@ localStorage.setItem(
 todayKey
 );
 
+await fetchClassData();
+  
 showPopup(total);
 
 }
@@ -1131,32 +1140,83 @@ document.getElementById('main-page').classList.remove('hidden');
 
 function renderDashboard(){
 
-const body=document.getElementById('rank-body');
+const body =
+document.getElementById('rank-body');
 
-body.innerHTML="";
+body.innerHTML = "";
 
-let max=1;
+let scores = {};
 
-studentData.forEach(s=>{
-if(s.score>max) max=s.score;
+classData.forEach(row=>{
+
+const no = row.no;
+
+if(!scores[no]){
+
+scores[no] = {
+
+name:row.name,
+score:0,
+count:0
+
+};
+
+}
+
+scores[no].score += Number(row.score);
+scores[no].count++;
+
 });
 
-studentData.forEach(s=>{
+let arr = Object.entries(scores);
 
-const percent=(s.score/max)*100;
+arr.sort((a,b)=>b[1].score - a[1].score);
 
-body.innerHTML+=`
+let max = 1;
+
+arr.forEach(a=>{
+
+if(a[1].score > max){
+
+max = a[1].score;
+
+}
+
+});
+
+arr.forEach((item,index)=>{
+
+const no = item[0];
+const data = item[1];
+
+const percent =
+(data.score/max)*100;
+
+let level = "🌱";
+
+if(data.score > 300){
+level = "🌿";
+}
+
+if(data.score > 700){
+level = "🌳";
+}
+
+body.innerHTML += `
 
 <tr>
 
-<td>${s.no}</td>
+<td>${no}</td>
 
-<td>${s.name}</td>
+<td>${data.name}</td>
 
-<td>${s.level}</td>
+<td>
+Lv.${Math.floor(data.score/300)+1}
+${level}
+</td>
 
-<td style="font-size:22px;">
-${s.badges.join(" ")}
+<td>
+🏅 ${data.count}개
 </td>
 
 <td>
@@ -1164,14 +1224,16 @@ ${s.badges.join(" ")}
 <div class="bar-bg">
 
 <div class="bar-fill"
-style="width:${percent}%;">
+style="width:${percent}%">
 
 </div>
 
 </div>
 
 <div style="margin-top:5px;font-weight:bold;color:#2e7d32;">
-${s.score}점
+
+${data.score}점
+
 </div>
 
 </td>
@@ -1182,8 +1244,126 @@ ${s.score}점
 
 });
 
+/* 환경왕 */
+
+if(arr.length > 0){
+
+document.querySelectorAll('.teacher-card')[1]
+.innerHTML = `
+
+<div class="teacher-title">
+🏆 환경왕
+</div>
+
+<div style="font-size:24px;font-weight:bold;color:#ef6c00;">
+
+🌍 ${arr[0][1].name}
+
+</div>
+
+`;
+
 }
 
+/* 학급 평균 */
+
+let total = 0;
+
+arr.forEach(a=>{
+
+total += a[1].score;
+
+});
+
+let avg = 0;
+
+if(arr.length > 0){
+
+avg = Math.round(total/arr.length);
+
+}
+
+document.querySelectorAll('.teacher-card')[0]
+.innerHTML = `
+
+<div class="teacher-title">
+📊 학급 평균
+</div>
+
+<div style="font-size:42px;font-weight:bold;color:#43a047;">
+
+${avg}점
+
+</div>
+
+`;
+
+/* 오늘 미제출 */
+
+const today =
+new Date().toLocaleDateString();
+
+const submitted = [];
+
+classData.forEach(row=>{
+
+if(row.date == today){
+
+submitted.push(String(row.no));
+
+}
+
+});
+
+const missing = [];
+
+for(let i=1; i<=28; i++){
+
+if(!submitted.includes(String(i))){
+
+missing.push(i+"번");
+
+}
+
+}
+
+document.querySelectorAll('.teacher-card')[2]
+.innerHTML = `
+
+<div class="teacher-title">
+🚨 오늘 미제출
+</div>
+
+<div>
+
+${missing.join("<br>")}
+
+</div>
+
+`;
+
+}
+
+async function fetchClassData(){
+
+try{
+
+const response =
+await fetch(WEB_APP_URL);
+
+classData =
+await response.json();
+
+renderDashboard();
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+  
 </script>
 
 </body>
