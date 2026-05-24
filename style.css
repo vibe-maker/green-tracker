@@ -1,498 +1,63 @@
-:root{
-
---green:#2e7d32;
---light:#f1f8e9;
---mint:#81c784;
---dark:#1b5e20;
---blue:#4fc3f7;
---orange:#ff9800;
-
-}
-
-*{
-box-sizing:border-box;
-}
-
 body{
-
+font-family:Arial;
 margin:0;
 padding:20px;
-font-family:'Malgun Gothic',sans-serif;
-
-background:
-linear-gradient(
-to bottom,
-#f1f8e9,
-#e8f5e9
-);
-
-color:#333;
-
+background:#f1f8e9;
 }
 
-/* =========================
-HEADER
-========================= */
-
-.main-header{
-
-text-align:center;
-margin-bottom:30px;
-
-}
-
-.main-header h1{
-
-color:var(--green);
-margin-bottom:10px;
-
-}
-
-.subtitle{
-
-color:#558b2f;
-font-size:15px;
-
-}
-
-/* =========================
-PAGE
-========================= */
-
-.page{
-
-max-width:700px;
-margin:auto;
-
-}
-
-.hidden{
-display:none;
-}
-
-/* =========================
-CARD
-========================= */
+.hidden{display:none;}
 
 .card{
-
 background:white;
-
-padding:20px;
-
-border-radius:22px;
-
-margin-bottom:20px;
-
-box-shadow:
-0 6px 15px rgba(0,0,0,0.08);
-
-}
-
-/* =========================
-LOGIN
-========================= */
-
-.login-card{
-
-text-align:center;
-
-}
-
-.login-inputs{
-
-display:flex;
-justify-content:center;
-gap:10px;
-
-margin:20px 0;
-
-}
-
-#user-no{
-
-width:80px;
-height:50px;
-
-}
-
-#user-name{
-
-width:140px;
-height:50px;
-
-}
-
-.login-inputs input{
-
-border:2px solid #c8e6c9;
-
+padding:15px;
+margin-bottom:15px;
 border-radius:12px;
-
-padding:10px;
-
-font-size:16px;
-
-text-align:center;
-
 }
-
-/* =========================
-BUTTON
-========================= */
 
 button{
-
-background:var(--green);
-
-color:white;
-
+padding:10px;
 border:none;
-
-padding:14px 20px;
-
-border-radius:12px;
-
-font-size:16px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-transition:0.2s;
-
-}
-
-button:hover{
-
-transform:scale(1.03);
-
-}
-
-/* =========================
-STICKY SCORE
-========================= */
-
-.sticky-score{
-
-position:sticky;
-
-top:10px;
-
-z-index:999;
-
-background:
-linear-gradient(
-to right,
-#43a047,
-#66bb6a
-);
-
+background:#43a047;
 color:white;
-
-padding:15px;
-
-border-radius:18px;
-
-text-align:center;
-
-margin-bottom:20px;
-
-box-shadow:
-0 8px 20px rgba(0,0,0,0.2);
-
+border-radius:10px;
+cursor:pointer;
 }
-
-.score-label{
-
-font-size:16px;
-
-}
-
-.score-number{
-
-font-size:42px;
-font-weight:bold;
-
-}
-
-/* =========================
-LEVEL
-========================= */
-
-.level-card{
-
-background:#e8f5e9;
-
-}
-
-.level-title{
-
-font-size:24px;
-font-weight:bold;
-
-color:var(--green);
-
-margin-bottom:10px;
-
-}
-
-.level-exp{
-
-color:#558b2f;
-
-}
-
-/* =========================
-MEAL TRAY
-========================= */
 
 .meal-tray{
-
-background:#cfd8dc;
-
-border-radius:25px;
-
-padding:20px;
-
 display:flex;
-flex-direction:column;
-gap:20px;
-align-items:center;
-
-}
-
-.tray-row{
-
-display:flex;
-gap:20px;
-
+gap:10px;
+flex-wrap:wrap;
 }
 
 .food-slot{
-
-background:white;
-
-border:4px solid #b0bec5;
-
-border-radius:50%;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-font-weight:bold;
-
+padding:10px;
+background:#eee;
+border-radius:10px;
 cursor:pointer;
-
-transition:0.2s;
-
-color:#78909c;
-
-}
-
-.food-slot:hover{
-
-transform:scale(1.05);
-
 }
 
 .food-slot.eaten{
-
-background:#c8e6c9;
-
-border-color:#43a047;
-
-color:#1b5e20;
-
-transform:scale(1.05);
-
-}
-
-.top-row .food-slot{
-
-width:85px;
-height:85px;
-
-}
-
-.bottom-row .food-slot{
-
-width:120px;
-height:120px;
-
-font-size:20px;
-
-}
-
-.meal-score{
-
-text-align:center;
-
-margin-top:15px;
-
-font-weight:bold;
-
-}
-
-/* =========================
-SAVE BUTTON
-========================= */
-
-.save-btn{
-
-width:100%;
-
-font-size:20px;
-
-margin-top:20px;
-
-}
-
-/* =========================
-MISSION
-========================= */
-
-.mission-card{
-
-margin-bottom:15px;
-
-}
-
-.mission-top{
-
-display:flex;
-align-items:center;
-
-margin-bottom:15px;
-
-}
-
-.mission-icon{
-
-width:70px;
-height:70px;
-
-border-radius:18px;
-
-background:#f1f8e9;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-font-size:34px;
-
-margin-right:15px;
-
-}
-
-.mission-title{
-
-font-size:17px;
-
-font-weight:bold;
-
-color:#2e7d32;
-
-line-height:1.5;
-
-}
-
-.mission-buttons{
-
-display:flex;
-gap:10px;
-
-}
-
-.mission-btn{
-
-flex:1;
-
-background:white;
-
-border:2px solid #ddd;
-
-color:#555;
-
-font-size:14px;
-
-padding:12px 10px;
-
-}
-
-.active0{
-
-background:#ef9a9a;
-color:white;
-border:none;
-
-}
-
-.active5{
-
-background:#ffe082;
-color:#333;
-border:none;
-
-}
-
-.active10{
-
 background:#81c784;
 color:white;
-border:none;
-
-}
-
-/* =========================
-MISSION BUTTON
-========================= */
-
-.mission-buttons{
-display:flex;
-gap:10px;
-margin-top:12px;
 }
 
 .mission-btn{
-flex:1;
-padding:12px;
-border:none;
-border-radius:14px;
-background:#e0e0e0;
-font-size:20px;
-cursor:pointer;
-transition:0.2s;
+padding:8px;
+margin:3px;
+background:#ddd;
+border-radius:8px;
 }
 
-.mission-btn:hover{
-transform:scale(1.03);
-}
-
-.selected-btn{
-background:#43a047;
+.mission-btn.selected-btn{
+background:#2e7d32;
 color:white;
-font-weight:bold;
-}
-
-/* =========================
-CALENDAR
-========================= */
-
-.calendar-wrap{
-margin-top:10px;
 }
 
 .calendar-week{
 display:grid;
 grid-template-columns:repeat(7,1fr);
-gap:5px;
-margin-bottom:8px;
 text-align:center;
 font-weight:bold;
-color:#2e7d32;
 }
 
 .calendar-grid{
@@ -502,27 +67,21 @@ gap:5px;
 }
 
 .calendar-day{
-background:#f5f5f5;
-border-radius:12px;
-min-height:60px;
-padding:5px;
-font-size:13px;
-position:relative;
-}
-
-.day-number{
-font-weight:bold;
-margin-bottom:5px;
-}
-
-.day-stamp{
-font-size:28px;
+background:#fff;
+padding:10px;
+border-radius:8px;
 text-align:center;
-margin-top:5px;
 }
 
-.gold-plus{
-color:#fbc02d;
-font-weight:bold;
-font-size:12px;
+.graph-bar{
+background:#81c784;
+height:20px;
+margin:3px;
+}
+
+.analysis-item{
+background:#fff;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
 }
