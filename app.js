@@ -1,608 +1,482 @@
-// =========================
-// GLOBAL
-// =========================
+
+/* =========================
+기본 데이터
+========================= */
 
 let currentUser = null;
-let currentData = [];
-
 let selectedScores = {};
+let classData = [];
+let todaySaved = false;
 
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkHeM_7ntBjutO-NiRMhKlk5zZvWOee7v1Q7j1fJe1N_ADRXVKYy3RhpZDCvNdBO5Tjg/exec";
 
-// =========================
-// STUDENTS
-// =========================
+/* =========================
+로그인
+========================= */
 
-const STUDENTS = [
+document.getElementById("login-btn").addEventListener("click", login);
 
-"강하영","김루하","김소은","김지유","남시하","손유하","윤수아",
-"윤승아","이하민","임아윤","전서현","조율희","최한별","한지원",
-"김동빈","김시윤","김주원","김효찬","남지후","노시온","방준영",
-"송건우","임환희","조유찬","주은호","한진우","허시준","서현우"
+function login(){
 
-];
+  const no = document.getElementById("user-no").value.trim();
+  const name = document.getElementById("user-name").value.trim();
 
-// =========================
-// MISSIONS
-// =========================
+  if(!no || !name){
+    alert("번호(00)와 이름(김초록)을 입력하세요!");
+    return;
+  }
 
-const MISSIONS = [
+  currentUser = {
+    no,
+    name
+  };
 
-{id:1,icon:"💡",title:"빈 교실, 빈 방 전등 끄기"},
-{id:2,icon:"💧",title:"이 닦을 때 물컵 사용"},
-{id:3,icon:"🥛",title:"우유팩 씻어 말리기"},
-{id:4,icon:"🗑️",title:"쓰레기 없는 하루"},
-{id:5,icon:"🧹",title:"교실 깨끗하게 유지"},
-{id:6,icon:"🌱",title:"식물 돌보기"},
-{id:7,icon:"🔌",title:"플러그 뽑기"},
-{id:8,icon:"🏃",title:"물건 아껴쓰기"}
+  document.getElementById("login-page").classList.add("hidden");
+  document.getElementById("main-page").classList.remove("hidden");
 
-];
-
-// =========================
-// COMPLIMENTS
-// =========================
-
-const COMPLIMENTS = [
-
-"오늘의 작은 실천이 지구를 웃게 했어요 🌍",
-"여러분 덕분에 지구가 시원해졌어요 ❄️",
-"초록 지구 지킴이 최고! 🌱",
-"오늘도 환경 수호 완료 🌳",
-"꾸준함이 세상을 바꿔요 💚"
-
-];
-
-// =========================
-// LOGIN
-// =========================
-
-document
-.getElementById("login-btn")
-.addEventListener("click",login);
-
-async function login(){
-
-const no =
-document.getElementById("user-no").value;
-
-const name =
-document.getElementById("user-name").value;
-
-if(!no || !name){
-
-alert("번호와 이름 입력!");
-return;
+  renderMissions();
+  setupMealTray();
+  renderCalendar();
+  renderTracker();
+  renderBestWorst();
+  loadClassData();
 
 }
 
-currentUser = {
-no:no,
-name:name
-};
+/* =========================
+급식판
+========================= */
 
-document
-.getElementById("login-page")
-.classList.add("hidden");
+function setupMealTray(){
 
-document
-.getElementById("main-page")
-.classList.remove("hidden");
+  const slots = document.querySelectorAll(".food-slot");
 
-renderMissions();
+  slots.forEach(slot=>{
 
-await loadAllData();
+    slot.addEventListener("click", ()=>{
 
-renderCalendar();
+      slot.classList.toggle("eaten");
 
-renderStats();
+      calculateTotal();
 
-}
+    });
 
-// =========================
-// RENDER MISSIONS
-// =========================
-
-function renderMissions(){
-
-const container =
-document.getElementById("mission-container");
-
-container.innerHTML="";
-
-MISSIONS.forEach(m=>{
-
-container.innerHTML += `
-
-<div class="mission">
-
-<div class="mission-top">
-
-<div class="icon-box">
-${m.icon}
-</div>
-
-<div class="mission-title">
-${m.title}
-</div>
-
-</div>
-
-<div class="btn-group">
-
-<button
-class="score-btn"
-onclick="setScore(${m.id},0)">
-❌
-</button>
-
-<button
-class="score-btn"
-onclick="setScore(${m.id},5)">
-🔺
-</button>
-
-<button
-class="score-btn"
-onclick="setScore(${m.id},10)">
-⭕
-</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-}
-
-// =========================
-// SCORE
-// =========================
-
-function setScore(id,score){
-
-selectedScores[id]=score;
-
-calculateTotal();
-
-}
-
-function toggleFood(el){
-
-el.classList.toggle("eaten");
-
-calculateTotal();
+  });
 
 }
 
 function calculateMealScore(){
 
-const eaten =
-document.querySelectorAll(".food-slot.eaten").length;
+  const eatenCount = document.querySelectorAll(".food-slot.eaten").length;
 
-return eaten * 4;
+  return eatenCount * 4;
 
 }
+
+/* =========================
+미션
+========================= */
+
+function renderMissions(){
+
+  const container = document.getElementById("mission-container");
+
+  container.innerHTML = "";
+
+  missions.forEach(m=>{
+
+    container.innerHTML += `
+
+    <div class="mission-card">
+
+      <div class="mission-top">
+
+        <div class="mission-icon">
+          ${m.icon}
+        </div>
+
+        <div class="mission-title">
+          ${m.title}
+        </div>
+
+      </div>
+
+      <div class="mission-buttons">
+
+        <button class="mission-btn"
+        onclick="setMissionScore(${m.id},0,this)">
+        ❌
+        </button>
+
+        <button class="mission-btn"
+        onclick="setMissionScore(${m.id},5,this)">
+        🔺
+        </button>
+
+        <button class="mission-btn"
+        onclick="setMissionScore(${m.id},10,this)">
+        ⭕
+        </button>
+
+      </div>
+
+    </div>
+
+    `;
+
+  });
+
+}
+
+function setMissionScore(id, score, btn){
+
+  selectedScores[id] = score;
+
+  const parent = btn.parentElement;
+
+  parent.querySelectorAll("button").forEach(b=>{
+    b.classList.remove("selected-btn");
+  });
+
+  btn.classList.add("selected-btn");
+
+  calculateTotal();
+
+}
+
+/* =========================
+점수 계산
+========================= */
 
 function calculateTotal(){
 
-let total = 0;
+  let total = calculateMealScore();
 
-Object.values(selectedScores)
-.forEach(v=>{
-total += v;
-});
+  Object.values(selectedScores).forEach(score=>{
+    total += score;
+  });
 
-total += calculateMealScore();
+  document.getElementById("total-score").innerText = total + "점";
 
-document
-.getElementById("total-score")
-.innerText = total + "점";
+  const meal = calculateMealScore();
 
-document
-.getElementById("meal-score")
-.innerText =
-`급식 점수 : ${calculateMealScore()}점 / 20점`;
+  document.getElementById("meal-score").innerText =
+  `급식 점수 : ${meal}점 / 20점`;
 
-return total;
+  return total;
 
 }
 
-// =========================
-// SAVE
-// =========================
+/* =========================
+저장
+========================= */
+
+const saveBtn = document.querySelector(".save-btn");
+
+saveBtn.addEventListener("click", saveToday);
 
 async function saveToday(){
 
-const today =
-new Date().toDateString();
+  if(todaySaved){
+    alert("오늘은 이미 저장했어요 😊");
+    return;
+  }
 
-const already =
-currentData.find(d=>
+  if(Object.keys(selectedScores).length < 8){
+    alert("모든 미션을 체크해주세요!");
+    return;
+  }
 
-d.date === today &&
-d.no == currentUser.no
+  const total = calculateTotal();
 
-);
+  const today = new Date();
 
-if(already){
+  const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
 
-alert("오늘은 이미 저장했어요 😊");
-return;
+  const payload = {
+    date: dateStr,
+    no: currentUser.no,
+    name: currentUser.name,
+    score: total
+  };
 
-}
+  try{
 
-if(Object.keys(selectedScores).length < 8){
+    const response = await fetch(WEB_APP_URL, {
+      method:"POST",
+      body:JSON.stringify(payload),
+      headers:{
+        "Content-Type":"text/plain"
+      }
+    });
 
-alert("모든 미션 체크!");
-return;
+    const result = await response.text();
 
-}
+    console.log(result);
 
-const score =
-calculateTotal();
+    todaySaved = true;
 
-const streak =
-calculateStreak();
+    showResultPopup(total);
 
-const level =
-calculateLevel(score);
+    loadClassData();
 
-const badges =
-calculateBadges();
+  }catch(error){
 
-const payload = {
+    console.error(error);
 
-date:today,
-no:currentUser.no,
-name:currentUser.name,
-score:score,
-streak:streak,
-badges:badges.join(", "),
-level:level
+    alert("저장 실패!\n웹앱 URL 확인 필요");
 
-};
-
-const success =
-await saveToSheet(payload);
-
-if(success){
-
-await loadAllData();
-
-showPopup(score);
-
-}else{
-
-alert("저장 실패 😢");
+  }
 
 }
 
-}
+/* =========================
+결과 팝업
+========================= */
 
-// =========================
-// POPUP
-// =========================
+function showResultPopup(score){
 
-function showPopup(score){
+  const type = Math.floor(Math.random()*3);
 
-const modal =
-document.getElementById("modal");
+  let title = "";
+  let value = "";
+  let emoji = "";
 
-const popupScore =
-document.getElementById("popup-score");
+  if(type === 0){
+    title = "🌳 나무 성장";
+    value = "+0.4cm";
+    emoji = "🌳";
+  }
 
-const compliment =
-document.getElementById("compliment");
+  if(type === 1){
+    title = "🌊 해수면 감소";
+    value = "-0.02cm";
+    emoji = "🐻‍❄️";
+  }
 
-popupScore.innerText =
-score + "점";
+  if(type === 2){
+    title = "🌡️ 지구온도 감소";
+    value = "-0.001℃";
+    emoji = "🌎";
+  }
 
-const randomText =
-COMPLIMENTS[
-Math.floor(Math.random()*COMPLIMENTS.length)
-];
+  const popup = document.createElement("div");
 
-compliment.innerText =
-randomText;
+  popup.className = "result-popup";
 
-const randomType =
-Math.floor(Math.random()*3);
+  popup.innerHTML = `
 
-let message = "";
+  <div class="popup-box">
 
-if(randomType===0){
+    <div class="popup-emoji">${emoji}</div>
 
-message =
-`🌳 나무가 ${(score*0.03).toFixed(1)}cm 자랐어요!`;
+    <h2>${title}</h2>
 
-}
+    <div class="popup-value">
+      ${value}
+    </div>
 
-if(randomType===1){
+    <div class="popup-score2">
+      내 점수 ${score}점
+    </div>
 
-message =
-`🌊 해수면이 ${(score*0.001).toFixed(3)}cm 낮아졌어요!`;
+    <button onclick="goDashboard()">
+      우리 반 현황 보기
+    </button>
 
-}
+  </div>
 
-if(randomType===2){
+  `;
 
-message =
-`🌡️ 지구온도가 ${(score*0.0001).toFixed(4)}℃ 낮아졌어요!`;
-
-}
-
-document
-.getElementById("eco-result")
-.innerText = message;
-
-modal.style.display="flex";
-
-}
-
-// =========================
-// LOAD DATA
-// =========================
-
-async function loadAllData(){
-
-currentData =
-await loadSheetData();
+  document.body.appendChild(popup);
 
 }
 
-// =========================
-// LEVEL
-// =========================
-
-function calculateLevel(score){
-
-let total = getMyTotalScore();
-
-if(total >= 7000) return "🌍 초록 지구 지킴이";
-if(total >= 6000) return "💚 생명 지킴이";
-if(total >= 5000) return "🦋 자연 지킴이";
-if(total >= 4000) return "🍎 열매 지킴이";
-if(total >= 3000) return "🌸 꽃 지킴이";
-if(total >= 2000) return "🌳 나무 지킴이";
-if(total >= 1000) return "🌿 새싹 지킴이";
-
-return "🌱 씨앗 지킴이";
-
-}
-
-// =========================
-// BADGES
-// =========================
-
-function calculateBadges(){
-
-let badges = [];
-
-const myData =
-currentData.filter(d=>
-d.no == currentUser.no
-);
-
-if(myData.length >= 1){
-
-badges.push("👍 첫 실천 배지");
-
-}
-
-if(myData.length >= 7){
-
-badges.push("🔥 일주일 지킴이");
-
-}
-
-if(myData.length >= 30){
-
-badges.push("🌙 한달 지킴이");
-
-}
-
-return badges;
-
-}
-
-// =========================
-// STREAK
-// =========================
-
-function calculateStreak(){
-
-const myData =
-currentData.filter(d=>
-d.no == currentUser.no
-);
-
-return myData.length + 1;
-
-}
-
-// =========================
-// TOTAL SCORE
-// =========================
-
-function getMyTotalScore(){
-
-let total = 0;
-
-currentData.forEach(d=>{
-
-if(d.no == currentUser.no){
-
-total += Number(d.score);
-
-}
-
-});
-
-return total;
-
-}
-
-// =========================
-// CALENDAR
-// =========================
-
-function renderCalendar(){
-
-const grid =
-document.getElementById("calendar-grid");
-
-if(!grid) return;
-
-grid.innerHTML="";
-
-const firstDay =
-new Date(currentYear,currentMonth,1).getDay();
-
-const lastDate =
-new Date(currentYear,currentMonth+1,0).getDate();
-
-for(let i=0;i<firstDay;i++){
-
-grid.innerHTML += `<div></div>`;
-
-}
-
-for(let d=1; d<=lastDate; d++){
-
-const stamp = "🐾";
-
-grid.innerHTML += `
-
-<div class="day-stamp">
-
-<div class="day-number">
-${d}
-</div>
-
-<div style="font-size:26px;">
-${stamp}
-</div>
-
-</div>
-
-`;
-
-}
-
-}
-
-// =========================
-// STATS
-// =========================
-
-function renderStats(){
-
-renderDashboard();
-
-}
-
-// =========================
-// DASHBOARD
-// =========================
-
-function renderDashboard(){
-
-const body =
-document.getElementById("rank-body");
-
-if(!body) return;
-
-body.innerHTML="";
-
-let totals = {};
-
-STUDENTS.forEach((name,index)=>{
-
-totals[index+1]={
-name:name,
-score:0
-};
-
-});
-
-currentData.forEach(d=>{
-
-if(totals[d.no]){
-
-totals[d.no].score +=
-Number(d.score);
-
-}
-
-});
-
-Object.keys(totals).forEach(no=>{
-
-const student =
-totals[no];
-
-const level =
-calculateLevel(student.score);
-
-body.innerHTML += `
-
-<tr>
-
-<td>${no}</td>
-
-<td>${student.name}</td>
-
-<td>${student.score}</td>
-
-<td>${level}</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-// =========================
-// GO DASHBOARD
-// =========================
+/* =========================
+현황판
+========================= */
 
 function goDashboard(){
 
-document
-.getElementById("modal")
-.style.display="none";
+  const popup = document.querySelector(".result-popup");
 
-document
-.getElementById("main-page")
-.classList.add("hidden");
+  if(popup){
+    popup.remove();
+  }
 
-document
-.getElementById("dashboard-page")
-.classList.remove("hidden");
-
-renderDashboard();
+  renderDashboard();
 
 }
 
-// =========================
-// BUTTON EVENT
-// =========================
+function renderDashboard(){
 
-const saveBtn =
-document.querySelector(".save-btn");
+  let html = `
 
-if(saveBtn){
+  <div class="dashboard-page">
 
-saveBtn.addEventListener(
-"click",
-saveToday
-);
+    <h1>🏆 우리 반 환경 현황판</h1>
+
+    <div class="card">
+
+      <h2>전체 누적 점수</h2>
+
+      <table class="rank-table">
+
+        <tr>
+          <th>번호</th>
+          <th>이름</th>
+          <th>점수</th>
+        </tr>
+
+  `;
+
+  classData.forEach(s=>{
+
+    html += `
+
+    <tr>
+      <td>${s.no}</td>
+      <td>${s.name}</td>
+      <td>${s.score}</td>
+    </tr>
+
+    `;
+
+  });
+
+  html += `
+
+      </table>
+
+    </div>
+
+    <button onclick="backToMain()">
+      마이페이지로 돌아가기
+    </button>
+
+  </div>
+
+  `;
+
+  document.body.innerHTML = html;
 
 }
+
+function backToMain(){
+  location.reload();
+}
+
+/* =========================
+구글시트 불러오기
+========================= */
+
+async function loadClassData(){
+
+  try{
+
+    const response = await fetch(WEB_APP_URL);
+
+    classData = await response.json();
+
+    console.log(classData);
+
+  }catch(error){
+
+    console.error(error);
+
+  }
+
+}
+
+/* =========================
+달력
+========================= */
+
+function renderCalendar(){
+
+  const old = document.getElementById("calendar-card");
+
+  if(old){
+    old.remove();
+  }
+
+  const card = document.createElement("div");
+
+  card.className = "card";
+  card.id = "calendar-card";
+
+  card.innerHTML = `
+
+  <h2>📅 나의 환경 달력</h2>
+
+  <div class="calendar-grid">
+
+    <div>일</div>
+    <div>월</div>
+    <div>화</div>
+    <div>수</div>
+    <div>목</div>
+    <div>금</div>
+    <div>토</div>
+
+  </div>
+
+  `;
+
+  document.getElementById("main-page").appendChild(card);
+
+}
+
+/* =========================
+그래프
+========================= */
+
+function renderTracker(){
+
+  const card = document.createElement("div");
+
+  card.className = "card";
+
+  card.innerHTML = `
+
+  <h2>📈 이번 달 점수 변화</h2>
+
+  <div style="height:200px;display:flex;align-items:center;justify-content:center;color:#999;">
+  그래프 준비중
+  </div>
+
+  `;
+
+  document.getElementById("main-page").appendChild(card);
+
+}
+
+/* =========================
+잘한 항목
+========================= */
+
+function renderBestWorst(){
+
+  const card = document.createElement("div");
+
+  card.className = "card";
+
+  card.innerHTML = `
+
+  <h2>🌟 이번 달 환경 분석</h2>
+
+  <div style="margin-bottom:15px;">
+  👍 가장 잘 지킨 행동 : 전기 절약
+  </div>
+
+  <div>
+  📌 더 노력하면 좋은 행동 : 재활용
+  </div>
+
+  `;
+
+  document.getElementById("main-page").appendChild(card);
+
+}
+
+```
