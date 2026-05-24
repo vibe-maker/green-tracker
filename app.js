@@ -44,6 +44,8 @@ function login(){
 
   renderMissions();
   setupMealTray();
+  calculateTotal();
+
 
   renderCalendar();
   renderTracker();
@@ -395,34 +397,118 @@ async function loadClassData(){
 달력
 ========================= */
 
-function renderCalendar(){
+/* =========================
+MISSION BUTTON
+========================= */
 
-  const card =
-  document.createElement("div");
+.mission-buttons{
+display:flex;
+gap:10px;
+margin-top:12px;
+}
+
+.mission-btn{
+flex:1;
+padding:12px;
+border:none;
+border-radius:14px;
+background:#e0e0e0;
+font-size:20px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.mission-btn:hover{
+transform:scale(1.03);
+}
+
+.selected-btn{
+background:#43a047;
+color:white;
+font-weight:bold;
+}
+
+/* =========================
+CALENDAR
+========================= */
+
+function renderCalendar(){
+  if(old){
+    old.remove();
+  }
+
+  const card = document.createElement("div");
 
   card.className = "card";
+  card.id = "calendar-card";
 
-  card.innerHTML = `
+  const now = new Date();
+
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  let html = `
 
   <h2>📅 나의 환경 달력</h2>
 
-  <div class="calendar-grid">
+  <div class="calendar-wrap">
 
-    <div>일</div>
-    <div>월</div>
-    <div>화</div>
-    <div>수</div>
-    <div>목</div>
-    <div>금</div>
-    <div>토</div>
+    <div class="calendar-week">
+      <div>일</div>
+      <div>월</div>
+      <div>화</div>
+      <div>수</div>
+      <div>목</div>
+      <div>금</div>
+      <div>토</div>
+    </div>
 
-  </div>
-
+    <div class="calendar-grid">
   `;
 
-  document
-  .getElementById("main-page")
-  .appendChild(card);
+  for(let i=0;i<firstDay;i++){
+    html += `<div></div>`;
+  }
+
+  for(let d=1; d<=lastDate; d++){
+
+    let stamp = "";
+    let bonus = "";
+
+    if(d % 5 === 0){
+      stamp = "🐾";
+      bonus = `<div class="gold-plus">+10</div>`;
+    }else if(d < now.getDate()){
+      stamp = "🐾";
+    }
+
+    html += `
+
+    <div class="calendar-day">
+
+      <div class="day-number">${d}</div>
+
+      <div class="day-stamp">${stamp}</div>
+
+      ${bonus}
+
+    </div>
+
+    `;
+
+  }
+
+  html += `
+    </div>
+  </div>
+  `;
+
+  card.innerHTML = html;
+
+  document.getElementById("main-page").appendChild(card);
 
 }
 
@@ -432,32 +518,46 @@ function renderCalendar(){
 
 function renderTracker(){
 
-  const card =
-  document.createElement("div");
+  const oldCards = document.querySelectorAll(".tracker-card");
 
-  card.className = "card";
+  oldCards.forEach(c=>c.remove());
+
+  const card = document.createElement("div");
+
+  card.className = "card tracker-card";
+
+  const scores = [70,82,65,90,75,88,95];
+
+  let bars = "";
+
+  scores.forEach(score=>{
+
+    bars += `
+
+    <div class="graph-bar"
+    style="height:${score * 1.5}px">
+
+      <div class="graph-score">
+      ${score}
+      </div>
+
+    </div>
+
+    `;
+
+  });
 
   card.innerHTML = `
 
   <h2>📈 이번 달 점수 변화</h2>
 
-  <div style="
-  height:200px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#999;
-  ">
-
-  그래프 준비중
-
+  <div class="graph-box">
+    ${bars}
   </div>
 
   `;
 
-  document
-  .getElementById("main-page")
-  .appendChild(card);
+  document.getElementById("main-page").appendChild(card);
 
 }
 
@@ -467,30 +567,35 @@ function renderTracker(){
 
 function renderBestWorst(){
 
-  const card =
-  document.createElement("div");
+  const oldCards = document.querySelectorAll(".analysis-card");
 
-  card.className = "card";
+  oldCards.forEach(c=>c.remove());
+
+  const card = document.createElement("div");
+
+  card.className = "card analysis-card";
 
   card.innerHTML = `
 
-  <h2>🌟 이번 달 환경 분석</h2>
+  <h2>🌱 이번 달 반성</h2>
 
-  <div style="margin-bottom:10px;">
-  👍 가장 잘 지킨 행동 :
-  전기 절약
+  <div class="analysis-item">
+
+  👍 가장 잘 지킨 행동<br>
+  안 쓰는 전기기구 플러그 뽑기
+
   </div>
 
-  <div>
-  📌 더 노력하면 좋은 행동 :
-  재활용
+  <div class="analysis-item">
+
+  📌 더 노력하면 좋은 행동<br>
+  우유 마시고 우유팩 씻어 말리기
+
   </div>
 
   `;
 
-  document
-  .getElementById("main-page")
-  .appendChild(card);
+  document.getElementById("main-page").appendChild(card);
 
 }
 
