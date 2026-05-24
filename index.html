@@ -1,416 +1,694 @@
+<!-- =========================
+🌍 초록 지구 지킴이 2.0
+디자인 + 핵심 기능 업그레이드 버전
+추가 기능:
+1. 하루 1회 저장
+2. Sticky 점수판
+3. 팝업 강화
+4. 한 줄 칭찬
+5. 레벨 시스템
+6. 배지 시스템
+7. 마이페이지
+8. 달력 도장
+9. 북극곰 애니메이션 강화
+========================= -->
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>초록 지구 지킴이</title>
-    <style>
-        :root { --primary-color: #2e7d32; --secondary-color: #81c784; --bg-color: #f1f8e9; --tray-color: #cfd8dc; --accent-color: #4caf50; }
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: #333; }
-        h1 { color: var(--primary-color); margin-bottom: 10px; text-align: center; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 600px; box-sizing: border-box;}
-        h2 { border-left: 5px solid var(--primary-color); padding-left: 10px; margin-top: 0; font-size: 18px; }
-        
-        /* 로그인 섹션 */
-        .login-container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; max-width: 400px; width: 100%; }
-        .login-inputs { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
-        input { padding: 12px; border: 2px solid #ccc; border-radius: 6px; font-size: 16px; text-align: center; }
-        #user-no { width: 80px; } #user-name { width: 140px; }
-        .example-text { font-size: 13px; color: #777; margin-bottom: 15px; }
-        button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        
-        #main-content, #dashboard-content { display: none; width: 100%; max-width: 600px; }
-        
-        /* 급식판 */
-        .meal-tray { background-color: var(--tray-color); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .tray-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
-        .food-slot { background-color: #ffffff; border: 3px solid #b0bec5; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 14px; color: #78909c; }
-        .top-row .food-slot { width: 80px; height: 80px; } .bottom-row .food-slot { width: 120px; height: 120px; font-size: 18px; }
-        .food-slot.eaten { background-color: #c8e6c9; border-color: var(--accent-color); color: var(--primary-color); }
-        
-        /* 미션 리스트 */
-        .mission-item { display: flex; flex-direction: column; padding: 15px 0; border-bottom: 1px solid #edf2f7; }
-        .mission-top { display: flex; align-items: center; margin-bottom: 10px;}
-        .mission-info { flex: 1; padding-right: 15px; } .mission-tag { font-weight: bold; color: var(--primary-color); display: block; } .mission-text { margin: 0; font-size: 14px; }
-        .visual-container { position: relative; width: 50px; height: 60px; background-color: #edf2f7; border: 2px solid #cbd5e0; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
-        .visual-fill { position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; background-color: #a5d6a7; transition: height 0.4s ease; z-index: 1; }
-        .visual-fill.full { background-color: var(--secondary-color); } .visual-icon { position: relative; z-index: 2; }
-        
-        /* 3단 점수 버튼 */
-        .btn-group { display: flex; gap: 5px; width: 100%; justify-content: space-between; }
-        .score-btn { flex: 1; background-color: white; border: 2px solid #cbd5e0; color: #4a5568; padding: 8px 0; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.2s; }
-        .score-btn.active-0 { background-color: #f1f5f9; border-color: #94a3b8; color: #475569; } 
-        .score-btn.active-5 { background-color: #e6fffa; border-color: #319795; color: #234e52; } 
-        .score-btn.active-10 { background-color: #e6fffa; border-color: var(--primary-color); color: var(--primary-color); }
-        
-        .score-display { text-align: center; font-size: 28px; font-weight: bold; color: var(--primary-color); margin: 10px 0; }
-        
-        /* 팝업 모달 */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 95%; max-width: 450px; text-align: center; position: relative; }
-        
-        /* 북극곰 & 빙하 시각화 */
-        .polar-bear-area { height: 240px; background: linear-gradient(to bottom, #81d4fa, #e1f5fe); position: relative; border-radius: 10px; margin-bottom: 20px; overflow: hidden; border: 2px solid #4dd0e1; display: none;}
-        .glacier { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 160px; height: 100px; background: white; border-radius: 50% 50% 10% 10%; box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1); z-index: 1; }
-        .water-level { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(3, 169, 244, 0.85); transition: height 2.5s ease-in-out; z-index: 2; }
-        .bear-emoji { position: absolute; font-size: 65px; left: 50%; transform: translateX(-50%); transition: bottom 2.5s ease-in-out; z-index: 3; }
-        
-        /* 나무 시각화 */
-        .tree-area { min-height: 200px; background: #f1f8e9; border-radius: 10px; padding: 15px; display: none; flex-wrap: wrap; justify-content: center; align-content: center; font-size: 35px; border: 2px solid #aed581; margin-bottom: 20px;}
-        
-        .highlight-text { color: #1565c0; font-weight: bold; font-size: 20px; margin-bottom: 5px;}
-        .go-dashboard-btn { background: #ff9800; padding: 12px 20px; font-size: 16px; width: 100%; margin-top: 15px; }
-        
-        /* 대시보드 */
-        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px;}
-        .rank-table th, .rank-table td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
-        .bar-bg { width: 100%; background: #eee; border-radius: 10px; height: 15px; overflow: hidden;}
-        .bar-fill { background: var(--primary-color); height: 100%; }
-        .month-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 20px; color: var(--primary-color);}
-        .month-btn { background: #eee; color: #333; padding: 5px 15px; border-radius: 20px; border:none;}
-        #loader { display: none; color: var(--primary-color); font-weight: bold; text-align: center; padding: 20px; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>초록 지구 지킴이</title>
+
+<style>
+
+:root{
+    --green:#2e7d32;
+    --light:#f1f8e9;
+    --mint:#81c784;
+    --dark:#1b5e20;
+    --blue:#4fc3f7;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    background:linear-gradient(to bottom,#f1f8e9,#e8f5e9);
+    font-family:'Malgun Gothic',sans-serif;
+    color:#333;
+}
+
+h1{
+    text-align:center;
+    color:var(--green);
+    margin-bottom:10px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.08);
+}
+
+.login-box{
+    max-width:420px;
+    margin:auto;
+    text-align:center;
+}
+
+.login-inputs{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin:20px 0;
+}
+
+input{
+    padding:12px;
+    border:2px solid #ddd;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    background:var(--green);
+    color:white;
+    border:none;
+    padding:14px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+#main-content{
+    display:none;
+    max-width:700px;
+    margin:auto;
+}
+
+/* ======================
+STICKY SCORE
+====================== */
+
+.sticky-score{
+    position:sticky;
+    top:10px;
+    z-index:999;
+    background:linear-gradient(to right,#43a047,#66bb6a);
+    color:white;
+    text-align:center;
+    border-radius:18px;
+    padding:15px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.total-score{
+    font-size:40px;
+    font-weight:bold;
+}
+
+/* ======================
+MISSION
+====================== */
+
+.mission{
+    border-bottom:1px solid #eee;
+    padding:18px 0;
+}
+
+.mission-top{
+    display:flex;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.icon-box{
+    width:65px;
+    height:65px;
+    border-radius:18px;
+    background:#f1f8e9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:32px;
+    margin-right:15px;
+}
+
+.mission-title{
+    font-weight:bold;
+    color:var(--green);
+}
+
+.btn-group{
+    display:flex;
+    gap:8px;
+}
+
+.score-btn{
+    flex:1;
+    background:white;
+    border:2px solid #ddd;
+    color:#555;
+}
+
+.score-btn.active0{
+    background:#ef9a9a;
+    color:white;
+    border:none;
+}
+
+.score-btn.active5{
+    background:#ffe082;
+    color:#333;
+    border:none;
+}
+
+.score-btn.active10{
+    background:#81c784;
+    color:white;
+    border:none;
+}
+
+/* ======================
+MY PAGE
+====================== */
+
+.mypage-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:8px;
+    margin-top:15px;
+}
+
+.day-stamp{
+    background:#f5f5f5;
+    border-radius:10px;
+    height:45px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+}
+
+.badges{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:15px;
+}
+
+.badge{
+    background:#fff8e1;
+    border:2px solid #ffd54f;
+    padding:10px 14px;
+    border-radius:30px;
+    font-weight:bold;
+}
+
+/* ======================
+POLAR BEAR
+====================== */
+
+.bear-scene{
+    position:relative;
+    height:280px;
+    overflow:hidden;
+    border-radius:20px;
+    background:linear-gradient(to bottom,#81d4fa,#e1f5fe);
+}
+
+.water{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:45%;
+    background:rgba(33,150,243,0.7);
+    animation:wave 3s infinite ease-in-out;
+}
+
+@keyframes wave{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0);}
+}
+
+.glacier{
+    position:absolute;
+    bottom:60px;
+    left:50%;
+    transform:translateX(-50%);
+    width:220px;
+    height:90px;
+    background:white;
+    border-radius:60% 40% 20% 20%;
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+    z-index:3;
+}
+
+.bear{
+    position:absolute;
+    bottom:120px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:90px;
+    z-index:5;
+    animation:floatBear 2.5s infinite ease-in-out;
+}
+
+@keyframes floatBear{
+    0%{transform:translateX(-50%) translateY(0);}
+    50%{transform:translateX(-50%) translateY(-8px);}
+    100%{transform:translateX(-50%) translateY(0);}
+}
+
+/* ======================
+POPUP
+====================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.modal-content{
+    background:white;
+    width:95%;
+    max-width:520px;
+    border-radius:25px;
+    padding:25px;
+    text-align:center;
+}
+
+.popup-score{
+    font-size:48px;
+    color:var(--green);
+    font-weight:bold;
+}
+
+.compliment{
+    background:#f1f8e9;
+    padding:14px;
+    border-radius:14px;
+    margin-top:15px;
+    color:var(--dark);
+    font-weight:bold;
+}
+
+.save-btn{
+    width:100%;
+    padding:18px;
+    font-size:20px;
+}
+
+/* ======================
+LEVEL
+====================== */
+
+.level-box{
+    background:#e8f5e9;
+    padding:15px;
+    border-radius:15px;
+    margin-top:10px;
+}
+
+.level-title{
+    font-size:20px;
+    font-weight:bold;
+    color:var(--green);
+}
+
+</style>
 </head>
+
 <body>
 
-    <h1 style="cursor:pointer;" onclick="location.reload()">🌿 초록 지구 지킴이 🌿</h1>
-    <div id="loader">구글 시트와 통신 중입니다... 잠시만 기다려주세요! ⏳</div>
+<h1>🌍 초록 지구 지킴이 🌱</h1>
 
-    <!-- 1. 로그인 화면 -->
-    <div class="login-container" id="login-box">
-        <h3>우리 반 번호와 이름을 입력하세요</h3>
-        <div class="login-inputs">
-            <input type="number" id="user-no" placeholder="번호">
-            <input type="text" id="user-name" placeholder="이름">
-        </div>
-        <div class="example-text">💡 예시: 01 / 김긍정 </div>
-        <button onclick="login()">지킴이 입장하기 🌍</button>
+<!-- LOGIN -->
+
+<div class="card login-box" id="login-box">
+
+    <h2>우리 반 번호와 이름 입력</h2>
+
+    <div class="login-inputs">
+        <input type="number" id="user-no" placeholder="번호">
+        <input type="text" id="user-name" placeholder="이름">
     </div>
 
-    <!-- 2. 개인 입력 화면 -->
-    <div id="main-content">
-        <div class="card" style="text-align: center;">
-            <h2 id="welcome-msg" style="border:none; padding:0;"></h2>
-            <div style="font-size: 16px;">🔋 오늘의 환경 점수</div>
-            <div class="score-display" id="total-score">0점</div>
+    <button onclick="login()">지킴이 입장하기</button>
+
+</div>
+
+<!-- MAIN -->
+
+<div id="main-content">
+
+    <!-- STICKY SCORE -->
+
+    <div class="sticky-score">
+        <div>🌿 오늘의 환경 점수</div>
+        <div class="total-score" id="total-score">0점</div>
+    </div>
+
+    <!-- LEVEL -->
+
+    <div class="card">
+
+        <div class="level-title" id="level-text">
+            Lv.1 새싹 지킴이 🌱
         </div>
 
-        <div class="card">
-            <h2>🍱 오늘 급식 다 먹기 달성도</h2>
-            <div class="meal-tray">
-                <div class="tray-row top-row">
-                    <div class="food-slot" onclick="toggleFood(this)">반찬1</div>
-                    <div class="food-slot" onclick="toggleFood(this)">반찬2</div>
-                    <div class="food-slot" onclick="toggleFood(this)">반찬3</div>
+        <div id="streak-text">
+            🔥 연속 실천 0일
+        </div>
+
+    </div>
+
+    <!-- MISSIONS -->
+
+    <div class="card">
+
+        <h2>🌎 오늘의 환경 미션</h2>
+
+        <div id="mission-container"></div>
+
+    </div>
+
+    <!-- MY PAGE -->
+
+    <div class="card">
+
+        <h2>📅 나의 환경 달력</h2>
+
+        <div class="mypage-grid" id="calendar-grid"></div>
+
+        <h2 style="margin-top:25px;">🏅 나의 배지</h2>
+
+        <div class="badges" id="badge-area">
+            <div class="badge">🌱 첫 실천 배지</div>
+        </div>
+
+    </div>
+
+    <button class="save-btn" onclick="saveToday()">
+        오늘의 초록 점수 저장하기 💾
+    </button>
+
+</div>
+
+<!-- POPUP -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-content">
+
+        <h2>🌍 기록 저장 완료!</h2>
+
+        <div class="popup-score" id="popup-score">
+            85점
+        </div>
+
+        <div style="margin-top:10px;">
+            오늘도 지구를 지켜냈어요!
+        </div>
+
+        <!-- POLAR -->
+
+        <div class="bear-scene" style="margin-top:20px;">
+
+            <div class="water"></div>
+
+            <div class="glacier"></div>
+
+            <div class="bear">🐻‍❄️</div>
+
+        </div>
+
+        <div style="margin-top:20px;font-size:18px;font-weight:bold;color:#1565c0;">
+            🌳 나무 성장 +0.3cm
+        </div>
+
+        <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#0277bd;">
+            🌊 해수면 -0.01cm
+        </div>
+
+        <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#ef6c00;">
+            🌡️ 지구온도 -0.001℃
+        </div>
+
+        <div class="compliment" id="compliment">
+            오늘의 작은 실천이 지구를 웃게 했어요 🌍
+        </div>
+
+        <button style="margin-top:20px;" onclick="closeModal()">
+            확인
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const missions = [
+
+{id:1, icon:"💡", title:"전기 절약", text:"불 끄기 실천"},
+{id:2, icon:"💧", title:"물 절약", text:"양치컵 사용"},
+{id:3, icon:"♻️", title:"재활용", text:"이면지 활용"},
+{id:4, icon:"🥤", title:"다회용컵", text:"텀블러 사용"},
+{id:5, icon:"🧹", title:"교실 정리", text:"깨끗하게 정리"},
+{id:6, icon:"🌱", title:"식물 돌보기", text:"물과 햇빛 주기"},
+{id:7, icon:"🔌", title:"플러그 뽑기", text:"충전 후 제거"},
+{id:8, icon:"🛍️", title:"일회용품 줄이기", text:"비닐 사용 줄이기"}
+
+];
+
+let selectedScores={};
+
+const compliments = [
+
+"오늘의 작은 실천이 지구를 웃게 했어요 🌍",
+"꾸준함은 최고의 환경 보호예요 🌱",
+"지구가 여러분 덕분에 시원해졌어요 ❄️",
+"오늘도 초록 지킴이 대성공! 🌳",
+"환경 영웅으로 한 걸음 더 가까워졌어요 🏅"
+
+];
+
+function login(){
+
+    const no=document.getElementById('user-no').value;
+    const name=document.getElementById('user-name').value;
+
+    if(!no || !name){
+        alert("번호와 이름 입력!");
+        return;
+    }
+
+    document.getElementById('login-box').style.display='none';
+    document.getElementById('main-content').style.display='block';
+
+    renderMissions();
+    renderCalendar();
+
+}
+
+function renderMissions(){
+
+    const container=document.getElementById('mission-container');
+
+    missions.forEach(m=>{
+
+        container.innerHTML+=`
+
+        <div class="mission">
+
+            <div class="mission-top">
+
+                <div class="icon-box">${m.icon}</div>
+
+                <div>
+                    <div class="mission-title">${m.title}</div>
+                    <div>${m.text}</div>
                 </div>
-                <div class="tray-row bottom-row">
-                    <div class="food-slot" onclick="toggleFood(this)">밥</div>
-                    <div class="food-slot" onclick="toggleFood(this)">국</div>
-                </div>
+
             </div>
-            <div style="text-align: center; margin-top: 15px; font-weight: bold;" id="meal-score-text">급식 점수: 0점 / 20점</div>
-        </div>
 
-        <div class="card">
-            <h2>🌱 오늘 하루 환경 지킴이 미션</h2>
-            <p style="font-size: 13px; color: #666; margin-top:-10px;">솔직하게 스스로를 돌아보며 버튼을 선택해 보세요.</p>
-            <div id="mission-list-container"></div>
-        </div>
+            <div class="btn-group">
 
-        <button onclick="saveToday()" style="font-size: 20px; width: 100%; padding: 15px; border-radius: 10px; margin-bottom: 40px;">오늘의 초록 점수 저장하기 💾</button>
-    </div>
+                <button class="score-btn"
+                id="btn-${m.id}-0"
+                onclick="setScore(${m.id},0)">
+                ❌
+                </button>
 
-    <!-- 3. 대시보드 화면 -->
-    <div id="dashboard-content">
-        <div class="card">
-            <div class="month-nav">
-                <button class="month-btn" onclick="changeMonth(-1)">◀</button>
-                <span id="current-month-display">2026년 5월</span>
-                <button class="month-btn" onclick="changeMonth(1)">▶</button>
+                <button class="score-btn"
+                id="btn-${m.id}-5"
+                onclick="setScore(${m.id},5)">
+                🔺
+                </button>
+
+                <button class="score-btn"
+                id="btn-${m.id}-10"
+                onclick="setScore(${m.id},10)">
+                ⭕
+                </button>
+
             </div>
-            <h2 style="text-align: center; border:none; padding:0;" id="dashboard-title">🏆 5학년 우리 반 지킴이 현황</h2>
-            <table class="rank-table" id="rank-table-body"></table>
+
         </div>
-    </div>
 
-    <!-- 팝업 모달 -->
-    <div class="modal-overlay" id="success-modal">
-        <div class="modal-content">
-            <h2>🌍 멋져요! 기록이 저장되었습니다.</h2>
-            
-            <div class="polar-bear-area" id="polar-bear-area">
-                <div class="glacier"></div>
-                <div class="water-level" id="water-level"></div>
-                <div class="bear-emoji" id="bear-icon">🐻‍❄️</div>
-            </div>
-            
-            <div class="tree-area" id="tree-area"></div>
-            
-            <p class="highlight-text" id="popup-result-text"></p>
-            <p style="font-size:12px; color:#666;">(방금 여러분이 입력한 점수까지 모두 합산된 수치입니다!)</p>
-            
-            <button class="go-dashboard-btn" onclick="closeModal(); showDashboard();">우리반 전체 점수 보기 📊</button>
+        `;
+    });
+
+}
+
+function setScore(id,score){
+
+    selectedScores[id]=score;
+
+    document
+    .querySelectorAll(`[id^="btn-${id}-"]`)
+    .forEach(btn=>{
+        btn.classList.remove('active0','active5','active10');
+    });
+
+    document
+    .getElementById(`btn-${id}-${score}`)
+    .classList.add(`active${score}`);
+
+    calculateTotal();
+
+}
+
+function calculateTotal(){
+
+    let total=0;
+
+    Object.values(selectedScores).forEach(v=>{
+        total+=v;
+    });
+
+    document.getElementById('total-score').innerText=
+    total+"점";
+
+    return total;
+
+}
+
+/* ======================
+하루 1회 저장
+====================== */
+
+function alreadySubmitted(){
+
+    const today=new Date().toDateString();
+
+    return localStorage.getItem("submitDate")===today;
+
+}
+
+/* ======================
+SAVE
+====================== */
+
+function saveToday(){
+
+    if(alreadySubmitted()){
+
+        alert("오늘은 이미 저장했어요 😊");
+        return;
+
+    }
+
+    if(Object.keys(selectedScores).length<8){
+
+        alert("모든 미션 체크!");
+        return;
+
+    }
+
+    const total=calculateTotal();
+
+    localStorage.setItem(
+        "submitDate",
+        new Date().toDateString()
+    );
+
+    showPopup(total);
+
+}
+
+/* ======================
+POPUP
+====================== */
+
+function showPopup(score){
+
+    document.getElementById('popup-score').innerText=
+    score+"점";
+
+    const random=
+    compliments[Math.floor(Math.random()*compliments.length)];
+
+    document.getElementById('compliment').innerText=
+    random;
+
+    document.getElementById('modal').style.display='flex';
+
+}
+
+function closeModal(){
+
+    document.getElementById('modal').style.display='none';
+
+}
+
+/* ======================
+CALENDAR
+====================== */
+
+function renderCalendar(){
+
+    const grid=document.getElementById('calendar-grid');
+
+    for(let i=1;i<=31;i++){
+
+        let stamp="";
+
+        if(i%5===0) stamp="⭐";
+        else if(i%2===0) stamp="🌳";
+        else stamp="🌱";
+
+        grid.innerHTML+=`
+        <div class="day-stamp">
+            ${stamp}
         </div>
-    </div>
+        `;
+    }
 
-    <script>
-        // ★★★ 선생님의 구글 스크립트 웹 앱 주소를 꼭 입력하세요! ★★★
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw-QnFh6uqBIvsURFqypFMYAucK7sBIiA3znyEwFp4OGWFaLFhQFNAXrQYt26rFiWSuOA/exec"; 
-        
-        const studentNames = [
-            "강하영", "김루하", "김소은", "김지유", "남시하", "손유하", "윤수아", "윤승아", "이하민", "임아윤",
-            "전서현", "조율희", "최한별", "한지원", "김동빈", "김시윤", "김주원", "김효찬", "남지후", "노시온",
-            "방준영", "송건우", "임환희", "조유찬", "주은호", "한진우", "허시준", "서현우"
-        ];
+}
 
-        let currentUserNo = ""; let currentUserName = ""; let classData = [];
-        let viewYear = 2026; let viewMonth = 5;
+</script>
 
-        const missions = [
-            { id: 1, tag: "[주변 환경 관리]", text: "내 자리 주변과 교실을 깨끗하게 정리정돈했나요?", icon: "🧹" },
-            { id: 2, tag: "[식물 가꾸기]", text: "학급 식물을 정성껏 돌보았나요? (물, 햇빛, 공기, 흙 관리)", icon: "🪴" },
-            { id: 3, tag: "[자원 재활용]", text: "우유팩을 깨끗하게 씻어 말리고, 이면지를 활용했나요?", icon: "♻️" },
-            { id: 4, tag: "[전기 절약]", text: "빈 방(이나 교실) 전등을 껐나요?", icon: "💡" },
-            { id: 5, tag: "[물 절약]", text: "손에 비누칠 할 때 물을 잠그고, 양치할 때 양치컵을 사용했나요?", icon: "💧" },
-            { id: 6, tag: "[다회용품 사용]", text: "다회용 개인 물컵(텀블러)을 사용했나요?", icon: "🥤" },
-            { id: 7, tag: "[일회용품 줄이기]", text: "일회용품(비닐봉지, 플라스틱 빨대 등) 없는 하루를 보냈나요?", icon: "🛍️" },
-            { id: 8, tag: "[디지털 기기 관리]", text: "안 쓰는 파일 지우기 및 충전 완료 시 플러그 뽑기를 실천했나요?", icon: "🔌" }
-        ];
-
-        let selectedScores = { 1:-1, 2:-1, 3:-1, 4:-1, 5:-1, 6:-1, 7:-1, 8:-1 }; 
-
-        function renderMissions() {
-            const container = document.getElementById('mission-list-container'); container.innerHTML = "";
-            missions.forEach(m => {
-                container.innerHTML += `
-                    <div class="mission-item">
-                        <div class="mission-top">
-                            <div class="visual-container"><div class="visual-fill" id="fill-${m.id}"></div><div class="visual-icon">${m.icon}</div></div>
-                            <div class="mission-info"><span class="mission-tag">${m.tag}</span><p class="mission-text">${m.text}</p></div>
-                        </div>
-                        <div class="btn-group">
-                            <button class="score-btn" id="btn-${m.id}-0" onclick="setMissionScore(${m.id}, 0)">❌ 안 했어요(0점)</button>
-                            <button class="score-btn" id="btn-${m.id}-5" onclick="setMissionScore(${m.id}, 5)">🔺 조금 했어요(5점)</button>
-                            <button class="score-btn" id="btn-${m.id}-10" onclick="setMissionScore(${m.id}, 10)">⭕ 완벽해요(10점)</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function login() {
-            const no = document.getElementById('user-no').value;
-            let name = document.getElementById('user-name').value.trim();
-            if(!no) { alert("번호를 입력하세요."); return; }
-            if(!name) { name = studentNames[parseInt(no)-1] || "학생"; }
-            
-            currentUserNo = no; currentUserName = name;
-            document.getElementById('login-box').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `👋 반갑습니다, ${no}번 ${name} 어린이!`;
-            
-            renderMissions();
-            fetchClassData(); 
-        }
-
-        function toggleFood(element) { element.classList.toggle('eaten'); calculateScore(); }
-
-        function setMissionScore(id, score) {
-            const btn0 = document.getElementById(`btn-${id}-0`);
-            const btn5 = document.getElementById(`btn-${id}-5`); 
-            const btn10 = document.getElementById(`btn-${id}-10`); 
-            const fill = document.getElementById(`fill-${id}`);
-            
-            btn0.classList.remove('active-0'); btn5.classList.remove('active-5'); btn10.classList.remove('active-10');
-            selectedScores[id] = score;
-
-            if (score === 0) { btn0.classList.add('active-0'); fill.style.height = "0%"; } 
-            else if (score === 5) { btn5.classList.add('active-5'); fill.style.height = "50%"; } 
-            else if (score === 10) { btn10.classList.add('active-10'); fill.style.height = "100%"; }
-            
-            calculateScore();
-        }
-
-        function calculateScore() {
-            const eatenCount = document.querySelectorAll('.food-slot.eaten').length;
-            const mealScore = eatenCount * 4;
-            document.getElementById('meal-score-text').innerText = `급식 점수: ${mealScore}점 / 20점`;
-            
-            let missionTotal = 0; 
-            missions.forEach(m => { if(selectedScores[m.id] > 0) missionTotal += selectedScores[m.id]; });
-            let totalScore = mealScore + missionTotal;
-            document.getElementById('total-score').innerText = totalScore + "점";
-            return totalScore;
-        }
-
-        async function saveToday() {
-            for(let i=1; i<=8; i++) {
-                if(selectedScores[i] === -1) {
-                    alert("체크하지 않은 미션이 있습니다! 모두 스스로 반성해보고 선택해주세요.");
-                    return;
-                }
-            }
-
-            const score = calculateScore();
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-            document.getElementById('loader').style.display = 'block';
-            const payload = { date: dateStr, no: currentUserNo, name: currentUserName, score: score };
-
-            try {
-                await fetch(WEB_APP_URL, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
-                await fetchClassData(); // 저장 후 갱신된 전체 데이터 불러오기
-                showPopup();
-            } catch (error) { alert("저장 실패. 앱스 스크립트 URL을 확인하세요."); } 
-            finally { document.getElementById('loader').style.display = 'none'; }
-        }
-
-        async function fetchClassData() {
-            try { 
-                const response = await fetch(WEB_APP_URL, { redirect: "follow" }); 
-                const text = await response.text();
-                try {
-                    classData = JSON.parse(text); 
-                } catch(e) {
-                    console.error("데이터 변환 오류.", text);
-                }
-            } catch (error) { 
-                console.error("서버 연결 실패", error); 
-            }
-        }
-
-        function showPopup() {
-            const modal = document.getElementById('success-modal');
-            modal.style.display = 'flex';
-
-            let pastTotalScore = 0;
-            
-            classData.forEach(row => {
-                let vals = Object.values(row); 
-                if(vals.length >= 4) {
-                    pastTotalScore += (parseInt(vals[3]) || 0); 
-                }
-            });
-
-            const isBearTheme = Math.random() < 0.5;
-            document.getElementById('polar-bear-area').style.display = isBearTheme ? 'block' : 'none';
-            document.getElementById('tree-area').style.display = isBearTheme ? 'none' : 'flex';
-            
-            if(isBearTheme) {
-                // [해결포인트] 1년 장기 프로젝트 스케일: 1점당 0.00005cm (소수점 5자리 표현)
-                const seaLevelDrop = (pastTotalScore * 0.00005).toFixed(5);
-                
-                const waterLevel = document.getElementById('water-level');
-                const bearIcon = document.getElementById('bear-icon');
-                
-                // 물빠짐 애니메이션 (최대 420,000점에서 물이 바닥까지 빠지도록 설정)
-                let startWaterHeight = 100 - (pastTotalScore * 0.0002); 
-                if(startWaterHeight < 20) startWaterHeight = 20; 
-
-                let bearPosition = startWaterHeight - 10;
-                if(bearPosition < 25) bearPosition = 25; 
-
-                setTimeout(() => {
-                    waterLevel.style.height = `${startWaterHeight}%`;
-                    bearIcon.style.bottom = `${bearPosition}%`;
-                }, 100);
-                document.getElementById('popup-result-text').innerText = `우리 반 활동으로 해수면이 ${seaLevelDrop}cm 줄었습니다!`;
-            } else {
-                // [해결포인트] 나무 성장 스케일: 1점당 0.0002그루 성장 (소수점 4자리 표현)
-                const treeGrowthVal = (pastTotalScore * 0.0002).toFixed(4);
-                
-                // 시각적인 이모지 개수: 5,000점당 나무 1개씩 추가되도록 천천히 자라게 설정 (최대 30개 표시)
-                const visualTreeCount = Math.floor(pastTotalScore / 5000) + 1; 
-                
-                let trees = "";
-                if(pastTotalScore === 0) trees = "🌱"; // 0점일 때는 새싹 하나
-                else {
-                    for(let i=0; i<Math.min(visualTreeCount, 30); i++) { trees += "🌳"; }
-                }
-                document.getElementById('tree-area').innerText = trees;
-                document.getElementById('popup-result-text').innerText = `우리 반 활동으로 나무가 ${treeGrowthVal}그루 심어졌습니다!`;
-            }
-        }
-
-        function closeModal() { document.getElementById('success-modal').style.display = 'none'; }
-
-        function showDashboard() {
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('dashboard-content').style.display = 'block';
-            renderDashboard();
-        }
-
-        function changeMonth(delta) {
-            viewMonth += delta;
-            if(viewMonth > 12) { viewMonth = 1; viewYear++; }
-            if(viewMonth < 1) { viewMonth = 12; viewYear--; }
-            renderDashboard();
-        }
-
-        function renderDashboard() {
-            document.getElementById('dashboard-title').innerHTML = `🏆 우리 반 지킴이 현황<br><span style="font-size:12px; color:#666;">(데이터 ${classData.length}개 연동 완료)</span>`;
-            document.getElementById('current-month-display').innerText = `${viewYear}년 ${viewMonth}월`;
-            
-            let monthlyScores = {};
-            for(let i=1; i<=28; i++) {
-                let name = studentNames[i-1] ? studentNames[i-1] : "학생" + i;
-                monthlyScores[i] = { name: name, score: 0 };
-            }
-
-            classData.forEach(row => {
-                let vals = Object.values(row);
-                if(vals.length < 4) return;
-
-                let rDate = vals[0];
-                let rNo = vals[1];
-                let rScore = vals[3];
-
-                let dYear, dMonth;
-                const d = new Date(rDate);
-                
-                if(!isNaN(d.getTime())) {
-                    dYear = d.getFullYear();
-                    dMonth = d.getMonth() + 1;
-                } else if(typeof rDate === 'string') {
-                    const parts = rDate.split(/[-/.]/);
-                    if(parts.length >= 2) {
-                        dYear = parseInt(parts[0]);
-                        dMonth = parseInt(parts[1]);
-                    }
-                }
-
-                if(dYear === viewYear && dMonth === viewMonth) {
-                    const no = parseInt(rNo);
-                    if(monthlyScores[no]) {
-                        monthlyScores[no].score += parseInt(rScore) || 0;
-                    }
-                }
-            });
-
-            let maxScore = 1;
-            for(let i=1; i<=28; i++) { if(monthlyScores[i].score > maxScore) maxScore = monthlyScores[i].score; }
-
-            const tbody = document.getElementById('rank-table-body');
-            tbody.innerHTML = `<tr><th width="15%">번호</th><th width="20%">이름</th><th width="50%">누적 점수 (그래프)</th><th width="15%">점수</th></tr>`;
-
-            for(let i=1; i<=28; i++) {
-                const s = monthlyScores[i];
-                const percent = (s.score / maxScore) * 100;
-                
-                const barHtml = s.score > 0 
-                    ? `<div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div>`
-                    : `<div style="color:#ccc; font-size:12px;">기록 없음</div>`;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${i}</td>
-                        <td style="font-weight:bold;">${s.name}</td>
-                        <td>${barHtml}</td>
-                        <td style="font-weight:bold; color:var(--primary-color);">${s.score}</td>
-                    </tr>
-                `;
-            }
-        }
-    </script>
 </body>
 </html>
