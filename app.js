@@ -16,11 +16,19 @@ const WEB_APP_URL =
 
 function login(){
 
-  const no =
-  document.getElementById("user-no").value.trim();
+  const noInput =
+  document.getElementById("user-no");
 
-  const name =
-  document.getElementById("user-name").value.trim();
+  const nameInput =
+  document.getElementById("user-name");
+
+  if(!noInput || !nameInput){
+    alert("입력창을 찾을 수 없습니다!");
+    return;
+  }
+
+  const no = noInput.value;
+  const name = nameInput.value;
 
   if(!no || !name){
 
@@ -43,17 +51,18 @@ function login(){
   .classList.remove("hidden");
 
   renderMissions();
+
   setupMealTray();
+
   calculateTotal();
 
-
   renderCalendar();
+
   renderTracker();
+
   renderBestWorst();
 
   loadClassData();
-
-  calculateTotal();
 
 }
 
