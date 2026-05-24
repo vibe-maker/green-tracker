@@ -455,7 +455,7 @@ margin-bottom:15px;
 
 <div class="card">
 
-<h2 style="text-align:center;"> 번호와 이름 입력</h2>
+<h2 style="text-align:center;"> 번호(00)와 이름 입력</h2>
 
 <div class="login-inputs">
 
@@ -580,7 +580,7 @@ id="meal-score-text">
 <div style="display:flex;gap:10px;">
 
 <button style="flex:1;" onclick="saveToday()">
-점 저장하기 💾
+점수 저장하기 💾
 </button>
 
 <button style="flex:1;background:#ff9800;"
@@ -1028,10 +1028,16 @@ ${b}
 
 async function saveToday(){
 
-const todayKey=
+const todayKey =
 new Date().toDateString();
 
-if(localStorage.getItem("submittedToday")===todayKey){
+const studentNo =
+document.getElementById('user-no').value;
+
+const saveKey =
+"submit_" + studentNo;
+
+if(localStorage.getItem(saveKey) === todayKey){
 
 alert("오늘은 이미 저장했어요 😊");
 return;
@@ -1089,7 +1095,7 @@ console.log(err);
 }
 
 localStorage.setItem(
-"submittedToday",
+saveKey,
 todayKey
 );
 
