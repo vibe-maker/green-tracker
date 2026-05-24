@@ -173,7 +173,9 @@ function calculateTotal(){
 
 const saveBtn = document.querySelector(".save-btn");
 
-saveBtn.addEventListener("click", saveToday);
+if(saveBtn){
+  saveBtn.addEventListener("click", saveToday);
+}
 
 async function saveToday(){
 
@@ -478,5 +480,3 @@ function renderBestWorst(){
   document.getElementById("main-page").appendChild(card);
 
 }
-
-```
