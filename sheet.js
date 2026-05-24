@@ -1,10 +1,4 @@
 // =========================
-// GOOGLE SHEET URL
-// =========================
-
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkHeM_7ntBjutO-NiRMhKlk5zZvWOee7v1Q7j1fJe1N_ADRXVKYy3RhpZDCvNdBO5Tjg/exec";
-
-// =========================
 // SAVE DATA
 // =========================
 
