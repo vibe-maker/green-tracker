@@ -1,4 +1,10 @@
 
+<script>
+
+let savedDates = [];
+  
+  const WEB_APP_URL =
+"https://script.google.com/macros/s/AKfycbzmRhSSJm3z5GfrnCKAxDPQdJ0Znwy9lOAZGu_ER-pbt2pP7BWBpBl5vq2dEceqB1ltuA/exec";
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -62,7 +68,7 @@ transform:scale(1.03);
 }
 
 .hidden{
-display:none;
+display:none;}
 
   .calendar-header{
 display:flex;
@@ -85,11 +91,14 @@ color:#2e7d32;
 .calendar-weekdays{
 display:grid;
 grid-template-columns:repeat(7,1fr);
-gap:8px;
-margin-bottom:8px;
-font-weight:bold;
 text-align:center;
-color:#558b2f;
+font-weight:bold;
+margin-bottom:10px;
+color:#2e7d32;
+}
+
+.calendar-weekdays div{
+padding:8px 0;
 }
 
 .calendar-grid{
@@ -159,6 +168,8 @@ font-size:16px;
 text-align:center;
 }
 
+renderBadges();
+  
 /* =========================
 STICKY SCORE
 ========================= */
@@ -326,12 +337,21 @@ margin-top:15px;
 
 .day-stamp{
 background:#f5f5f5;
-height:45px;
-border-radius:10px;
+min-height:80px;
+border-radius:16px;
 display:flex;
+flex-direction:column;
 justify-content:center;
 align-items:center;
-font-size:20px;
+font-size:24px;
+padding:5px;
+}
+
+.day-number{
+font-size:13px;
+font-weight:bold;
+margin-bottom:6px;
+color:#666;
 }
 
 /* =========================
@@ -653,10 +673,34 @@ id="meal-score-text">
 
 <div class="calendar-grid" id="calendar-grid"></div>
 
+let earnedBadges=[
+"🌱 첫 실천"
+];
 
+  function renderBadges(){
+
+const container=
+document.getElementById('badge-container');
+
+container.innerHTML="";
+
+earnedBadges.forEach(b=>{
+
+container.innerHTML+=`
+
+<div class="badge">
+${b}
+</div>
+
+`;
+
+});
+
+}
+  
 <h2 style="margin-top:25px;">🏅 나의 배지</h2>
 
-<div class="badges">
+<div class="badges" id="badge-container"></div>
 
 <div class="badge">
 🌱 첫 실천 배지
@@ -678,6 +722,14 @@ onclick="saveToday()">
 </button>
 
 </div>
+
+  if(calculateTotal()>=90){
+
+earnedBadges.push("🔥 환경 슈퍼스타");
+
+renderBadges();
+
+}
 
 <!-- =========================
 POPUP
@@ -760,27 +812,7 @@ DASHBOARD
 
 </table>
 
-</div>
-
-<div style="text-align:center;">
-
-<button onclick="openTeacherPage()">
-교사용 페이지
-</button>
-
-</div>
-
-</div>
-
-<!-- =========================
-TEACHER PAGE
-========================= -->
-
-<div id="teacher-page" class="hidden">
-
-<h1>📊 우리 반 환경 통계</h1>
-
-<div class="teacher-grid">
+  <div class="teacher-grid" style="margin-top:30px;">
 
 <div class="teacher-card">
 
@@ -821,40 +853,31 @@ TEACHER PAGE
 
 </div>
 
-<div class="card" style="margin-top:20px;">
+</div>
 
-<h2>📈 학생별 통계</h2>
+<div style="text-align:center;margin-top:25px;">
 
-<table class="rank-table">
-
-<tr>
-<th>번호</th>
-<th>이름</th>
-<th>누적점수</th>
-<th>연속실천</th>
-<th>레벨</th>
-</tr>
-
-<tbody id="teacher-body"></tbody>
-
-</table>
+<button onclick="goMainPage()">
+🏠 마이페이지로 돌아가기
+</button>
 
 </div>
 
 </div>
+
 
 <script>
 
 const missions=[
 
-{id:1,icon:"💡",title:"전기 절약"},
-{id:2,icon:"💧",title:"물 절약"},
-{id:3,icon:"♻️",title:"재활용"},
-{id:4,icon:"🥤",title:"다회용컵"},
-{id:5,icon:"🧹",title:"교실 정리"},
-{id:6,icon:"🌱",title:"식물 돌보기"},
-{id:7,icon:"🔌",title:"플러그 뽑기"},
-{id:8,icon:"🛍️",title:"일회용품 줄이기"}
+{id:1,icon:"💡",title:"빈 방, 빈 교실 전등 끄기"},
+{id:2,icon:"💧",title:"이 닦을 때, 손 씻을 때 물 끄기"},
+{id:3,icon:"♻️",title:"우유팩 씻어서 모으기, 쓰레기 없는 하루 보내기"},
+{id:4,icon:"🥤",title:"일회용품 NO! 다회용품(텀블러 등) 사용하기"},
+{id:5,icon:"🧹",title:"자기 자리 주변 및 교실 정리 정돈하기"},
+{id:6,icon:"🌱",title:"교실 식물 돌보기, 식물을 소중히 하는 하루 보내기"},
+{id:7,icon:"🔌",title:"안 쓰는 전기 기구(예: 충전기) 플러그 뽑기"},
+{id:8,icon:"🛍️",title:"학용품, 교과서 등 자기 물건 소중히 다루기"}
 
 ];
 
@@ -1073,9 +1096,11 @@ let stamp="";
 
 /* 예시용 도장 */
 
-if(d%5===0) stamp="⭐";
-else if(d%2===0) stamp="🌳";
-else stamp="🌱";
+if(savedDates.includes(d)){
+
+stamp="🌍";
+
+}
 
 grid.innerHTML+=`
 
@@ -1101,9 +1126,17 @@ ${stamp}
 
 function saveToday(){
 
-if(localStorage.getItem("submittedToday")){
+if(
+localStorage.getItem("submittedToday")
+=== new Date().toDateString()
+){
 
-alert("오늘은 이미 저장했어요 😊");
+if(confirm("오늘은 이미 저장했어요 😊\n우리 반 현황판으로 갈까요?")){
+
+goDashboard();
+
+}
+
 return;
 
 }
@@ -1121,7 +1154,12 @@ localStorage.setItem(
 "submittedToday",
 new Date().toDateString()
 );
+const today =
+new Date().getDate();
 
+savedDates.push(today);
+
+renderCalendar();
 showPopup(total);
 
 }
@@ -1270,6 +1308,18 @@ renderCalendar();
 
 }
 </script>
+
+function goMainPage(){
+
+document
+.getElementById('dashboard-page')
+.classList.add('hidden');
+
+document
+.getElementById('main-page')
+.classList.remove('hidden');
+
+}
 
 </body>
 </html>
