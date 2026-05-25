@@ -158,3 +158,258 @@ body {
 .hidden {
   display: none !important;
 }
+
+/* =========================
+LOGIN
+========================= */
+
+.login-inputs{
+display:flex;
+gap:10px;
+margin:20px 0;
+}
+
+.login-inputs input{
+flex:1;
+padding:14px;
+border:none;
+border-radius:14px;
+font-size:16px;
+background:#f2f2f2;
+}
+
+/* =========================
+MAIN PAGE
+========================= */
+
+#main-page{
+padding-top:90px;
+max-width:700px;
+margin:auto;
+}
+
+/* =========================
+STICKY SCORE
+========================= */
+
+.sticky-score{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+background:white;
+padding:14px;
+z-index:999;
+box-shadow:0 2px 10px rgba(0,0,0,0.08);
+text-align:center;
+}
+
+.score-label{
+font-size:14px;
+color:#666;
+}
+
+.score-number{
+font-size:32px;
+font-weight:bold;
+color:#2e7d32;
+}
+
+/* =========================
+MEAL TRAY
+========================= */
+
+.meal-tray{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:14px;
+margin-top:20px;
+}
+
+.tray-row{
+display:flex;
+gap:14px;
+justify-content:center;
+}
+
+.food-slot{
+width:90px;
+height:90px;
+border-radius:50%;
+background:#f1f1f1;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+border:5px solid #e0e0e0;
+}
+
+.bottom-row .food-slot{
+width:120px;
+height:120px;
+}
+
+.food-slot.eaten{
+background:#66bb6a;
+color:white;
+border-color:#43a047;
+transform:scale(1.05);
+}
+
+/* =========================
+MISSION
+========================= */
+
+.mission-card{
+background:white;
+border-radius:18px;
+padding:18px;
+margin-bottom:16px;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.mission-top{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:14px;
+}
+
+.mission-icon{
+font-size:30px;
+}
+
+.mission-title{
+font-size:16px;
+font-weight:bold;
+line-height:1.4;
+}
+
+.mission-buttons{
+display:flex;
+gap:10px;
+}
+
+.mission-btn{
+flex:1;
+padding:14px;
+border:none;
+border-radius:14px;
+font-size:22px;
+background:#ececec;
+cursor:pointer;
+transition:0.2s;
+}
+
+.mission-btn.selected-btn{
+background:#43a047;
+color:white;
+transform:scale(1.03);
+}
+
+/* =========================
+SAVE BUTTON
+========================= */
+
+.save-btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:18px;
+background:#43a047;
+color:white;
+font-size:18px;
+font-weight:bold;
+margin:25px 0;
+cursor:pointer;
+}
+
+/* =========================
+CALENDAR
+========================= */
+
+.calendar-wrap{
+margin-top:15px;
+}
+
+.calendar-week{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+text-align:center;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.calendar-grid{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:8px;
+}
+
+.calendar-day{
+background:white;
+border-radius:14px;
+min-height:70px;
+padding:6px;
+position:relative;
+box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+
+.day-number{
+font-size:13px;
+}
+
+.day-stamp{
+font-size:26px;
+text-align:center;
+margin-top:8px;
+}
+
+.gold{
+color:#fbc02d;
+}
+
+.green{
+color:#43a047;
+}
+
+.gold-plus{
+font-size:12px;
+font-weight:bold;
+color:#fbc02d;
+text-align:center;
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:600px){
+
+.login-inputs{
+flex-direction:row;
+}
+
+.food-slot{
+width:70px;
+height:70px;
+font-size:14px;
+}
+
+.bottom-row .food-slot{
+width:95px;
+height:95px;
+}
+
+.mission-title{
+font-size:14px;
+}
+
+.score-number{
+font-size:28px;
+}
+
+}
