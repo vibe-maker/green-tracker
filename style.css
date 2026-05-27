@@ -413,3 +413,181 @@ font-size:28px;
 }
 
 }
+
+/* =========================
+LOGIN LAYOUT FIX
+========================= */
+
+#login-page{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+box-sizing:border-box;
+}
+
+.login-card{
+width:100%;
+max-width:420px;
+margin:auto;
+}
+
+.login-inputs{
+display:flex;
+gap:12px;
+margin:25px 0;
+}
+
+.login-inputs input{
+height:58px;
+font-size:18px;
+padding:0 16px;
+border-radius:16px;
+}
+
+#login-btn{
+margin-top:10px;
+height:56px;
+font-size:18px;
+border-radius:16px;
+}
+
+/* =========================
+MAIN PAGE LAYOUT
+========================= */
+
+#main-page{
+max-width:700px;
+margin:auto;
+padding:
+110px
+16px
+40px
+16px;
+box-sizing:border-box;
+}
+
+/* =========================
+STICKY SCORE
+========================= */
+
+.sticky-score{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:85px;
+background:white;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:999;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+
+.score-number{
+font-size:34px;
+}
+
+/* =========================
+MEAL TRAY REAL SHAPE
+========================= */
+
+.meal-tray{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:16px;
+margin-top:25px;
+}
+
+.top-row{
+display:flex;
+justify-content:center;
+gap:14px;
+}
+
+.bottom-row{
+display:flex;
+justify-content:center;
+gap:24px;
+}
+
+.top-row .food-slot{
+width:82px;
+height:82px;
+}
+
+.bottom-row .food-slot{
+width:130px;
+height:130px;
+}
+
+.food-slot{
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f2f2f2;
+border:5px solid #dddddd;
+font-weight:bold;
+cursor:pointer;
+transition:0.2s;
+}
+
+.food-slot.eaten{
+background:#66bb6a;
+border-color:#43a047;
+color:white;
+transform:scale(1.05);
+}
+
+/* =========================
+SECTION GAP
+========================= */
+
+.card{
+margin-bottom:22px;
+}
+
+/* =========================
+SAVE BUTTON
+========================= */
+
+.save-btn{
+width:100%;
+height:64px;
+font-size:20px;
+font-weight:bold;
+border:none;
+border-radius:20px;
+background:#43a047;
+color:white;
+cursor:pointer;
+margin-top:10px;
+margin-bottom:28px;
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:600px){
+
+.login-inputs{
+flex-direction:row;
+}
+
+.top-row .food-slot{
+width:70px;
+height:70px;
+}
+
+.bottom-row .food-slot{
+width:100px;
+height:100px;
+}
+
+}
