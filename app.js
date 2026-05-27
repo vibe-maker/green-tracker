@@ -118,3 +118,19 @@ document.getElementById("analysis-card").innerHTML =
 <div class="analysis-item">재활용</div>
 `;
 }
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+  const saveBtn =
+  document.querySelector(".save-btn");
+
+  if(saveBtn){
+
+    saveBtn.addEventListener(
+      "click",
+      saveToday
+    );
+
+  }
+
+});
