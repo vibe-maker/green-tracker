@@ -121,7 +121,7 @@ margin-bottom:15px;
 
 .tray-bottom{
 display:grid;
-grid-template-columns:2fr 1fr;
+grid-template-columns:repeat(2,1fr);
 gap:12px;
 }
 
