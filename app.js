@@ -1,62 +1,14 @@
-const missions = [
-
-{
-id:1,
-icon:"💡",
-title:"빈 교실, 빈 방 전등 끄기"
-},
-
-{
-id:2,
-icon:"💧",
-title:"양치할 때 컵 사용, 손 비누칠 할 때 수도 잠그기"
-},
-
-{
-id:3,
-icon:"♻️",
-title:"물컵이나 텀블러 사용하기, 재활용하기(우유팩 씻어 말리기)"
-},
-
-{
-id:4,
-icon:"🗑️",
-title:"쓰레기 없는 하루 보내기"
-},
-
-{
-id:5,
-icon:"🧹",
-title:"자리 주변과 교실 깨끗하게 유지하기"
-},
-
-{
-id:6,
-icon:"🌱",
-title:"교실 식물 돌보기, 식물 소중히 여기기"
-},
-
-{
-id:7,
-icon:"🔌",
-title:"안 쓰는 전기기구(충전기 등) 플러그 뽑기"
-},
-
-{
-id:8,
-icon:"🏃",
-title:"교과서와 학용품 등 물건 아껴쓰기"
-}
-
-];
+/* =========================
+기본 데이터
+========================= */
 
 let totalScore = 0;
-let selectedScores = {};
 
-const loginBtn =
-document.getElementById("login-btn");
+const missionScores = {};
 
-loginBtn.addEventListener("click", login);
+/* =========================
+로그인
+========================= */
 
 function login(){
 
@@ -81,13 +33,11 @@ document
 .getElementById("main-page")
 .classList.remove("hidden");
 
-renderMissions();
-
-renderCalendar();
-
 }
 
-/* 급식판 */
+/* =========================
+급식판
+========================= */
 
 const foodSlots =
 document.querySelectorAll(".food-slot");
@@ -96,177 +46,85 @@ foodSlots.forEach(slot=>{
 
 slot.addEventListener("click", ()=>{
 
-slot.classList.toggle("eaten");
+slot.classList.toggle("active");
 
-calculateTotal();
-
-});
+updateTotalScore();
 
 });
 
-/* 미션 */
-
-function renderMissions(){
-
-const container =
-document.getElementById("mission-container");
-
-container.innerHTML = "";
-
-missions.forEach(m=>{
-
-container.innerHTML += `
-
-<div class="mission-card">
-
-<div class="mission-top">
-
-<div class="mission-icon">
-${m.icon}
-</div>
-
-<div class="mission-title">
-${m.title}
-</div>
-
-</div>
-
-<div class="mission-buttons">
-
-<button
-class="mission-btn"
-onclick="setMission(${m.id},0,this)">
-❌
-</button>
-
-<button
-class="mission-btn"
-onclick="setMission(${m.id},5,this)">
-🔺
-</button>
-
-<button
-class="mission-btn"
-onclick="setMission(${m.id},10,this)">
-⭕
-</button>
-
-</div>
-
-</div>
-
-`;
-
 });
 
-}
+/* =========================
+미션 버튼
+========================= */
 
-function setMission(id, score, btn){
+function setMission(btn, missionId, score){
 
-selectedScores[id] = score;
+missionScores[missionId] = score;
 
 const parent =
 btn.parentElement;
 
-parent
-.querySelectorAll(".mission-btn")
-.forEach(b=>{
+const buttons =
+parent.querySelectorAll(".mission-btn");
 
-b.classList.remove("selected-btn");
+buttons.forEach(b=>{
 
-});
-
-btn.classList.add("selected-btn");
-
-calculateTotal();
-
-}
-
-/* 점수 계산 */
-
-function calculateTotal(){
-
-let mealScore = 0;
-
-document
-.querySelectorAll(".food-slot.eaten")
-.forEach(()=>{
-
-mealScore += 4;
+b.classList.remove("selected");
 
 });
 
-let missionScore = 0;
+btn.classList.add("selected");
 
-Object.values(selectedScores)
-.forEach(score=>{
+updateTotalScore();
 
-missionScore += score;
+}
+
+/* =========================
+총점 계산
+========================= */
+
+function updateTotalScore(){
+
+let score = 0;
+
+/* 급식판 */
+
+const activeFoods =
+document.querySelectorAll(".food-slot.active");
+
+score += activeFoods.length * 4;
+
+/* 미션 */
+
+Object.values(missionScores).forEach(v=>{
+
+score += v;
 
 });
 
-totalScore =
-mealScore + missionScore;
+totalScore = score;
 
-document
-.getElementById("total-score")
-.innerText = totalScore + "점";
+document.getElementById("total-score").innerText =
+score + "점";
 
 }
 
-/* 달력 */
+/* =========================
+점수 제출
+========================= */
 
-function renderCalendar(){
+function submitScore(){
 
-const grid =
-document.getElementById("calendar-grid");
-
-const now = new Date();
-
-const year = now.getFullYear();
-
-const month = now.getMonth();
-
-const firstDay =
-new Date(year, month, 1).getDay();
-
-const lastDate =
-new Date(year, month+1, 0).getDate();
-
-grid.innerHTML = "";
-
-for(let i=0;i<firstDay;i++){
-
-grid.innerHTML += `<div></div>`;
+showPopup();
 
 }
 
-for(let d=1; d<=lastDate; d++){
+/* =========================
+팝업
+========================= */
 
-grid.innerHTML += `
-
-<div class="calendar-day">
-
-<div class="day-number">
-${d}
-</div>
-
-</div>
-
-`;
-
-}
-
-}
-
-/* 저장 */
-
-const saveBtn =
-document.getElementById("save-btn");
-
-saveBtn.addEventListener("click", saveScore);
-
-function saveScore(){
+function showPopup(){
 
 const popup =
 document.createElement("div");
@@ -277,7 +135,7 @@ popup.innerHTML = `
 
 <div class="popup-box">
 
-<div class="popup-emoji">
+<div class="bear">
 🐻‍❄️
 </div>
 
@@ -285,17 +143,13 @@ popup.innerHTML = `
 빙하가 지켜졌어요!
 </h2>
 
-<div class="popup-score">
-${totalScore}점
-</div>
-
-<p>
-여러분의 노력으로<br>
+<p class="popup-text">
+${totalScore}점의 노력으로<br>
 해수면이 0.0001cm 낮아졌어요!
 </p>
 
-<button onclick="closePopup()">
-학급 현황판 보기 🏆
+<button onclick="goClassPage()">
+학급 현황판 보기
 </button>
 
 </div>
@@ -306,10 +160,24 @@ document.body.appendChild(popup);
 
 }
 
-function closePopup(){
+/* =========================
+현황판 이동
+========================= */
 
-document.querySelector(".popup").remove();
+function goClassPage(){
 
-alert("다음 단계에서 학급 현황판 연결 예정!");
+alert("다음 단계에서 연결됩니다!");
 
 }
+
+/* =========================
+로그인 버튼 연결
+========================= */
+
+window.onload = function(){
+
+document
+.getElementById("login-btn")
+.addEventListener("click", login);
+
+};
