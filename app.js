@@ -153,8 +153,57 @@ margin-top:5px;
 
 });
 
+const todayDate = new Date();
+
+const payload = {
+
+date:
+todayDate.getFullYear() + "-" +
+(todayDate.getMonth()+1) + "-" +
+todayDate.getDate(),
+
+no:
+document.getElementById("user-no").value,
+
+name:
+document.getElementById("user-name").value,
+
+score: totalScore,
+
+streak: 1,
+
+badges: "",
+
+level: "씨앗 지킴이"
+
+};
+
+fetch(WEB_APP_URL, {
+
+method:"POST",
+
+body: JSON.stringify(payload),
+
+headers:{
+"Content-Type":"application/json"
+}
+
+})
+.then(res => res.json())
+.then(data => {
+
+console.log("저장 성공", data);
+
 showSubmitPopup();
 
+})
+.catch(err => {
+
+console.error(err);
+
+alert("저장 실패!");
+
+});
 }
 
 /* =========================
