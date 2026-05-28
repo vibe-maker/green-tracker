@@ -120,7 +120,39 @@ totalScore = total;
 
 function submitScore(){
 
-showPopup();
+const today = new Date().getDate();
+
+if(savedDays.includes(today)){
+
+alert("오늘은 이미 제출했어요 😊");
+return;
+
+}
+
+savedDays.push(today);
+
+const days =
+document.querySelectorAll(".day");
+
+days.forEach(day=>{
+
+if(day.innerText == today){
+
+day.innerHTML = `
+<div>${today}</div>
+<div style="
+font-size:22px;
+margin-top:5px;
+">
+🐾
+</div>
+`;
+
+}
+
+});
+
+showSubmitPopup();
 
 }
 
@@ -128,7 +160,7 @@ showPopup();
 팝업
 ========================= */
 
-function showPopup(){
+function showSubmitPopup(){
 
 const popup =
 document.createElement("div");
@@ -164,11 +196,26 @@ document.body.appendChild(popup);
 
 }
 
+function closePopup(){
+
+const popup =
+document.querySelector(".popup");
+
+if(popup){
+
+popup.remove();
+
+}
+
+}
+
 /* =========================
 현황판 이동
 ========================= */
 
 function goClassPage(){
+
+closePopup();
 
 alert("다음 단계에서 연결됩니다!");
 
@@ -183,5 +230,7 @@ window.onload = function(){
 document
 .getElementById("login-btn")
 .addEventListener("click", login);
+
+
 
 };
