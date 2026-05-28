@@ -91,10 +91,12 @@ color:#1b5e20;
 
 .card{
 background:white;
-margin:20px;
-padding:25px;
-border-radius:25px;
+border-radius:24px;
+padding:24px;
+margin-bottom:24px;
 box-shadow:0 4px 12px rgba(0,0,0,0.08);
+width:100%;
+box-sizing:border-box;
 }
 
 .card h2{
@@ -376,5 +378,44 @@ transition:0.2s;
 .submit-btn:hover{
 
 transform:translateY(-2px);
+
+}
+
+/* =========================
+빈 카드 높이
+========================= */
+
+.calendar-box,
+.graph-box,
+.badge-box{
+
+min-height:220px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:18px;
+
+background:#f5f5f5;
+
+margin-top:15px;
+
+}
+
+/* =========================
+페이지 전체 폭
+========================= */
+
+.page{
+
+width:100%;
+max-width:700px;
+
+margin:0 auto;
+
+padding:20px;
+
+box-sizing:border-box;
 
 }
