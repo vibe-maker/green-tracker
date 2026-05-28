@@ -321,3 +321,19 @@ font-size:14px;
 }
 
 }
+
+/* =========================
+선택된 버튼
+========================= */
+
+.food-slot.active{
+background:#66bb6a;
+color:white;
+transform:scale(1.05);
+}
+
+.mission-btn.selected{
+background:#43a047;
+color:white;
+font-weight:bold;
+}
