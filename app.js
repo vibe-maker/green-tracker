@@ -87,20 +87,85 @@ alert("저장 완료");
 
 /* CALENDAR */
 function renderCalendar(){
+  }
 
-const days = 30;
-let html = `<div class="calendar-week">
-<div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
-</div><div class="calendar-grid">`;
+  const card = document.createElement("div");
 
-for(let i=1;i<=days;i++){
-html += `<div class="calendar-day">${i}</div>`;
-}
+  card.className = "card";
+  card.id = "calendar-card";
 
-html += "</div>";
+  const now = new Date();
 
-document.getElementById("calendar-card").innerHTML =
-"<h2>달력</h2>"+html;
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  let html = `
+
+  <h2>📅 나의 환경 달력</h2>
+
+  <div class="calendar-wrap">
+
+    <div class="calendar-week">
+      <div>일</div>
+      <div>월</div>
+      <div>화</div>
+      <div>수</div>
+      <div>목</div>
+      <div>금</div>
+      <div>토</div>
+    </div>
+
+    <div class="calendar-grid">
+  `;
+
+  for(let i=0;i<firstDay;i++){
+    html += `<div></div>`;
+  }
+
+  for(let d=1; d<=lastDate; d++){
+
+    let stamp = "";
+    let bonus = "";
+
+    if(d < now.getDate()){
+
+      if(d % 5 === 0){
+        stamp = `<div class="day-stamp gold-paw">🐾</div>`;
+        bonus = `<div class="gold-plus">+10</div>`;
+      }else{
+        stamp = `<div class="day-stamp green-paw">🐾</div>`;
+      }
+
+    }
+
+    html += `
+
+    <div class="calendar-day">
+
+      <div class="day-number">${d}</div>
+
+      ${stamp}
+
+      ${bonus}
+
+    </div>
+
+    `;
+
+  }
+
+  html += `
+    </div>
+  </div>
+  `;
+
+  card.innerHTML = html;
+
+  document.getElementById("main-page").appendChild(card);
+
 }
 
 /* GRAPH */
@@ -134,3 +199,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
   }
 
 });
+
+window.onload = function(){
+
+  const loginBtn = document.getElementById("login-btn");
+
+  if(loginBtn){
+    loginBtn.addEventListener("click", login);
+  }
+
+  const saveBtn = document.querySelector(".save-btn");
+
+  if(saveBtn){
+    saveBtn.addEventListener("click", saveToday);
+  }
+
+};
