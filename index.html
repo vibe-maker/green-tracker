@@ -1,70 +1,170 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>🌍 초록 지구 지킴이</title>
 
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <header class="main-header">
-  <h1>🌍 초록 지구 지킴이 🌱</h1>
+
+<h1>🌍 초록 지구 지킴이</h1>
+<p>우리의 작은 실천이 지구를 지켜요 🌱</p>
+
 </header>
 
-<!-- LOGIN -->
-<section id="login-page" class="page">
+<!-- 로그인 -->
 
-  <div class="card">
-    <h2>로그인</h2>
+<section id="login-page">
 
-    <input type="text" id="user-no" placeholder="번호">
-    <input type="text" id="user-name" placeholder="이름">
+<div class="login-card">
 
-    <button id="login-btn">지킴이 입장하기</button>
-  </div>
+<h2>지킴이 입장하기</h2>
 
-</section>
+<div class="login-inputs">
 
-<!-- MAIN -->
-<section id="main-page" class="page hidden">
+<input
+type="text"
+id="user-no"
+placeholder="번호(00)"
+>
 
-  <div class="card">
-    <h2>🌿 오늘 점수</h2>
-    <div id="total-score">0점</div>
-  </div>
+<input
+type="text"
+id="user-name"
+placeholder="이름(김초록)"
+>
 
-  <div class="card">
-    <h2>🍱 급식</h2>
-    <div class="meal-tray">
-      <div class="food-slot">반찬1</div>
-      <div class="food-slot">반찬2</div>
-      <div class="food-slot">반찬3</div>
-      <div class="food-slot">밥</div>
-      <div class="food-slot">국</div>
-    </div>
-    <div id="meal-score">0점</div>
-  </div>
+</div>
 
-  <div class="card">
-    <h2>🌎 미션</h2>
-    <div id="mission-container"></div>
-  </div>
+<button id="login-btn">
+입장하기 🌱
+</button>
 
-  <button class="save-btn">저장</button>
-
-  <div id="calendar-card"></div>
-
-  <div id="graph-card"></div>
-
-  <div id="analysis-card"></div>
+</div>
 
 </section>
 
-<script src="data.js"></script>
+<!-- 메인 -->
+
+<section id="main-page" class="hidden">
+
+<!-- 상단 총점 -->
+
+<div class="sticky-score">
+
+<div class="score-title">
+오늘의 환경 점수
+</div>
+
+<div class="score-number" id="total-score">
+0점
+</div>
+
+</div>
+
+<!-- 급식판 -->
+
+<div class="card">
+
+<h2>🍱 오늘 급식 다 먹기</h2>
+
+<div class="meal-tray">
+
+<div class="tray-top">
+
+<div class="food-slot">반찬1</div>
+<div class="food-slot">반찬2</div>
+<div class="food-slot">반찬3</div>
+
+</div>
+
+<div class="tray-bottom">
+
+<div class="food-slot rice">밥</div>
+<div class="food-slot soup">국</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- 미션 -->
+
+<div class="card">
+
+<h2>🌎 오늘의 환경 미션</h2>
+
+<div id="mission-container"></div>
+
+</div>
+
+<!-- 달력 -->
+
+<div class="card">
+
+<h2>📅 환경 달력</h2>
+
+<div class="calendar-week">
+
+<div>일</div>
+<div>월</div>
+<div>화</div>
+<div>수</div>
+<div>목</div>
+<div>금</div>
+<div>토</div>
+
+</div>
+
+<div class="calendar-grid" id="calendar-grid"></div>
+
+</div>
+
+<!-- 그래프 -->
+
+<div class="card">
+
+<h2>📈 점수 변화 그래프</h2>
+
+<div class="empty-box">
+그래프 영역
+</div>
+
+</div>
+
+<!-- 레벨 -->
+
+<div class="card">
+
+<h2>🏅 레벨 & 배지</h2>
+
+<div class="empty-box">
+레벨과 배지 영역
+</div>
+
+</div>
+
+<!-- 버튼 -->
+
+<button class="save-btn" id="save-btn">
+오늘 점수 제출하기 🌱
+</button>
+
+<button class="dashboard-btn">
+학급 현황판 보기 🏆
+</button>
+
+</section>
+
 <script src="app.js"></script>
 
 </body>
