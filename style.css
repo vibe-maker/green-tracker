@@ -337,3 +337,44 @@ background:#43a047;
 color:white;
 font-weight:bold;
 }
+
+/* =========================
+제출 버튼
+========================= */
+
+.submit-btn{
+
+width:100%;
+
+padding:18px;
+
+border:none;
+border-radius:20px;
+
+background:linear-gradient(
+135deg,
+#66bb6a,
+#43a047
+);
+
+color:white;
+
+font-size:20px;
+font-weight:bold;
+
+cursor:pointer;
+
+margin-top:25px;
+margin-bottom:15px;
+
+box-shadow:0 6px 15px rgba(0,0,0,0.15);
+
+transition:0.2s;
+
+}
+
+.submit-btn:hover{
+
+transform:translateY(-2px);
+
+}
