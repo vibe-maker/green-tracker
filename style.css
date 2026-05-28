@@ -591,3 +591,72 @@ height:100px;
 }
 
 }
+
+/* =========================
+그래프
+========================= */
+
+.graph-box{
+height:220px;
+border-left:3px solid #ccc;
+border-bottom:3px solid #ccc;
+position:relative;
+margin-top:20px;
+}
+
+.graph-line{
+position:absolute;
+left:0;
+right:0;
+top:0;
+bottom:0;
+}
+
+.graph-point{
+position:absolute;
+width:12px;
+height:12px;
+border-radius:50%;
+background:#43a047;
+}
+
+/* =========================
+반성 카드
+========================= */
+
+.analysis-item{
+background:#f1f8e9;
+padding:18px;
+border-radius:18px;
+margin-top:12px;
+line-height:1.7;
+}
+
+/* =========================
+모바일
+========================= */
+
+@media(max-width:768px){
+
+.login-inputs{
+flex-direction:row;
+}
+
+.login-inputs input{
+max-width:none;
+}
+
+.score-number{
+font-size:30px;
+}
+
+.food-slot{
+height:75px;
+font-size:15px;
+}
+
+.mission-title{
+font-size:15px;
+}
+
+}
