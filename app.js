@@ -110,8 +110,6 @@ totalScore = score;
 document.getElementById("total-score").innerText =
 score + "점";
 
-totalScore = total;
-  
 }
 
 /* =========================
