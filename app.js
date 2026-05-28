@@ -8,6 +8,9 @@ let savedDays = [];
 
 const missionScores = {};
 
+const WEB_APP_URL =
+"https://script.google.com/macros/s/AKfycbwyB8nHTEbKluu2AiHzR2DMTUqP0shIRVxH2cuxDz8yGeQhqWKBzeulK8Oq65S4AUmxBA/exec";
+
 /* =========================
 로그인
 ========================= */
