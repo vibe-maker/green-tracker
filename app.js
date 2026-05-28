@@ -4,6 +4,8 @@
 
 let totalScore = 0;
 
+let savedDays = [];
+
 const missionScores = {};
 
 /* =========================
@@ -108,6 +110,8 @@ totalScore = score;
 document.getElementById("total-score").innerText =
 score + "점";
 
+totalScore = total;
+  
 }
 
 /* =========================
