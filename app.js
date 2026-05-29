@@ -147,13 +147,6 @@ if(streak % 5 === 0){
 pawClass = "gold-paw";
 }
 
-const streak = savedDays.length;
-
-let pawClass = "green-paw";
-
-if(streak % 5 === 0){
-pawClass = "gold-paw";
-}
 
 day.innerHTML = `
 <div>${today}</div>
