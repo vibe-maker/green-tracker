@@ -185,7 +185,7 @@ method:"POST",
 body: JSON.stringify(payload),
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"text/plain"
 }
 
 })
