@@ -37,7 +37,7 @@ document
 document
 .getElementById("main-page")
 .classList.remove("hidden");
-
+loadCalendarData();
 }
 
 /* =========================
@@ -271,6 +271,64 @@ alert("다음 단계에서 연결됩니다!");
 
 }
 
+/* =========================
+달력 불러오기
+========================= */
+
+async function loadCalendarData(){
+
+try{
+
+const response =
+await fetch(WEB_APP_URL);
+
+const data =
+await response.json();
+
+const myNo =
+document.getElementById("user-no").value;
+
+const myRecords =
+data.filter(r => r.no == myNo);
+
+myRecords.forEach(record => {
+
+const dateText = record.date;
+
+const dayNumber =
+Number(dateText.split("-")[2]);
+
+const days =
+document.querySelectorAll(".day");
+
+days.forEach(day => {
+
+if(day.innerText == dayNumber){
+
+day.innerHTML = `
+<div>${dayNumber}</div>
+<div style="
+font-size:22px;
+margin-top:5px;
+">
+🐾
+</div>
+`;
+
+}
+
+});
+
+});
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+                      
 /* =========================
 로그인 버튼 연결
 ========================= */
