@@ -139,12 +139,25 @@ days.forEach(day=>{
 
 if(day.innerText == today){
 
+const streak = savedDays.length;
+
+let pawClass = "green-paw";
+
+if(streak % 5 === 0){
+pawClass = "gold-paw";
+}
+
+const streak = savedDays.length;
+
+let pawClass = "green-paw";
+
+if(streak % 5 === 0){
+pawClass = "gold-paw";
+}
+
 day.innerHTML = `
 <div>${today}</div>
-<div style="
-font-size:22px;
-margin-top:5px;
-">
+<div class="${pawClass}">
 🐾
 </div>
 `;
