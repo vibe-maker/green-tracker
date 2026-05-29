@@ -526,3 +526,20 @@ font-weight:bold;
 min-height:50px;
 
 }
+
+/* =========================
+발자국
+========================= */
+
+.green-paw{
+font-size:22px;
+margin-top:5px;
+color:#43a047;
+}
+
+.gold-paw{
+font-size:22px;
+margin-top:5px;
+color:#fbc02d;
+font-weight:bold;
+}
