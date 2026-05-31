@@ -312,12 +312,12 @@ myRecords.forEach(record => {
 
 const dateText = record.date;
 
+const recordDate =
+new Date(dateText);
+
 const dayNumber =
-Number(dateText.split("-")[2]);
-
-console.log("dateText =", dateText);
-console.log("dayNumber =", dayNumber);
-
+recordDate.getDate();
+  
 const days =
 document.querySelectorAll(".day");
 
