@@ -148,7 +148,7 @@ days.forEach(day=>{
 
 if(day.innerText == today){
 
-const streak = savedDays.length;
+const streak = currentStreak + 1;
 
 let pawClass = "green-paw";
 
@@ -303,8 +303,6 @@ data.filter(r =>
 Number(r.no) === Number(currentNo)
 );
 
-console.log("currentNo =", currentNo);
-console.log("myRecords =", myRecords);
 
 currentStreak = myRecords.length;
   
@@ -312,11 +310,11 @@ myRecords.forEach(record => {
 
 const dateText = record.date;
 
-const recordDate =
-new Date(dateText);
+const datePart =
+dateText.split("T")[0];
 
 const dayNumber =
-recordDate.getDate();
+Number(datePart.split("-")[2]);
   
 const days =
 document.querySelectorAll(".day");
