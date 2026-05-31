@@ -406,13 +406,41 @@ onclick="submitScore()">
 오늘 점수 제출하기 🌱
 </button>
 
-<button class="dashboard-btn">
+<button
+class="dashboard-btn"
+onclick="goClassPage()">
 학급 현황판 보기 🏆
+</button>
+  
+</section>
+
+<script src="app.js"></script
+
+  <section
+id="class-page"
+class="hidden">
+
+<div class="card">
+
+<h2>🏆 학급 현황판</h2>
+
+<div id="ranking-list">
+
+불러오는 중...
+
+</div>
+
+</div>
+
+<button
+class="dashboard-btn"
+onclick="backToMain()">
+
+뒤로가기
+
 </button>
 
 </section>
-
-<script src="app.js"></script>
 
 </body>
 </html>
