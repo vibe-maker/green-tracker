@@ -37,6 +37,7 @@ document
 document
 .getElementById("main-page")
 .classList.remove("hidden");
+  renderCalendar();
 loadCalendarData();
 }
 
