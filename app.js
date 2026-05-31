@@ -296,11 +296,10 @@ await fetch(WEB_APP_URL);
 const data =
 await response.json();
 
-const myNo =
-document.getElementById("user-no").value;
-
 const myRecords =
-data.filter(r => r.no == myNo);
+data.filter(r =>
+Number(r.no) === Number(currentNo)
+);
 
 myRecords.forEach(record => {
 
