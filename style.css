@@ -7,7 +7,7 @@ color:#222;
 }
 
 .hidden{
-display:none;
+display:none !important;
 }
 
 .main-header{
