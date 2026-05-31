@@ -194,9 +194,16 @@ color:white;
 
 .calendar-week,
 .calendar-grid{
+
 display:grid;
-grid-template-columns:repeat(7,1fr);
+
+grid-template-columns:
+repeat(7,1fr);
+
 gap:8px;
+
+text-align:center;
+
 }
 
 .calendar-week div{
