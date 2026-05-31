@@ -159,7 +159,9 @@ pawClass = "gold-paw";
 
 day.innerHTML = `
 <div>${today}</div>
-<div class="${pawClass}"></div>
+<div class="${pawClass}">
+🐾
+</div>
 `;
 
 }
@@ -338,7 +340,10 @@ const recordDate =
 new Date(dateText);
 
 const dayNumber =
-recordDate.getUTCDate() + 1;
+Number(
+dateText.split("T")[0]
+.split("-")[2]
+);
   
 const targetDay =
 document.querySelector(
