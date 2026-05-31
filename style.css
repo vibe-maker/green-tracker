@@ -539,15 +539,18 @@ min-height:50px;
 ========================= */
 
 .green-paw{
-font-size:22px;
-margin-top:5px;
-color:#43a047;
+width:18px;
+height:18px;
+border-radius:50%;
+background:#43a047;
+margin:5px auto 0;
 }
 
 .gold-paw{
-font-size:22px;
-margin-top:5px;
-color:#fbc02d;
-font-weight:bold;
+width:18px;
+height:18px;
+border-radius:50%;
+background:#fbc02d;
+margin:5px auto 0;
 }
 
