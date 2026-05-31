@@ -315,6 +315,9 @@ const dateText = record.date;
 const dayNumber =
 Number(dateText.split("-")[2]);
 
+console.log("dateText =", dateText);
+console.log("dayNumber =", dayNumber);
+
 const days =
 document.querySelectorAll(".day");
 
