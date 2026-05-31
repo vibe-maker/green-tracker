@@ -303,6 +303,9 @@ data.filter(r =>
 Number(r.no) === Number(currentNo)
 );
 
+console.log("currentNo =", currentNo);
+console.log("myRecords =", myRecords);
+
 currentStreak = myRecords.length;
   
 myRecords.forEach(record => {
