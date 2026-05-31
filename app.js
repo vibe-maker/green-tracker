@@ -278,10 +278,29 @@ function goClassPage(){
 
 closePopup();
 
-alert("다음 단계에서 연결됩니다!");
+document
+.getElementById("main-page")
+.classList.add("hidden");
+
+document
+.getElementById("class-page")
+.classList.remove("hidden");
+
+loadClassRanking();
 
 }
 
+function backToMain(){
+
+document
+.getElementById("class-page")
+.classList.add("hidden");
+
+document
+.getElementById("main-page")
+.classList.remove("hidden");
+
+}
 /* =========================
 달력 불러오기
 ========================= */
