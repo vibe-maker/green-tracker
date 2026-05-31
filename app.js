@@ -14,7 +14,7 @@ let currentNo = "";
 let currentName = "";
 
 const WEB_APP_URL =
-"https://script.google.com/macros/s/AKfycbySqlpRMSMEvQ-2lQaX_P1DkyOrDaKNBdB4D29iG7DLQ9HRuIrifsbeObQcbYnrEUdUNw/exec";
+"https://script.google.com/macros/s/AKfycbzh-XqLW1rCkOfzj_arB6xP9EHUkql9uKjbJwP6H8F1QLpl0QJSH1nMSeGUT9VDUW6eiA/exec";
 
 /* =========================
 로그인
