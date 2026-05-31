@@ -183,7 +183,7 @@ name: currentName,
 
 score: totalScore,
 
-streak: 1,
+streak: currentStreak + 1,
 
 badges: "",
 
