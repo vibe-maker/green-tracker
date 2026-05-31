@@ -303,10 +303,17 @@ data.filter(r =>
 Number(r.no) === Number(currentNo)
 );
 
-
-currentStreak = myRecords.length;
+const uniqueRecords =
+[...new Map(
+myRecords.map(item => [
+item.date.split("T")[0],
+item
+])
+).values()];
   
-myRecords.forEach(record => {
+currentStreak = uniqueRecords.length;
+  
+uniqueRecords.forEach(record => {
 
 const dateText = record.date;
 
@@ -324,7 +331,7 @@ days.forEach(day => {
 if(day.innerText == dayNumber){
 
 const recordIndex =
-myRecords.indexOf(record) + 1;
+uniqueRecords.indexOf(record) + 1;
 
 let pawClass = "green-paw";
 
