@@ -158,10 +158,8 @@ pawClass = "gold-paw";
 
 
 day.innerHTML = `
-<div>${today}</div>
-<div class="${pawClass}">
-🐾
-</div>
+<div>${dayNumber}</div>
+<div class="${pawClass}"></div>
 `;
 
 }
