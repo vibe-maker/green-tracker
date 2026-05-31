@@ -8,6 +8,8 @@ let savedDays = [];
 
 const missionScores = {};
 
+let currentStreak = 0;
+
 let currentNo = "";
 let currentName = "";
 
@@ -301,6 +303,8 @@ data.filter(r =>
 Number(r.no) === Number(currentNo)
 );
 
+currentStreak = myRecords.length;
+  
 myRecords.forEach(record => {
 
 const dateText = record.date;
@@ -315,12 +319,18 @@ days.forEach(day => {
 
 if(day.innerText == dayNumber){
 
+const recordIndex =
+myRecords.indexOf(record) + 1;
+
+let pawClass = "green-paw";
+
+if(recordIndex % 5 === 0){
+pawClass = "gold-paw";
+}
+
 day.innerHTML = `
 <div>${dayNumber}</div>
-<div style="
-font-size:22px;
-margin-top:5px;
-">
+<div class="${pawClass}">
 🐾
 </div>
 `;
