@@ -424,3 +424,91 @@ document
 .addEventListener("click", login);
 
 };
+
+function goClassPage(){
+
+document
+.getElementById("main-page")
+.classList.add("hidden");
+
+document
+.getElementById("class-page")
+.classList.remove("hidden");
+
+loadClassRanking();
+
+}
+
+function backToMain(){
+
+document
+.getElementById("class-page")
+.classList.add("hidden");
+
+document
+.getElementById("main-page")
+.classList.remove("hidden");
+
+}
+
+async function loadClassRanking(){
+
+const response =
+await fetch(WEB_APP_URL);
+
+const data =
+await response.json();
+
+const studentScores = {};
+
+data.forEach(record=>{
+
+const name = record.name;
+
+const score =
+Number(record.score || 0);
+
+if(!studentScores[name]){
+
+studentScores[name] = 0;
+
+}
+
+studentScores[name] += score;
+
+});
+
+const ranking = Object.entries(studentScores)
+
+.sort((a,b)=>b[1]-a[1]);
+
+let html = "";
+
+ranking.forEach((item,index)=>{
+
+html += `
+<div style="
+padding:12px;
+margin-bottom:10px;
+background:#f1f8e9;
+border-radius:12px;
+">
+
+${index+1}위 🏆
+
+<b>${item[0]}</b>
+
+-
+
+${item[1]}점
+
+</div>
+`;
+
+});
+
+document
+.getElementById("ranking-list")
+.innerHTML = html;
+
+}
