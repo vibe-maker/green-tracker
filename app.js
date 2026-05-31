@@ -315,18 +315,18 @@ uniqueRecords.forEach(record => {
 
 const dateText = record.date;
 
-const datePart =
-dateText.split("T")[0];
+const recordDate =
+new Date(dateText);
 
 const dayNumber =
-Number(datePart.split("-")[2]);
+recordDate.getUTCDate() + 1;
   
-const days =
-document.querySelectorAll(".day");
+const targetDay =
+document.querySelector(
+`.day[data-day="${dayNumber}"]`
+);
 
-days.forEach(day => {
-
-if(day.innerText == dayNumber){
+if(targetDay){
 
 const recordIndex =
 uniqueRecords.indexOf(record) + 1;
@@ -337,11 +337,9 @@ if(recordIndex % 5 === 0){
 pawClass = "gold-paw";
 }
 
-day.innerHTML = `
+targetDay.innerHTML = `
 <div>${dayNumber}</div>
-<div class="${pawClass}">
-🐾
-</div>
+<div class="${pawClass}"></div>
 `;
 
 }
@@ -407,7 +405,7 @@ calendar.innerHTML += "<div></div>";
 for(let d=1; d<=lastDate; d++){
 
 calendar.innerHTML += `
-<div class="day">
+<div class="day" data-day="${d}">
 ${d}
 </div>
 `;
