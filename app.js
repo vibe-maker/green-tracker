@@ -8,6 +8,9 @@ let savedDays = [];
 
 const missionScores = {};
 
+let currentNo = "";
+let currentName = "";
+
 const WEB_APP_URL =
 "https://script.google.com/macros/s/AKfycbySqlpRMSMEvQ-2lQaX_P1DkyOrDaKNBdB4D29iG7DLQ9HRuIrifsbeObQcbYnrEUdUNw/exec";
 
@@ -23,6 +26,9 @@ document.getElementById("user-no").value;
 const name =
 document.getElementById("user-name").value;
 
+currentNo = no;
+currentName = name;
+  
 if(!no || !name){
 
 alert("번호와 이름을 입력하세요!");
@@ -169,11 +175,9 @@ todayDate.getFullYear() + "-" +
 (todayDate.getMonth()+1) + "-" +
 todayDate.getDate(),
 
-no:
-document.getElementById("user-no").value,
+no: currentNo,
 
-name:
-document.getElementById("user-name").value,
+name: currentName,
 
 score: totalScore,
 
