@@ -444,31 +444,6 @@ document
 
 };
 
-function goClassPage(){
-
-document
-.getElementById("main-page")
-.classList.add("hidden");
-
-document
-.getElementById("class-page")
-.classList.remove("hidden");
-
-loadClassRanking();
-
-}
-
-function backToMain(){
-
-document
-.getElementById("class-page")
-.classList.add("hidden");
-
-document
-.getElementById("main-page")
-.classList.remove("hidden");
-
-}
 
 async function loadClassRanking(){
 
