@@ -158,7 +158,7 @@ pawClass = "gold-paw";
 
 
 day.innerHTML = `
-<div>${dayNumber}</div>
+<div>${today}</div>
 <div class="${pawClass}"></div>
 `;
 
@@ -338,13 +338,12 @@ pawClass = "gold-paw";
 }
 
 targetDay.innerHTML = `
-<div>${dayNumber}</div>
+<div>${today}</div>
 <div class="${pawClass}"></div>
 `;
 
 }
 
-});
 
 });
 
