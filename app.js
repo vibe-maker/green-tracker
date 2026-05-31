@@ -345,6 +345,63 @@ document
 .getElementById("login-btn")
 .addEventListener("click", login);
 
+  /* =========================
+달력 생성
+========================= */
+
+function renderCalendar(){
+
+const calendar =
+document.getElementById("calendar-grid");
+
+calendar.innerHTML = "";
+
+const weekNames =
+["일","월","화","수","목","금","토"];
+
+weekNames.forEach(day=>{
+
+calendar.innerHTML += `
+<div class="week-name">
+${day}
+</div>
+`;
+
+});
+
+const now = new Date();
+
+const year =
+now.getFullYear();
+
+const month =
+now.getMonth();
+
+const firstDay =
+new Date(year, month, 1).getDay();
+
+const lastDate =
+new Date(year, month + 1, 0).getDate();
+
+for(let i=0;i<firstDay;i++){
+
+calendar.innerHTML +=
+`<div></div>`;
+
+}
+
+for(let d=1; d<=lastDate; d++){
+
+calendar.innerHTML += `
+<div class="day">
+${d}
+</div>
+`;
+
+}
+
+}
+
 
 
 };
