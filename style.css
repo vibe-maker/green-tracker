@@ -551,22 +551,3 @@ color:#fbc02d;
 font-weight:bold;
 }
 
-.green-paw{
-
-font-size:24px;
-
-filter:
-hue-rotate(70deg)
-saturate(4);
-
-}
-
-.gold-paw{
-
-font-size:24px;
-
-filter:
-hue-rotate(320deg)
-saturate(5);
-
-}
