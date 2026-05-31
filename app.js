@@ -337,16 +337,6 @@ console.error(error);
 }
                       
 /* =========================
-로그인 버튼 연결
-========================= */
-
-window.onload = function(){
-
-document
-.getElementById("login-btn")
-.addEventListener("click", login);
-
-  /* =========================
 달력 생성
 ========================= */
 
@@ -354,6 +344,8 @@ function renderCalendar(){
 
 const calendar =
 document.getElementById("calendar-grid");
+
+if(!calendar) return;
 
 calendar.innerHTML = "";
 
@@ -386,8 +378,7 @@ new Date(year, month + 1, 0).getDate();
 
 for(let i=0;i<firstDay;i++){
 
-calendar.innerHTML +=
-`<div></div>`;
+calendar.innerHTML += "<div></div>";
 
 }
 
@@ -403,3 +394,14 @@ ${d}
 
 }
 
+/* =========================
+로그인 버튼 연결
+========================= */
+
+window.onload = function(){
+
+document
+.getElementById("login-btn")
+.addEventListener("click", login);
+
+};
