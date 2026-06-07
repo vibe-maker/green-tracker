@@ -1,556 +1,625 @@
-body{
-margin:0;
-padding:0;
-background:#f4fff4;
-font-family:sans-serif;
-color:#222;
+body {
+  margin: 0;
+  padding: 0;
+  background: #f4fff4;
+  font-family: sans-serif;
+  color: #222;
 }
 
-.hidden{
-display:none !important;
-}
-
-.main-header{
-text-align:center;
-padding:30px 20px 10px;
-}
-
-.main-header h1{
-margin:0;
-font-size:34px;
-color:#2e7d32;
-}
-
-.main-header p{
-color:#558b2f;
-}
-
-/* 로그인 */
-
-.login-card{
-background:white;
-max-width:500px;
-margin:30px auto;
-padding:35px;
-border-radius:30px;
-box-shadow:0 4px 15px rgba(0,0,0,0.08);
-text-align:center;
-}
-
-.login-inputs{
-display:flex;
-gap:15px;
-justify-content:center;
-margin:25px 0;
-}
-
-.login-inputs input{
-padding:18px;
-border:none;
-border-radius:18px;
-background:#f1f8e9;
-font-size:18px;
-width:160px;
-}
-
-#login-btn{
-padding:16px 35px;
-border:none;
-border-radius:18px;
-background:#43a047;
-color:white;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-}
-
-/* 상단 점수 */
-
-.sticky-score{
-position:sticky;
-top:0;
-background:white;
-padding:15px;
-text-align:center;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
-z-index:999;
-}
-
-.score-title{
-font-size:16px;
-color:#2e7d32;
-}
-
-.score-number{
-font-size:42px;
-font-weight:bold;
-color:#1b5e20;
-}
-
-/* 카드 */
-
-.card{
-background:white;
-border-radius:24px;
-padding:24px;
-margin-bottom:24px;
-box-shadow:0 4px 12px rgba(0,0,0,0.08);
-width:100%;
-box-sizing:border-box;
-}
-
-.card h2{
-margin-top:0;
-color:#2e7d32;
-}
-
-/* 급식판 */
-
-.meal-tray{
-background:#d7ccc8;
-padding:20px;
-border-radius:35px;
-max-width:500px;
-margin:auto;
-}
-
-.tray-top{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px;
-margin-bottom:15px;
-}
-
-.tray-bottom{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-
-.food-slot{
-height:90px;
-border-radius:50%;
-background:#fff8e1;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-cursor:pointer;
-transition:0.2s;
-}
-
-.food-slot.eaten{
-background:#66bb6a;
-color:white;
-transform:scale(1.05);
-}
-
-/* 미션 */
-
-.mission-card{
-background:#f9fff9;
-padding:18px;
-border-radius:20px;
-margin-bottom:18px;
-}
-
-.mission-top{
-display:flex;
-align-items:center;
-gap:12px;
-margin-bottom:15px;
-}
-
-.mission-icon{
-font-size:30px;
-}
-
-.mission-title{
-font-weight:bold;
-line-height:1.5;
-}
-
-.mission-buttons{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-}
-
-.mission-btn{
-padding:14px;
-border:none;
-border-radius:16px;
-background:#eceff1;
-font-size:22px;
-cursor:pointer;
-}
-
-.selected-btn{
-background:#43a047;
-color:white;
-}
-
-/* 달력 */
-
-.calendar-week,
-.calendar-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(7,1fr);
-
-gap:8px;
-
-text-align:center;
-
-}
-
-.calendar-week div{
-text-align:center;
-font-weight:bold;
-}
-
-.calendar-day{
-background:#f1f8e9;
-min-height:70px;
-border-radius:16px;
-padding:8px;
-}
-
-.day-number{
-font-size:14px;
-font-weight:bold;
-}
-
-.paw{
-font-size:28px;
-text-align:center;
-margin-top:10px;
-color:#43a047;
-}
-
-/* 빈 영역 */
-
-.empty-box{
-height:150px;
-background:#f1f8e9;
-border-radius:20px;
-display:flex;
-align-items:center;
-justify-content:center;
-color:#777;
-}
-
-/* 버튼 */
-
-.save-btn,
-.dashboard-btn{
-width:calc(100% - 40px);
-margin:20px;
-padding:18px;
-border:none;
-border-radius:22px;
-font-size:20px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.save-btn{
-background:#2e7d32;
-color:white;
-}
-
-.dashboard-btn{
-background:#c8e6c9;
-}
-
-/* 팝업 */
-
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
-}
-
-
-/* =========================
-팝업
-========================= */
-
-.popup{
-
-position:fixed;
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.5);
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-z-index:9999;
-
-}
-
-.popup-box{
-
-background:white;
-
-padding:40px 30px;
-
-border-radius:25px;
-
-text-align:center;
-
-width:85%;
-max-width:400px;
-
-animation:popupShow 0.3s;
-
-}
-
-.popup-score{
-font-size:42px;
-font-weight:bold;
-color:#1b5e20;
-margin:20px 0;
-}
-
-.popup-emoji{
-font-size:70px;
-}
-
-.bear{
-
-font-size:70px;
-
-margin-bottom:20px;
-
-animation:floatBear 2s infinite;
-
-}
-
-.popup-text{
-
-font-size:22px;
-
-line-height:1.6;
-
-margin:20px 0;
-
-color:#0288d1;
-
-font-weight:bold;
-
-}
-
-@keyframes popupShow{
-
-from{
-transform:scale(0.8);
-opacity:0;
-}
-
-to{
-transform:scale(1);
-opacity:1;
-}
-
-}
-
-@keyframes floatBear{
-
-0%{
-transform:translateY(0px);
-}
-
-50%{
-transform:translateY(-10px);
-}
-
-100%{
-transform:translateY(0px);
-}
-
-}
-
-/* 모바일 */
-
-@media(max-width:768px){
-
-.login-inputs{
-flex-direction:row;
-}
-
-.login-inputs input{
-width:100%;
-}
-
-.food-slot{
-height:75px;
-font-size:14px;
-}
-
+.hidden {
+  display: none !important;
 }
 
 /* =========================
-선택된 버튼
+헤더
 ========================= */
 
-.food-slot.active{
-background:#66bb6a;
-color:white;
-transform:scale(1.05);
+.main-header {
+  text-align: center;
+  padding: 30px 20px 10px;
 }
 
-.mission-btn.selected{
-background:#43a047;
-color:white;
-font-weight:bold;
+.main-header h1 {
+  margin: 0;
+  font-size: 34px;
+  color: #2e7d32;
+}
+
+.main-header p {
+  color: #558b2f;
 }
 
 /* =========================
-제출 버튼
+로그인
 ========================= */
 
-.submit-btn{
-
-width:100%;
-
-padding:18px;
-
-border:none;
-border-radius:20px;
-
-background:linear-gradient(
-135deg,
-#66bb6a,
-#43a047
-);
-
-color:white;
-
-font-size:20px;
-font-weight:bold;
-
-cursor:pointer;
-
-margin-top:25px;
-margin-bottom:15px;
-
-box-shadow:0 6px 15px rgba(0,0,0,0.15);
-
-transition:0.2s;
-
+.login-card {
+  background: white;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 35px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  text-align: center;
 }
 
-.submit-btn:hover{
-
-transform:translateY(-2px);
-
+.login-inputs {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 25px 0;
 }
 
-/* =========================
-빈 카드 높이
-========================= */
+.login-inputs input {
+  padding: 18px;
+  border: none;
+  border-radius: 18px;
+  background: #f1f8e9;
+  font-size: 18px;
+  width: 160px;
+}
 
-.calendar-box,
-.graph-box,
-.badge-box{
-
-min-height:220px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-border-radius:18px;
-
-background:#f5f5f5;
-
-margin-top:15px;
-
+#login-btn {
+  padding: 16px 35px;
+  border: none;
+  border-radius: 18px;
+  background: #43a047;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 /* =========================
-페이지 전체 폭
+상단 점수
 ========================= */
 
-.page{
+.sticky-score {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  z-index: 999;
+}
 
-width:100%;
-max-width:700px;
+.score-title {
+  font-size: 16px;
+  color: #2e7d32;
+}
 
-margin:0 auto;
+.score-number {
+  font-size: 42px;
+  font-weight: bold;
+  color: #1b5e20;
+}
 
-padding:20px;
+/* =========================
+카드
+========================= */
 
-box-sizing:border-box;
+.card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  margin: 0 16px 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-sizing: border-box;
+}
 
+.card h2 {
+  margin-top: 0;
+  color: #2e7d32;
+}
+
+.card-sub {
+  margin: -12px 0 16px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* =========================
+급식판
+========================= */
+
+.meal-tray {
+  background: #d7ccc8;
+  padding: 20px;
+  border-radius: 35px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.tray-top {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.tray-bottom {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.food-slot {
+  height: 90px;
+  border-radius: 50%;
+  background: #fff8e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.food-slot.active {
+  background: #66bb6a;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* =========================
+미션
+========================= */
+
+.mission-card {
+  background: #f9fff9;
+  padding: 18px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+}
+
+.mission-title {
+  font-weight: bold;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.mission-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.mission-btn {
+  padding: 14px;
+  border: none;
+  border-radius: 16px;
+  background: #eceff1;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.mission-btn.selected {
+  background: #43a047;
+  color: white;
+  font-weight: bold;
+  transform: scale(1.05);
 }
 
 /* =========================
 달력
 ========================= */
 
-.calendar-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(7, 1fr);
-
-gap:10px;
-
-margin-top:20px;
-
-text-align:center;
-
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  text-align: center;
+  margin-top: 10px;
 }
 
-.day{
+.week-name {
+  font-weight: bold;
+  font-size: 13px;
+  color: #558b2f;
+  padding: 4px 0;
+}
 
-background:#f1f8e9;
+.day {
+  background: #f1f8e9;
+  border-radius: 14px;
+  padding: 8px 0;
+  font-weight: bold;
+  font-size: 13px;
+  min-height: 50px;
+}
 
-border-radius:14px;
+.green-paw {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #43a047;
+  margin: 5px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
 
-padding:12px 0;
-
-font-weight:bold;
-
-min-height:50px;
-
+.gold-paw {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fbc02d;
+  margin: 4px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 0 6px rgba(251,192,45,0.6);
 }
 
 /* =========================
-발자국
+레벨 & 배지
 ========================= */
 
-.green-paw{
-width:18px;
-height:18px;
-border-radius:50%;
-background:#43a047;
-margin:5px auto 0;
+.level-display {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  background: #f1f8e9;
+  padding: 16px;
+  border-radius: 18px;
 }
 
-.gold-paw{
-width:18px;
-height:18px;
-border-radius:50%;
-background:#fbc02d;
-margin:5px auto 0;
+.level-icon {
+  font-size: 48px;
+  line-height: 1;
 }
 
+.level-info {
+  flex: 1;
+}
+
+.level-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+.level-cumulative {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.progress-wrap {
+  margin-top: 8px;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #c8e6c9;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #43a047, #66bb6a);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 배지 그리드 */
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.badge-item {
+  text-align: center;
+  padding: 14px 8px;
+  border-radius: 18px;
+  transition: 0.2s;
+}
+
+.badge-earned {
+  background: #fff8e1;
+  border: 2px solid #fbc02d;
+}
+
+.badge-locked {
+  background: #f5f5f5;
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.badge-emoji {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.badge-name {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.badge-desc {
+  font-size: 11px;
+  color: #888;
+}
+
+/* 레벨 사다리 */
+
+.level-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ladder-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #f5f5f5;
+  opacity: 0.5;
+}
+
+.ladder-done {
+  background: #e8f5e9;
+  opacity: 0.8;
+}
+
+.ladder-active {
+  background: #c8e6c9;
+  border: 2px solid #43a047;
+  opacity: 1;
+  font-weight: bold;
+}
+
+.ladder-name {
+  flex: 1;
+  font-size: 15px;
+}
+
+.ladder-score {
+  font-size: 13px;
+  color: #666;
+}
+
+/* =========================
+버튼
+========================= */
+
+.submit-btn {
+  width: calc(100% - 32px);
+  margin: 0 16px 15px;
+  padding: 18px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  transition: 0.2s;
+  display: block;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.dashboard-btn {
+  width: calc(100% - 32px);
+  margin: 0 16px 24px;
+  padding: 18px;
+  border: none;
+  border-radius: 20px;
+  background: #c8e6c9;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+}
+
+/* =========================
+팝업
+========================= */
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup-box {
+  background: white;
+  padding: 36px 28px;
+  border-radius: 25px;
+  text-align: center;
+  width: 85%;
+  max-width: 400px;
+  animation: popupShow 0.3s;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.bear {
+  font-size: 64px;
+  margin-bottom: 12px;
+  animation: floatBear 2s infinite;
+  display: block;
+}
+
+.popup-text {
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 12px 0;
+  color: #0288d1;
+  font-weight: bold;
+}
+
+.popup-bonus {
+  background: #fff8e1;
+  border: 2px solid #fbc02d;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f57f17;
+  margin: 12px 0;
+}
+
+.popup-new-badges {
+  margin: 12px 0;
+}
+
+.badge-chip {
+  display: inline-block;
+  background: #e8f5e9;
+  border: 1px solid #43a047;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  margin: 4px;
+  color: #2e7d32;
+}
+
+.popup-level {
+  background: #f1f8e9;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 14px 0;
+}
+
+.level-emoji {
+  font-size: 36px;
+}
+
+.level-name {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin: 6px 0;
+}
+
+.popup-progress-bar {
+  height: 10px;
+  background: #c8e6c9;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0 4px;
+}
+
+.popup-progress-fill {
+  height: 100%;
+  background: #43a047;
+  border-radius: 999px;
+}
+
+.popup-progress-text {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.popup-box button {
+  margin-top: 16px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 14px;
+  background: #43a047;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@keyframes popupShow {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes floatBear {
+  0%   { transform: translateY(0px);   }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0px);   }
+}
+
+/* =========================
+학급 현황판
+========================= */
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  background: #f1f8e9;
+  border-radius: 14px;
+}
+
+.ranking-me {
+  background: #c8e6c9;
+  border: 2px solid #43a047;
+  font-weight: bold;
+}
+
+.rank-medal {
+  font-size: 22px;
+  min-width: 32px;
+}
+
+.rank-name {
+  flex: 1;
+  font-size: 16px;
+}
+
+.rank-score {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* =========================
+모바일
+========================= */
+
+@media (max-width: 768px) {
+  .login-inputs {
+    flex-direction: row;
+  }
+  .login-inputs input {
+    width: 100%;
+  }
+  .food-slot {
+    height: 75px;
+    font-size: 14px;
+  }
+  .badge-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
