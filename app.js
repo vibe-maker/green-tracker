@@ -4,7 +4,7 @@
 
 /* ── 상수 ── */
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbwz4j6nfier9ifM8mwWk-FdSlD-hdLwGrYb35UTYlzuTiSZmcqrtUNyXQNVV5bn5Gb90g/exec";
+  "https://script.google.com/macros/s/AKfycbzh-XqLW1rCkOfzj_arB6xP9EHUkql9uKjbJwP6H8F1QLpl0QJSH1nMSeGUT9VDUW6eiA/exec";
 
 const STUDENTS = [
   {no:1,name:"강하영"},{no:2,name:"김루하"},{no:3,name:"김소은"},
@@ -27,20 +27,7 @@ const LEVELS = [
   {name:"지구 지킴이", emoji:"🌍", minScore:6000},
 ];
 
-const BADGES = [
-  {id:"perfect", name:"완벽한 하루", emoji:"💯", short:"완벽",
-   desc:"하루 100점 달성", check:(cum,score)=> score>=100},
-  {id:"b1000",  name:"1000점",  emoji:"🥉", short:"1K",
-   desc:"누적 1000점",   check:(cum)=> cum>=1000},
-  {id:"b2500",  name:"2500점",  emoji:"🥈", short:"2.5K",
-   desc:"누적 2500점",   check:(cum)=> cum>=2500},
-  {id:"b5000",  name:"5000점",  emoji:"🥇", short:"5K",
-   desc:"누적 5000점",   check:(cum)=> cum>=5000},
-  {id:"b7500",  name:"7500점",  emoji:"🏆", short:"7.5K",
-   desc:"누적 7500점",   check:(cum)=> cum>=7500},
-  {id:"b10000", name:"10000점", emoji:"👑", short:"10K",
-   desc:"누적 10000점",  check:(cum)=> cum>=10000},
-];
+
 
 /* 미션 키와 이름 — 순서가 appendRow 순서와 완전히 일치해야 함 */
 const MISSION_KEYS  = ["m_meal","m1","m2","m3","m4","m5","m6","m7","m8"];
@@ -70,8 +57,7 @@ const hasSubmitted = () => localStorage.getItem(lsKey("lastSubmit")) === getToda
 const markSubmit   = () => localStorage.setItem(lsKey("lastSubmit"), getTodayStr());
 const getCumScore  = () => Number(localStorage.getItem(lsKey("cumScore"))||0);
 const addCumScore  = n  => { const v=getCumScore()+n; localStorage.setItem(lsKey("cumScore"),v); return v; };
-const getBadgeIds  = () => { const r=localStorage.getItem(lsKey("badges")); return r?JSON.parse(r):[]; };
-const saveBadgeIds = ids=> localStorage.setItem(lsKey("badges"),JSON.stringify(ids));
+
 const getStreakData= () => { const r=localStorage.getItem(lsKey("streakData")); return r?JSON.parse(r):{count:0,lastDate:""}; };
 const saveStreak   = obj=> localStorage.setItem(lsKey("streakData"),JSON.stringify(obj));
 
@@ -87,10 +73,6 @@ function getNextLevel(cum) {
   for(const l of LEVELS) if(cum<l.minScore) return l;
   return null;
 }
-function calcNewBadges(cum, score, existingIds) {
-  return BADGES.filter(b=> !existingIds.includes(b.id) && b.check(cum,score));
-}
-
 /* ══════════════════════════════
    연속 streak 계산
    전날 제출했을 때만 연속, 빠지면 1로 초기화
@@ -181,22 +163,18 @@ function submitScore() {
 
   const prevCum    = getCumScore();
   const prevLevel  = getLevel(prevCum);
-  const prevIds    = getBadgeIds();
 
   const baseScore  = totalScore+streakBonus;
   const tempCum    = prevCum+baseScore;
-  const newBadges  = calcNewBadges(tempCum,baseScore,prevIds);
   const newLevel   = getLevel(tempCum);
   const levelUp    = newLevel.name!==prevLevel.name;
-  const bonusExtra = (newBadges.length*50)+(levelUp?50:0);
+  const bonusExtra = levelUp ? 50 : 0;
   const finalScore = baseScore+bonusExtra;
   const newCum     = prevCum+finalScore;
-  const allBadgeIds= [...prevIds,...newBadges.map(b=>b.id)];
 
   markSubmit();
   addCumScore(finalScore);
   saveStreak({count:newStreak, lastDate:getTodayStr()});
-  saveBadgeIds(allBadgeIds);
   currentStreak=newStreak;
 
   // 달력 발자국
@@ -208,14 +186,13 @@ function submitScore() {
 
   renderLevelBadge(finalScore,newCum);
 
-  /* ── payload: 미션별 점수를 명시적 키로 전달 ── */
   const mealScore = document.querySelectorAll(".food-slot.active").length*4;
   const d=new Date();
   const payload={
     date:`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
     no:currentNo, name:currentName,
     score:finalScore, streak:newStreak,
-    badges:allBadgeIds.join(","), level:newLevel.name,
+    badges:"", level:newLevel.name,
     m_meal: mealScore,
     m1: missionScores[1]||0,
     m2: missionScores[2]||0,
@@ -233,7 +210,7 @@ function submitScore() {
     .then(r=>r.json())
     .then(res=>{
       console.log("✅ 서버 응답:", res);
-      showSubmitPopup(finalScore,streakBonus,bonusExtra,newBadges,levelUp,newLevel,newCum);
+      showSubmitPopup(finalScore,streakBonus,bonusExtra,levelUp,newLevel,newCum);
     })
     .catch(err=>{ console.error(err); alert("저장 실패! 인터넷 연결을 확인해주세요."); });
 }
@@ -241,7 +218,7 @@ function submitScore() {
 /* ══════════════════════════════
    팝업
 ══════════════════════════════ */
-function showSubmitPopup(score,streakBonus,bonusExtra,newBadges,levelUp,level,cum) {
+function showSubmitPopup(score,streakBonus,bonusExtra,levelUp,level,cum) {
   const nextLv=getNextLevel(cum);
   const progress=nextLv
     ? Math.min(100,Math.round(((cum-level.minScore)/(nextLv.minScore-level.minScore))*100))
@@ -252,11 +229,6 @@ function showSubmitPopup(score,streakBonus,bonusExtra,newBadges,levelUp,level,cu
     bonusLines+=`<div class="popup-bonus">🔥 연속 5일 달성! +${streakBonus}점</div>`;
   if(levelUp)
     bonusLines+=`<div class="popup-bonus" style="border-color:#43a047;color:#2e7d32">🎉 레벨업! +50점</div>`;
-  if(newBadges.length>0)
-    bonusLines+=`<div class="popup-bonus" style="border-color:#7b1fa2;color:#7b1fa2">🏅 새 배지 ${newBadges.length}개! +${newBadges.length*50}점</div>`;
-
-  const badgesHTML=newBadges.length>0
-    ?`<div class="popup-new-badges">${newBadges.map(b=>`<span class="badge-chip">${b.emoji} ${b.name}</span>`).join("")}</div>`:"";
 
   const popup=document.createElement("div");
   popup.className="popup";
@@ -265,7 +237,7 @@ function showSubmitPopup(score,streakBonus,bonusExtra,newBadges,levelUp,level,cu
       <div class="bear">🐻‍❄️</div>
       <h2>빙하가 지켜졌어요!</h2>
       <p class="popup-text">${score}점의 노력으로<br>해수면이 0.0001cm 낮아졌어요!</p>
-      ${bonusLines}${badgesHTML}
+      ${bonusLines}
       <div class="popup-level">
         <span class="level-emoji">${level.emoji}</span>
         <span class="level-name">${level.name}</span>
@@ -288,7 +260,6 @@ function renderLevelBadge(todayScore=0,overrideCum=null){
   const cum=overrideCum!==null?overrideCum:getCumScore();
   const level=getLevel(cum);
   const nextLv=getNextLevel(cum);
-  const earnedIds=getBadgeIds();
   const progress=nextLv&&nextLv.minScore>level.minScore
     ?Math.min(100,Math.round(((cum-level.minScore)/(nextLv.minScore-level.minScore))*100)):100;
 
@@ -307,16 +278,6 @@ function renderLevelBadge(todayScore=0,overrideCum=null){
              </div>`
           :`<div class="progress-label" style="color:#43a047;font-weight:bold">🎊 최고 레벨 달성!</div>`}
       </div>
-    </div>
-    <div class="badge-grid">
-      ${BADGES.map(b=>{
-        const got=earnedIds.includes(b.id);
-        return `<div class="badge-item ${got?"badge-earned":"badge-locked"}">
-          <div class="badge-emoji">${got?b.emoji:"🔒"}</div>
-          <div class="badge-name">${b.short}</div>
-          <div class="badge-desc">${b.desc}</div>
-        </div>`;
-      }).join("")}
     </div>
     <div class="level-ladder">
       ${LEVELS.map(l=>{
@@ -479,7 +440,6 @@ async function loadClassRanking(){
     // 학생별 집계 초기화 (STUDENTS 순서 = 번호순 고정)
     const monthlyMap={};
     const totalMap={};
-    const badgeMap={};
     STUDENTS.forEach(s=>{
       monthlyMap[s.name]={score:0, ms:Array(MISSION_KEYS.length).fill(0)};
       totalMap[s.name]=0;
@@ -490,7 +450,6 @@ async function loadClassRanking(){
       if(!monthlyMap[nm]) return;
       const [ry,rm]=r.date.split("T")[0].split("-").map(Number);
       totalMap[nm]=(totalMap[nm]||0)+Number(r.score||0);
-      if(r.badges) badgeMap[nm]=r.badges;
       if(ry===y&&rm===m){
         monthlyMap[nm].score+=Number(r.score||0);
         MISSION_KEYS.forEach((k,i)=>{
@@ -509,35 +468,36 @@ async function loadClassRanking(){
       rankMap[scored[i].name]=rank;
     }
 
-    // 항목별 1위 (이번 달) — 동점 공동처리
+    // 항목별 1위 — 동점 시 이번 달 총점 높은 사람 1명
     const missionWinners=MISSION_KEYS.map((k,i)=>{
       let maxScore=-1;
       STUDENTS.forEach(s=>{ const v=monthlyMap[s.name].ms[i]; if(v>maxScore) maxScore=v; });
-      const winners=STUDENTS.filter(s=>monthlyMap[s.name].ms[i]===maxScore&&maxScore>0).map(s=>s.name);
-      return {missionName:MISSION_NAMES[i], names:winners, score:maxScore};
+      if(maxScore<=0) return {missionName:MISSION_NAMES[i], name:"-", score:0};
+      const tied=STUDENTS.filter(s=>monthlyMap[s.name].ms[i]===maxScore);
+      // 동점 시 이번 달 총점 높은 사람 선택
+      tied.sort((a,b)=>monthlyMap[b.name].score - monthlyMap[a.name].score);
+      return {missionName:MISSION_NAMES[i], name:tied[0].name, score:maxScore};
     });
 
-    buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap, scored);
+    buildClassPage(monthlyMap, missionWinners, totalMap, rankMap, scored);
   }catch(e){
     console.error(e);
     document.getElementById("top3-section").innerHTML="<p>불러오기 실패 😢</p>";
   }
 }
 
-function buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap, scored){
-  const medals=["🥇","🥈","🥉"];
+function buildClassPage(monthlyMap, missionWinners, totalMap, rankMap, scored){
 
-  /* TOP 3 — 동점자 공동 */
-  const top3Ranks=[1,2,3];
+  /* TOP 3 — 텍스트 순위, 동점자 공동 */
+  const rankLabels={1:"1위",2:"2위",3:"3위"};
   let topHtml=`<div class="class-section-title">🏆 이번 달 TOP 3</div>`;
-  top3Ranks.forEach(r=>{
+  [1,2,3].forEach(r=>{
     const group=scored.filter(s=>rankMap[s.name]===r);
     if(!group.length) return;
-    const medal=medals[r-1]||`${r}위`;
     group.forEach(s=>{
       const isMe=s.name===currentName;
       topHtml+=`<div class="ranking-item ${isMe?"ranking-me":""}">
-        <span class="rank-medal">${medal}</span>
+        <span class="rank-medal top-rank">${rankLabels[r]}</span>
         <span class="rank-name">${s.name}${isMe?" (나)":""}</span>
         <span class="rank-score">${s.monthScore}점</span>
       </div>`;
@@ -545,39 +505,34 @@ function buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap,
   });
   document.getElementById("top3-section").innerHTML=topHtml;
 
-  /* 항목별 1위 */
+  /* 항목별 1위 — 단일 이름 */
   let mwHtml=`<div class="class-section-title">⭐ 이번 달 항목별 1위</div><div class="mission-winner-grid">`;
   missionWinners.forEach(w=>{
-    const nameStr=w.names.length?w.names.join(", "):"-";
-    const scoreStr=w.score>0?`${w.score}점`:"기록 없음";
     mwHtml+=`<div class="mission-winner-card">
       <div class="mw-mission">${w.missionName}</div>
-      <div class="mw-name">${nameStr}</div>
-      <div class="mw-score">${scoreStr}</div>
+      <div class="mw-name">${w.name}</div>
+      <div class="mw-score">${w.score>0?w.score+"점":"기록 없음"}</div>
     </div>`;
   });
   mwHtml+="</div>";
   document.getElementById("mission-winner-section").innerHTML=mwHtml;
 
-  /* 전체 명단 — 번호순 고정, 이번 달 순위 표시 */
+  /* 전체 명단 — 번호순 고정, 순위 텍스트 */
   let listHtml=`<div class="class-section-title">📋 우리 반 전체 명단 (번호순)</div>
     <div class="student-header">
-      <span>번호</span><span>이름</span><span>레벨</span><span>배지</span><span>이번달</span><span>순위</span>
+      <span>번호</span><span>이름</span><span>레벨</span><span>이번달</span><span>순위</span>
     </div>`;
   STUDENTS.forEach(s=>{
     const lv=getLevel(totalMap[s.name]||0);
-    const bids=badgeMap[s.name]?badgeMap[s.name].split(","):[];
-    const earned=BADGES.filter(b=>bids.includes(b.id));
     const isMe=s.name===currentName;
-    const rank=rankMap[s.name];
-    const rankStr=rank<=3?medals[rank-1]:`${rank}위`;
+    const r=rankMap[s.name];
+    const rankStr=r<=3?`<b>${r}위</b>`:`${r}위`;
     listHtml+=`<div class="student-row ${isMe?"student-me":""}">
-      <span class="student-rank">${s.no}</span>
+      <span class="student-no">${s.no}</span>
       <span class="student-name">${s.name}${isMe?" (나)":""}</span>
-      <span class="student-level">${lv.emoji}</span>
-      <span class="student-badges">${earned.map(b=>b.emoji).join("")||"-"}</span>
+      <span class="student-level">${lv.emoji} <small>${lv.name}</small></span>
       <span class="student-score">${monthlyMap[s.name].score}점</span>
-      <span class="student-rank-badge">${rankStr}</span>
+      <span class="student-rank-col">${rankStr}</span>
     </div>`;
   });
   document.getElementById("ranking-list").innerHTML=listHtml;
@@ -585,19 +540,15 @@ function buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap,
   /* 그래프 */
   renderClassChart(STUDENTS.map(s=>({name:s.name,score:monthlyMap[s.name].score})));
 
-  /* 룰 안내 (간소화) */
+  /* 룰 안내 */
   document.getElementById("rules-section").innerHTML=`
     <div class="class-section-title">📖 점수 규칙 안내</div>
     <div class="rules-box">
       <div class="rule-item">🔥 <b>5일 연속 달성</b> — +10점 보너스 (중간에 하루라도 빠지면 초기화!)</div>
       <div class="rule-item">🎉 <b>레벨업 시</b> — +50점 보너스</div>
-      <div class="rule-item">🏅 <b>배지 획득 시</b> — 배지 1개당 +50점 보너스</div>
-      <div class="rule-item">🏆 <b>동점자</b> — 공동 순위로 표시</div>
+      <div class="rule-item">🏆 <b>동점자</b> — 전체 순위는 공동 순위 표시 / 항목별 1위 동점은 이번 달 총점 높은 학생</div>
       <div class="rule-item rule-levels"><b>레벨 기준</b><br>
         🌱 씨앗 0점~ | 🌿 새싹 300점~ | 🌳 나무 1,000점~ | 🌲 숲 3,000점~ | 🌍 지구 6,000점~
-      </div>
-      <div class="rule-item rule-levels"><b>배지 기준</b><br>
-        💯 완벽한 하루(100점) | 🥉 1,000점 | 🥈 2,500점 | 🥇 5,000점 | 🏆 7,500점 | 👑 10,000점
       </div>
     </div>`;
 }
