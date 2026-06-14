@@ -10,169 +10,187 @@
 
 <header class="main-header">
   <h1>🌍 초록 지구 지킴이</h1>
-  <p>우리의 작은 실천이 지구를 지켜요 🌱</p>
+  <p id="header-sub">우리의 작은 실천이 지구를 지켜요 🌱</p>
 </header>
 
-<!-- ── 로그인 ── -->
+<!-- ══ 로그인 ══ -->
 <section id="login-page">
   <div class="login-card">
     <h2>지킴이 입장하기</h2>
     <div class="login-inputs">
-      <input type="text" id="user-no"   placeholder="번호 (예: 3)">
-      <input type="text" id="user-name" placeholder="이름 (예: 김소은)">
+      <input type="number" id="user-no"   placeholder="번호 (예: 3)" min="1" max="28">
+      <input type="text"   id="user-name" placeholder="이름 (예: 김소은)">
     </div>
     <button id="login-btn">입장하기 🌱</button>
   </div>
 </section>
 
-<!-- ── 메인 ── -->
-<section id="main-page" class="hidden">
+<!-- ══ 앱 본체 ══ -->
+<div id="app-body" class="hidden">
 
-  <div class="sticky-score">
-    <div class="score-title">오늘의 환경 점수</div>
-    <div class="score-number" id="total-score">0점</div>
-  </div>
+  <!-- 하단 탭 -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="score-page" onclick="switchTab('score-page',this)">
+      ✏️<span>점수입력</span>
+    </button>
+    <button class="tab-btn" data-tab="my-page" onclick="switchTab('my-page',this)">
+      👤<span>마이페이지</span>
+    </button>
+    <button class="tab-btn" data-tab="class-page" onclick="switchTab('class-page',this)">
+      🏆<span>학급현황판</span>
+    </button>
+  </nav>
 
-  <!-- 급식판 -->
-  <div class="card">
-    <h2>🍱 오늘 급식 다 먹기</h2>
-    <p class="card-sub">클릭하면 초록색! 칸마다 +4점</p>
-    <div class="meal-tray">
-      <div class="tray-top">
-        <div class="food-slot">반찬1</div>
-        <div class="food-slot">반찬2</div>
-        <div class="food-slot">반찬3</div>
-      </div>
-      <div class="tray-bottom">
-        <div class="food-slot rice">밥</div>
-        <div class="food-slot soup">국</div>
-      </div>
+  <!-- ── 점수입력 페이지 ── -->
+  <section id="score-page" class="tab-page">
+
+    <div class="sticky-score">
+      <div class="score-title">오늘의 환경 점수</div>
+      <div class="score-number" id="total-score">0점</div>
     </div>
-  </div>
 
-  <!-- 미션 -->
-  <div class="card">
-    <h2>🌎 오늘의 환경 미션</h2>
-    <p class="card-sub">❌ 0점 &nbsp;|&nbsp; 🔺 5점 &nbsp;|&nbsp; ⭕ 10점</p>
-    <div id="mission-container">
-      <div class="mission-card">
-        <div class="mission-title">💡 빈 교실, 빈 방 전등 끄기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,1,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,1,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,1,10)">⭕</button>
+    <!-- 급식판 -->
+    <div class="card">
+      <h2>🍱 오늘 급식 다 먹기</h2>
+      <p class="card-sub">먹은 칸을 눌러요 · 칸마다 +4점</p>
+      <div class="meal-tray">
+        <div class="tray-top">
+          <div class="food-slot">반찬1</div>
+          <div class="food-slot">반찬2</div>
+          <div class="food-slot">반찬3</div>
         </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">💧 이 닦을 때 물컵, 손 비누칠할 때 물 잠그기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,2,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,2,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,2,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">♻️ 분리수거, 재활용, 우유팩 씻어 말리기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,3,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,3,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,3,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">🗑️ 쓰레기 없는 하루 보내기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,4,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,4,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,4,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">🧹 자기 자리·교실 깨끗하게 유지하기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,5,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,5,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,5,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">🌱 식물 돌보기, 소중히 여기기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,6,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,6,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,6,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">🔌 안 쓰는 플러그 뽑기 (예: 충전기)</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,7,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,7,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,7,10)">⭕</button>
-        </div>
-      </div>
-      <div class="mission-card">
-        <div class="mission-title">📚 교과서·학용품 등 물건 아껴쓰기</div>
-        <div class="mission-buttons">
-          <button class="mission-btn" onclick="setMission(this,8,0)">❌</button>
-          <button class="mission-btn" onclick="setMission(this,8,5)">🔺</button>
-          <button class="mission-btn" onclick="setMission(this,8,10)">⭕</button>
+        <div class="tray-bottom">
+          <div class="food-slot rice">밥</div>
+          <div class="food-slot soup">국</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 달력 (월 이동) -->
-  <div class="card">
-    <div class="cal-header">
-      <button class="cal-nav-btn" onclick="prevMonth()">◀</button>
-      <h2 id="cal-title" style="margin:0">2025년 6월</h2>
-      <button class="cal-nav-btn" onclick="nextMonth()">▶</button>
+    <!-- 미션 -->
+    <div class="card">
+      <h2>🌎 오늘의 환경 미션</h2>
+      <p class="card-sub">❌ 0점 &nbsp;|&nbsp; 🔺 5점 &nbsp;|&nbsp; ⭕ 10점</p>
+      <div id="mission-container">
+        <div class="mission-card">
+          <div class="mission-title">💡 빈 교실·빈 방 전등 끄기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,1,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,1,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,1,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">💧 이 닦을 때 물컵, 손 비누칠할 때 물 잠그기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,2,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,2,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,2,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">♻️ 분리수거, 재활용, 우유팩 씻어 말리기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,3,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,3,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,3,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">🗑️ 쓰레기 없는 하루 보내기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,4,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,4,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,4,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">🧹 자기 자리·교실 깨끗하게 유지하기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,5,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,5,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,5,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">🌱 식물 돌보기, 소중히 여기기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,6,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,6,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,6,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">🔌 안 쓰는 플러그 뽑기 (예: 충전기)</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,7,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,7,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,7,10)">⭕</button>
+          </div>
+        </div>
+        <div class="mission-card">
+          <div class="mission-title">📚 교과서·학용품 등 물건 아껴쓰기</div>
+          <div class="mission-buttons">
+            <button class="mission-btn" onclick="setMission(this,8,0)">❌</button>
+            <button class="mission-btn" onclick="setMission(this,8,5)">🔺</button>
+            <button class="mission-btn" onclick="setMission(this,8,10)">⭕</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="calendar-grid" class="calendar-grid"></div>
-  </div>
 
-  <!-- 개인 미션 분석 -->
-  <div class="card">
-    <h2>🔍 이번 달 나의 습관 분석</h2>
-    <p class="card-sub">현재 달력 기준으로 표시돼요</p>
-    <div id="mission-analysis"><p class="analysis-empty">데이터 불러오는 중...</p></div>
-  </div>
+    <button class="submit-btn" onclick="submitScore()">오늘 점수 제출하기 🌱</button>
+    <div style="height:80px"></div><!-- 탭바 여백 -->
+  </section>
 
-  <!-- 개인 그래프 -->
-  <div class="card">
-    <h2>📈 이번 달 점수 그래프</h2>
-    <p class="card-sub">이번 달 1일~말일 전체 표시</p>
-    <div id="score-chart-container">
-      <p style="text-align:center;color:#888;padding:40px 0">로그인 후 표시돼요 🌱</p>
+  <!-- ── 마이페이지 ── -->
+  <section id="my-page" class="tab-page hidden">
+
+    <!-- 달력 -->
+    <div class="card">
+      <div class="cal-header">
+        <button class="cal-nav-btn" onclick="prevMonth()">◀</button>
+        <h2 id="cal-title" style="margin:0;font-size:18px">2025년 6월</h2>
+        <button class="cal-nav-btn" onclick="nextMonth()">▶</button>
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
     </div>
-  </div>
 
-  <!-- 레벨 & 배지 -->
-  <div class="card">
-    <h2>🏅 레벨 &amp; 배지</h2>
-    <div id="level-section"><p style="text-align:center;color:#888;padding:20px 0">로딩 중...</p></div>
-  </div>
+    <!-- 습관 분석 -->
+    <div class="card">
+      <h2>🔍 이번 달 나의 습관 분석</h2>
+      <p class="card-sub">달력 기준 월의 기록이에요</p>
+      <div id="mission-analysis"><p class="analysis-empty">데이터 불러오는 중...</p></div>
+    </div>
 
-  <button class="submit-btn" onclick="submitScore()">오늘 점수 제출하기 🌱</button>
-  <button class="dashboard-btn" onclick="goClassPage()">학급 현황판 보기 🏆</button>
+    <!-- 개인 그래프 -->
+    <div class="card">
+      <h2>📈 이번 달 점수 그래프</h2>
+      <p class="card-sub">이번 달 1일~말일 전체</p>
+      <div id="score-chart-container">
+        <p style="text-align:center;color:#888;padding:30px 0">로딩 중...</p>
+      </div>
+    </div>
 
-</section>
+    <!-- 레벨 & 배지 -->
+    <div class="card">
+      <h2>🏅 레벨 &amp; 배지</h2>
+      <div id="level-section"><p style="text-align:center;color:#888;padding:20px 0">로딩 중...</p></div>
+    </div>
 
-<!-- ── 학급 현황판 ── -->
-<section id="class-page" class="hidden">
+    <div style="height:80px"></div>
+  </section>
 
-  <div class="card" id="top3-section">불러오는 중...</div>
-  <div class="card" id="mission-winner-section"></div>
-  <div class="card" id="class-chart-container"></div>
-  <div class="card">
-    <div id="ranking-list"></div>
-  </div>
-  <div class="card" id="rules-section"></div>
+  <!-- ── 학급현황판 ── -->
+  <section id="class-page" class="tab-page hidden">
+    <div class="card" id="top3-section"><p style="color:#888">불러오는 중...</p></div>
+    <div class="card" id="mission-winner-section"></div>
+    <div class="card" id="class-chart-container"></div>
+    <div class="card"><div id="ranking-list"></div></div>
+    <div class="card" id="rules-section"></div>
+    <div style="height:80px"></div>
+  </section>
 
-  <button class="dashboard-btn" onclick="backToMain()">← 뒤로가기</button>
-
-</section>
+</div><!-- /#app-body -->
 
 <script src="app.js"></script>
 </body>
