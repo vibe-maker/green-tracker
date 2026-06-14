@@ -1,178 +1,199 @@
 /* ── 기본 ── */
-body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;}
+body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;
+  padding-bottom:70px;} /* 탭바 높이만큼 여백 */
 .hidden{display:none!important;}
 
 /* ── 헤더 ── */
-.main-header{text-align:center;padding:30px 20px 10px;}
-.main-header h1{margin:0;font-size:34px;color:#2e7d32;}
-.main-header p{color:#558b2f;margin:6px 0 0;}
+.main-header{text-align:center;padding:22px 20px 8px;background:white;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.main-header h1{margin:0;font-size:28px;color:#2e7d32;}
+.main-header p{color:#558b2f;margin:4px 0 0;font-size:14px;}
 
 /* ── 로그인 ── */
-.login-card{background:white;max-width:500px;margin:30px auto;padding:35px;
-  border-radius:30px;box-shadow:0 4px 15px rgba(0,0,0,.08);text-align:center;}
-.login-inputs{display:flex;gap:12px;justify-content:center;margin:25px 0;}
-.login-inputs input{padding:16px;border:none;border-radius:16px;background:#f1f8e9;
-  font-size:17px;width:150px;}
-#login-btn{padding:16px 35px;border:none;border-radius:18px;background:#43a047;
-  color:white;font-size:18px;font-weight:bold;cursor:pointer;}
+#login-page{padding:20px;}
+.login-card{background:white;max-width:480px;margin:20px auto;padding:32px;
+  border-radius:28px;box-shadow:0 4px 15px rgba(0,0,0,.08);text-align:center;}
+.login-card h2{color:#2e7d32;margin-bottom:20px;}
+.login-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+.login-inputs input{padding:14px;border:none;border-radius:14px;background:#f1f8e9;
+  font-size:16px;width:140px;outline:none;}
+#login-btn{padding:14px 32px;border:none;border-radius:16px;background:#43a047;
+  color:white;font-size:17px;font-weight:bold;cursor:pointer;transition:.15s;}
+#login-btn:hover{background:#388e3c;}
+
+/* ── 탭바 ── */
+.tab-bar{position:fixed;bottom:0;left:0;width:100%;background:white;
+  display:flex;border-top:1px solid #e0e0e0;z-index:1000;
+  box-shadow:0 -2px 10px rgba(0,0,0,.08);}
+.tab-btn{flex:1;padding:10px 0 8px;border:none;background:none;
+  font-size:11px;color:#999;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:2px;transition:.15s;}
+.tab-btn span{font-size:11px;}
+.tab-btn:first-child{font-size:20px;}
+.tab-btn.active{color:#2e7d32;font-weight:bold;}
+.tab-btn.active::before{content:'';display:block;width:32px;height:3px;
+  background:#43a047;border-radius:999px;margin-bottom:4px;}
+
+/* ── 탭 페이지 ── */
+.tab-page{padding:12px 0;}
 
 /* ── 상단 점수 ── */
-.sticky-score{position:sticky;top:0;background:white;padding:14px;text-align:center;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);z-index:999;}
-.score-title{font-size:15px;color:#2e7d32;}
-.score-number{font-size:40px;font-weight:bold;color:#1b5e20;}
+.sticky-score{position:sticky;top:0;background:white;padding:12px;text-align:center;
+  box-shadow:0 3px 8px rgba(0,0,0,.07);z-index:900;}
+.score-title{font-size:14px;color:#2e7d32;}
+.score-number{font-size:38px;font-weight:bold;color:#1b5e20;}
 
 /* ── 카드 ── */
-.card{background:white;border-radius:22px;padding:22px;margin:0 14px 20px;
-  box-shadow:0 4px 12px rgba(0,0,0,.07);box-sizing:border-box;}
-.card h2{margin-top:0;color:#2e7d32;}
-.card-sub{margin:-12px 0 14px;font-size:13px;color:#888;}
+.card{background:white;border-radius:20px;padding:20px;margin:0 12px 16px;
+  box-shadow:0 3px 10px rgba(0,0,0,.07);box-sizing:border-box;}
+.card h2{margin-top:0;color:#2e7d32;font-size:17px;}
+.card-sub{margin:-10px 0 12px;font-size:12px;color:#888;}
 
 /* ── 급식판 ── */
-.meal-tray{background:#d7ccc8;padding:18px;border-radius:32px;max-width:480px;margin:auto;}
-.tray-top{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.meal-tray{background:#d7ccc8;padding:16px;border-radius:28px;max-width:420px;margin:auto;}
+.tray-top{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
 .tray-bottom{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.food-slot{height:88px;border-radius:50%;background:#fff8e1;display:flex;align-items:center;
-  justify-content:center;font-weight:bold;cursor:pointer;transition:.18s;}
+.food-slot{height:80px;border-radius:50%;background:#fff8e1;display:flex;
+  align-items:center;justify-content:center;font-weight:bold;cursor:pointer;transition:.18s;font-size:14px;}
 .food-slot.active{background:#66bb6a;color:white;transform:scale(1.06);}
 
 /* ── 미션 ── */
-.mission-card{background:#f9fff9;padding:16px;border-radius:18px;margin-bottom:14px;}
-.mission-title{font-weight:bold;line-height:1.5;margin-bottom:12px;}
-.mission-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.mission-btn{padding:13px;border:none;border-radius:14px;background:#eceff1;
-  font-size:21px;cursor:pointer;transition:.15s;}
+.mission-card{background:#f9fff9;padding:14px;border-radius:16px;margin-bottom:12px;}
+.mission-title{font-weight:bold;line-height:1.5;margin-bottom:10px;font-size:14px;}
+.mission-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.mission-btn{padding:12px;border:none;border-radius:12px;background:#eceff1;
+  font-size:20px;cursor:pointer;transition:.15s;}
 .mission-btn.selected{background:#43a047;color:white;font-weight:bold;transform:scale(1.05);}
 
+/* ── 제출 버튼 ── */
+.submit-btn{width:calc(100% - 24px);margin:4px 12px 16px;padding:16px;border:none;
+  border-radius:18px;background:linear-gradient(135deg,#66bb6a,#43a047);color:white;
+  font-size:18px;font-weight:bold;cursor:pointer;display:block;
+  box-shadow:0 5px 14px rgba(0,0,0,.13);transition:.2s;}
+.submit-btn:hover{transform:translateY(-2px);}
+
 /* ── 달력 ── */
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.cal-header h2{margin:0;color:#2e7d32;}
-.cal-nav-btn{background:#f1f8e9;border:none;border-radius:10px;padding:8px 14px;
-  font-size:16px;cursor:pointer;color:#2e7d32;font-weight:bold;}
-.cal-nav-btn:hover{background:#c8e6c9;}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;}
-.week-name{font-weight:bold;font-size:12px;color:#558b2f;padding:4px 0;}
-.day{background:#f1f8e9;border-radius:12px;padding:7px 0;font-weight:bold;
-  font-size:12px;min-height:46px;}
-.green-paw{width:16px;height:16px;border-radius:50%;background:#43a047;
-  margin:4px auto 0;display:flex;align-items:center;justify-content:center;font-size:10px;}
-.gold-paw{width:20px;height:20px;border-radius:50%;background:#fbc02d;
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-nav-btn{background:#f1f8e9;border:none;border-radius:9px;padding:7px 12px;
+  font-size:15px;cursor:pointer;color:#2e7d32;font-weight:bold;}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center;}
+.week-name{font-weight:bold;font-size:11px;color:#558b2f;padding:3px 0;}
+.day{background:#f1f8e9;border-radius:10px;padding:6px 0;font-weight:bold;
+  font-size:11px;min-height:42px;}
+.green-paw{width:14px;height:14px;border-radius:50%;background:#43a047;
+  margin:3px auto 0;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.gold-paw{width:17px;height:17px;border-radius:50%;background:#fbc02d;
   margin:3px auto 0;display:flex;align-items:center;justify-content:center;
-  font-size:11px;box-shadow:0 0 6px rgba(251,192,45,.6);}
+  font-size:10px;box-shadow:0 0 5px rgba(251,192,45,.6);}
 
 /* ── 습관 분석 ── */
-.analysis-empty{text-align:center;color:#aaa;padding:20px 0;}
-.analysis-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.analysis-card{border-radius:16px;padding:16px;text-align:center;}
+.analysis-empty{text-align:center;color:#aaa;padding:16px 0;font-size:14px;}
+.analysis-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.analysis-card{border-radius:14px;padding:14px;text-align:center;}
 .analysis-card.best{background:#e8f5e9;border:2px solid #66bb6a;}
 .analysis-card.worst{background:#fff3e0;border:2px solid #ffa726;}
-.analysis-label{font-size:13px;color:#666;margin-bottom:8px;}
-.analysis-name{font-size:15px;font-weight:bold;color:#333;margin-bottom:4px;}
-.analysis-avg{font-size:13px;color:#888;}
+.analysis-label{font-size:12px;color:#666;margin-bottom:6px;}
+.analysis-name{font-size:14px;font-weight:bold;color:#333;margin-bottom:3px;}
+.analysis-avg{font-size:12px;color:#888;}
 
 /* ── 레벨 ── */
-.level-display{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;
-  background:#f1f8e9;padding:14px;border-radius:16px;}
-.level-icon{font-size:46px;line-height:1;}
+.level-display{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px;
+  background:#f1f8e9;padding:14px;border-radius:14px;}
+.level-icon{font-size:42px;line-height:1;}
 .level-info{flex:1;}
-.level-title{font-size:19px;font-weight:bold;color:#2e7d32;margin-bottom:3px;}
-.level-cumulative{font-size:13px;color:#666;margin-bottom:8px;}
-.progress-wrap{margin-top:6px;}
-.progress-bar{height:11px;background:#c8e6c9;border-radius:999px;overflow:hidden;margin-bottom:5px;}
+.level-title{font-size:18px;font-weight:bold;color:#2e7d32;margin-bottom:3px;}
+.level-cumulative{font-size:13px;color:#666;margin-bottom:7px;}
+.progress-wrap{margin-top:5px;}
+.progress-bar{height:10px;background:#c8e6c9;border-radius:999px;overflow:hidden;margin-bottom:4px;}
 .progress-fill{height:100%;background:linear-gradient(90deg,#43a047,#66bb6a);border-radius:999px;transition:width .5s;}
-.progress-label{font-size:12px;color:#666;}
+.progress-label{font-size:11px;color:#666;}
 
 /* ── 배지 ── */
-.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
-.badge-item{text-align:center;padding:12px 6px;border-radius:16px;transition:.2s;}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+.badge-item{text-align:center;padding:10px 5px;border-radius:14px;}
 .badge-earned{background:#fff8e1;border:2px solid #fbc02d;}
-.badge-locked{background:#f5f5f5;opacity:.45;filter:grayscale(1);}
-.badge-emoji{font-size:28px;margin-bottom:4px;}
-.badge-name{font-size:13px;font-weight:bold;color:#333;margin-bottom:2px;}
-.badge-desc{font-size:11px;color:#888;}
+.badge-locked{background:#f5f5f5;opacity:.4;filter:grayscale(1);}
+.badge-emoji{font-size:26px;margin-bottom:3px;}
+.badge-name{font-size:12px;font-weight:bold;color:#333;margin-bottom:1px;}
+.badge-desc{font-size:10px;color:#888;}
 
 /* ── 레벨 사다리 ── */
-.level-ladder{display:flex;flex-direction:column;gap:7px;}
-.ladder-step{display:flex;align-items:center;gap:10px;padding:9px 14px;
-  border-radius:12px;background:#f5f5f5;opacity:.5;}
+.level-ladder{display:flex;flex-direction:column;gap:6px;}
+.ladder-step{display:flex;align-items:center;gap:9px;padding:8px 12px;
+  border-radius:11px;background:#f5f5f5;opacity:.5;}
 .ladder-done{background:#e8f5e9;opacity:.8;}
 .ladder-active{background:#c8e6c9;border:2px solid #43a047;opacity:1;font-weight:bold;}
-.ladder-name{flex:1;font-size:14px;}
-.ladder-score{font-size:12px;color:#666;}
-
-/* ── 버튼 ── */
-.submit-btn{width:calc(100% - 28px);margin:0 14px 14px;padding:18px;border:none;
-  border-radius:20px;background:linear-gradient(135deg,#66bb6a,#43a047);color:white;
-  font-size:19px;font-weight:bold;cursor:pointer;box-shadow:0 6px 15px rgba(0,0,0,.13);
-  transition:.2s;display:block;}
-.submit-btn:hover{transform:translateY(-2px);}
-.dashboard-btn{width:calc(100% - 28px);margin:0 14px 22px;padding:17px;border:none;
-  border-radius:20px;background:#c8e6c9;font-size:17px;font-weight:bold;cursor:pointer;display:block;}
+.ladder-name{flex:1;font-size:13px;}
+.ladder-score{font-size:11px;color:#666;}
 
 /* ── 팝업 ── */
 .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);
   display:flex;justify-content:center;align-items:center;z-index:9999;}
-.popup-box{background:white;padding:32px 26px;border-radius:24px;text-align:center;
-  width:85%;max-width:400px;animation:popupShow .3s;max-height:88vh;overflow-y:auto;}
-.bear{font-size:60px;margin-bottom:10px;animation:floatBear 2s infinite;display:block;}
-.popup-text{font-size:19px;line-height:1.6;margin:10px 0;color:#0288d1;font-weight:bold;}
-.popup-bonus{background:#fff8e1;border:2px solid #fbc02d;border-radius:12px;padding:9px 14px;
-  font-size:15px;font-weight:bold;color:#f57f17;margin:8px 0;}
-.popup-new-badges{margin:10px 0;}
-.badge-chip{display:inline-block;background:#e8f5e9;border:1px solid #43a047;border-radius:999px;
-  padding:5px 12px;font-size:13px;margin:3px;color:#2e7d32;}
-.popup-level{background:#f1f8e9;border-radius:14px;padding:12px;margin:12px 0;}
-.level-emoji{font-size:32px;}
-.level-name{display:block;font-size:17px;font-weight:bold;color:#2e7d32;margin:5px 0;}
-.popup-progress-bar{height:9px;background:#c8e6c9;border-radius:999px;overflow:hidden;margin:7px 0 3px;}
+.popup-box{background:white;padding:28px 22px;border-radius:22px;text-align:center;
+  width:85%;max-width:380px;animation:popupShow .3s;max-height:88vh;overflow-y:auto;}
+.bear{font-size:56px;margin-bottom:8px;animation:floatBear 2s infinite;display:block;}
+.popup-text{font-size:17px;line-height:1.6;margin:8px 0;color:#0288d1;font-weight:bold;}
+.popup-bonus{background:#fff8e1;border:2px solid #fbc02d;border-radius:10px;
+  padding:8px 12px;font-size:14px;font-weight:bold;color:#f57f17;margin:6px 0;}
+.popup-new-badges{margin:8px 0;}
+.badge-chip{display:inline-block;background:#e8f5e9;border:1px solid #43a047;
+  border-radius:999px;padding:4px 10px;font-size:12px;margin:3px;color:#2e7d32;}
+.popup-level{background:#f1f8e9;border-radius:12px;padding:10px;margin:10px 0;}
+.level-emoji{font-size:28px;}
+.level-name{display:block;font-size:16px;font-weight:bold;color:#2e7d32;margin:4px 0;}
+.popup-progress-bar{height:8px;background:#c8e6c9;border-radius:999px;overflow:hidden;margin:6px 0 3px;}
 .popup-progress-fill{height:100%;background:#43a047;border-radius:999px;}
-.popup-progress-text{font-size:12px;color:#666;margin:0;}
-.popup-box button{margin-top:14px;padding:13px 26px;border:none;border-radius:12px;
-  background:#43a047;color:white;font-size:15px;font-weight:bold;cursor:pointer;}
+.popup-progress-text{font-size:11px;color:#666;margin:0;}
+.popup-box button{margin-top:12px;padding:12px 24px;border:none;border-radius:11px;
+  background:#43a047;color:white;font-size:14px;font-weight:bold;cursor:pointer;}
 @keyframes popupShow{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes floatBear{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes floatBear{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 
 /* ── 현황판 공통 ── */
-.class-section-title{font-size:16px;font-weight:bold;color:#2e7d32;
-  margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid #e8f5e9;}
+.class-section-title{font-size:15px;font-weight:bold;color:#2e7d32;
+  margin-bottom:12px;padding-bottom:5px;border-bottom:2px solid #e8f5e9;}
 
-/* ── TOP3 / 명단 ── */
-.ranking-item{display:flex;align-items:center;gap:10px;padding:12px 14px;
-  margin-bottom:8px;background:#f1f8e9;border-radius:12px;}
+/* ── TOP3 ── */
+.ranking-item{display:flex;align-items:center;gap:9px;padding:11px 13px;
+  margin-bottom:7px;background:#f1f8e9;border-radius:11px;}
 .ranking-me{background:#c8e6c9;border:2px solid #43a047;font-weight:bold;}
-.rank-medal{font-size:20px;min-width:28px;}
-.rank-name{flex:1;font-size:15px;}
-.rank-score{font-size:15px;font-weight:bold;color:#2e7d32;}
-
-/* ── 전체 명단 ── */
-.student-row{display:grid;grid-template-columns:28px 1fr 1fr 60px 60px;align-items:center;
-  gap:6px;padding:10px 12px;margin-bottom:6px;background:#f9fff9;border-radius:11px;
-  font-size:13px;}
-.student-me{background:#e8f5e9;border:2px solid #66bb6a;font-weight:bold;}
-.student-rank{color:#888;font-size:12px;}
-.student-level{font-size:12px;color:#555;}
-.student-badges{font-size:14px;text-align:center;}
-.student-score{font-size:13px;font-weight:bold;color:#2e7d32;text-align:right;}
+.rank-medal{font-size:19px;min-width:26px;}
+.rank-name{flex:1;font-size:14px;}
+.rank-score{font-size:14px;font-weight:bold;color:#2e7d32;}
 
 /* ── 항목별 1위 ── */
-.mission-winner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.mission-winner-card{background:#f1f8e9;border-radius:14px;padding:12px 8px;text-align:center;}
-.mw-mission{font-size:11px;color:#666;margin-bottom:6px;line-height:1.3;}
-.mw-name{font-size:14px;font-weight:bold;color:#1b5e20;margin-bottom:3px;}
-.mw-score{font-size:12px;color:#43a047;}
+.mission-winner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.mission-winner-card{background:#f1f8e9;border-radius:12px;padding:10px 6px;text-align:center;}
+.mw-mission{font-size:10px;color:#666;margin-bottom:5px;line-height:1.3;}
+.mw-name{font-size:12px;font-weight:bold;color:#1b5e20;margin-bottom:2px;}
+.mw-score{font-size:11px;color:#43a047;}
+
+/* ── 전체 명단 ── */
+.student-header{display:grid;grid-template-columns:28px 1fr 28px 50px 44px 36px;
+  gap:4px;padding:6px 10px;font-size:11px;color:#888;font-weight:bold;
+  border-bottom:1px solid #e0e0e0;margin-bottom:4px;}
+.student-row{display:grid;grid-template-columns:28px 1fr 28px 50px 44px 36px;
+  align-items:center;gap:4px;padding:9px 10px;margin-bottom:5px;
+  background:#f9fff9;border-radius:10px;font-size:12px;}
+.student-me{background:#e8f5e9;border:2px solid #66bb6a;font-weight:bold;}
+.student-rank{color:#888;font-size:11px;text-align:center;}
+.student-name{font-size:13px;}
+.student-level{font-size:16px;text-align:center;}
+.student-badges{font-size:12px;text-align:center;}
+.student-score{font-size:12px;font-weight:bold;color:#2e7d32;text-align:right;}
+.student-rank-badge{font-size:12px;text-align:center;}
 
 /* ── 룰 박스 ── */
-.rules-box{background:#f9fff9;border-radius:14px;padding:16px;}
-.rule-item{padding:7px 0;font-size:14px;border-bottom:1px solid #e8f5e9;line-height:1.6;}
+.rules-box{background:#f9fff9;border-radius:12px;padding:14px;}
+.rule-item{padding:6px 0;font-size:13px;border-bottom:1px solid #e8f5e9;line-height:1.6;}
 .rule-item:last-child{border-bottom:none;}
-.rule-levels{color:#555;font-size:13px;}
+.rule-levels{color:#555;font-size:12px;}
 
 /* ── 모바일 ── */
-@media(max-width:480px){
-  .login-inputs input{width:120px;font-size:15px;}
-  .food-slot{height:72px;font-size:13px;}
+@media(max-width:400px){
+  .login-inputs input{width:120px;font-size:14px;}
+  .food-slot{height:68px;font-size:12px;}
   .badge-grid{grid-template-columns:repeat(2,1fr);}
   .mission-winner-grid{grid-template-columns:repeat(2,1fr);}
-  .student-row{grid-template-columns:22px 1fr 1fr 50px 48px;font-size:12px;}
-  .analysis-row{grid-template-columns:1fr;}
+  .student-header,.student-row{grid-template-columns:24px 1fr 24px 42px 40px 30px;font-size:11px;}
 }
