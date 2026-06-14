@@ -108,15 +108,6 @@ body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;
 .progress-fill{height:100%;background:linear-gradient(90deg,#43a047,#66bb6a);border-radius:999px;transition:width .5s;}
 .progress-label{font-size:11px;color:#666;}
 
-/* ── 배지 ── */
-.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
-.badge-item{text-align:center;padding:10px 5px;border-radius:14px;}
-.badge-earned{background:#fff8e1;border:2px solid #fbc02d;}
-.badge-locked{background:#f5f5f5;opacity:.4;filter:grayscale(1);}
-.badge-emoji{font-size:26px;margin-bottom:3px;}
-.badge-name{font-size:12px;font-weight:bold;color:#333;margin-bottom:1px;}
-.badge-desc{font-size:10px;color:#888;}
-
 /* ── 레벨 사다리 ── */
 .level-ladder{display:flex;flex-direction:column;gap:6px;}
 .ladder-step{display:flex;align-items:center;gap:9px;padding:8px 12px;
@@ -158,6 +149,7 @@ body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;
   margin-bottom:7px;background:#f1f8e9;border-radius:11px;}
 .ranking-me{background:#c8e6c9;border:2px solid #43a047;font-weight:bold;}
 .rank-medal{font-size:19px;min-width:26px;}
+.top-rank{font-size:15px;font-weight:bold;color:#1b5e20;min-width:32px;}
 .rank-name{flex:1;font-size:14px;}
 .rank-score{font-size:14px;font-weight:bold;color:#2e7d32;}
 
@@ -169,19 +161,19 @@ body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;
 .mw-score{font-size:11px;color:#43a047;}
 
 /* ── 전체 명단 ── */
-.student-header{display:grid;grid-template-columns:28px 1fr 28px 50px 44px 36px;
+.student-header{display:grid;grid-template-columns:28px 1fr 90px 50px 36px;
   gap:4px;padding:6px 10px;font-size:11px;color:#888;font-weight:bold;
   border-bottom:1px solid #e0e0e0;margin-bottom:4px;}
-.student-row{display:grid;grid-template-columns:28px 1fr 28px 50px 44px 36px;
+.student-row{display:grid;grid-template-columns:28px 1fr 90px 50px 36px;
   align-items:center;gap:4px;padding:9px 10px;margin-bottom:5px;
   background:#f9fff9;border-radius:10px;font-size:12px;}
 .student-me{background:#e8f5e9;border:2px solid #66bb6a;font-weight:bold;}
-.student-rank{color:#888;font-size:11px;text-align:center;}
+.student-no{color:#888;font-size:11px;text-align:center;}
 .student-name{font-size:13px;}
-.student-level{font-size:16px;text-align:center;}
-.student-badges{font-size:12px;text-align:center;}
+.student-level{font-size:13px;display:flex;align-items:center;gap:3px;}
+.student-level small{font-size:10px;color:#666;}
 .student-score{font-size:12px;font-weight:bold;color:#2e7d32;text-align:right;}
-.student-rank-badge{font-size:12px;text-align:center;}
+.student-rank-col{font-size:12px;text-align:center;color:#555;}
 
 /* ── 룰 박스 ── */
 .rules-box{background:#f9fff9;border-radius:12px;padding:14px;}
@@ -193,7 +185,6 @@ body{margin:0;padding:0;background:#f4fff4;font-family:sans-serif;color:#222;
 @media(max-width:400px){
   .login-inputs input{width:120px;font-size:14px;}
   .food-slot{height:68px;font-size:12px;}
-  .badge-grid{grid-template-columns:repeat(2,1fr);}
   .mission-winner-grid{grid-template-columns:repeat(2,1fr);}
-  .student-header,.student-row{grid-template-columns:24px 1fr 24px 42px 40px 30px;font-size:11px;}
+  .student-header,.student-row{grid-template-columns:22px 1fr 70px 42px 30px;font-size:11px;}
 }
