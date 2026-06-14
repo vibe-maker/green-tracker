@@ -1,6 +1,6 @@
-/* ==============================================
-   초록 지구 지킴이 — app.js  (전면 개정판)
-   ============================================== */
+/* ================================================
+   초록 지구 지킴이 — app.js
+   ================================================ */
 
 /* ── 상수 ── */
 const WEB_APP_URL =
@@ -30,82 +30,50 @@ const LEVELS = [
 const BADGES = [
   {id:"perfect", name:"완벽한 하루", emoji:"💯", short:"완벽",
    desc:"하루 100점 달성", check:(cum,score)=> score>=100},
-  {id:"b1000",   name:"1000점",      emoji:"🥉", short:"1K",
-   desc:"누적 1000점",    check:(cum)=> cum>=1000},
-  {id:"b2500",   name:"2500점",      emoji:"🥈", short:"25C",
-   desc:"누적 2500점",    check:(cum)=> cum>=2500},
-  {id:"b5000",   name:"5000점",      emoji:"🥇", short:"5K",
-   desc:"누적 5000점",    check:(cum)=> cum>=5000},
-  {id:"b7500",   name:"7500점",      emoji:"🏆", short:"75C",
-   desc:"누적 7500점",    check:(cum)=> cum>=7500},
-  {id:"b10000",  name:"10000점",     emoji:"👑", short:"10K",
-   desc:"누적 10000점",   check:(cum)=> cum>=10000},
+  {id:"b1000",  name:"1000점",  emoji:"🥉", short:"1K",
+   desc:"누적 1000점",   check:(cum)=> cum>=1000},
+  {id:"b2500",  name:"2500점",  emoji:"🥈", short:"2.5K",
+   desc:"누적 2500점",   check:(cum)=> cum>=2500},
+  {id:"b5000",  name:"5000점",  emoji:"🥇", short:"5K",
+   desc:"누적 5000점",   check:(cum)=> cum>=5000},
+  {id:"b7500",  name:"7500점",  emoji:"🏆", short:"7.5K",
+   desc:"누적 7500점",   check:(cum)=> cum>=7500},
+  {id:"b10000", name:"10000점", emoji:"👑", short:"10K",
+   desc:"누적 10000점",  check:(cum)=> cum>=10000},
 ];
 
+/* 미션 키와 이름 — 순서가 appendRow 순서와 완전히 일치해야 함 */
+const MISSION_KEYS  = ["m_meal","m1","m2","m3","m4","m5","m6","m7","m8"];
 const MISSION_NAMES = [
-  "급식 다 먹기",
-  "전등 끄기",
-  "물 아끼기",
-  "분리수거",
-  "쓰레기 없는 하루",
-  "교실 청결",
-  "식물 돌보기",
-  "플러그 뽑기",
-  "물건 아끼기",
+  "급식 다 먹기","전등 끄기","물 아끼기","분리수거",
+  "쓰레기 없는 하루","교실 청결","식물 돌보기","플러그 뽑기","물건 아끼기",
 ];
 
 /* ── 상태 ── */
-let totalScore   = 0;
-let missionScores= {};   // {mealCount, 1..8}
-let currentStreak= 0;
-let currentNo    = "";
-let currentName  = "";
-let allServerData= [];   // 서버에서 불러온 전체 레코드
-let calViewYear  = new Date().getFullYear();
-let calViewMonth = new Date().getMonth();   // 0-based
-let scoreChart   = null;
-let classChart   = null;
+let totalScore    = 0;
+let missionScores = {};
+let currentStreak = 0;
+let currentNo     = "";
+let currentName   = "";
+let allServerData = [];
+let calViewYear   = new Date().getFullYear();
+let calViewMonth  = new Date().getMonth();
+let scoreChart    = null;
+let classChart    = null;
 
 /* ══════════════════════════════
    localStorage 유틸
 ══════════════════════════════ */
-const lsKey = s => `eco_${currentNo}_${currentName}_${s}`;
-
-const getTodayStr = () => {
-  const d=new Date();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-};
-
-const hasSubmittedToday = () =>
-  localStorage.getItem(lsKey("lastSubmit")) === getTodayStr();
-
-const markSubmittedToday = () =>
-  localStorage.setItem(lsKey("lastSubmit"), getTodayStr());
-
-const getCumScore = () => Number(localStorage.getItem(lsKey("cumScore"))||0);
-
-const addCumScore = n => {
-  const v = getCumScore()+n;
-  localStorage.setItem(lsKey("cumScore"), v);
-  return v;
-};
-
-const getBadgeIds = () => {
-  const r=localStorage.getItem(lsKey("badges"));
-  return r ? JSON.parse(r) : [];
-};
-
-const saveBadgeIds = ids =>
-  localStorage.setItem(lsKey("badges"), JSON.stringify(ids));
-
-/* 연속 날짜 streak 저장 */
-const getStreakData = () => {
-  const r=localStorage.getItem(lsKey("streakData"));
-  return r ? JSON.parse(r) : {count:0, lastDate:""};
-};
-
-const saveStreakData = obj =>
-  localStorage.setItem(lsKey("streakData"), JSON.stringify(obj));
+const lsKey        = s => `eco_${currentNo}_${currentName}_${s}`;
+const getTodayStr  = () => { const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; };
+const hasSubmitted = () => localStorage.getItem(lsKey("lastSubmit")) === getTodayStr();
+const markSubmit   = () => localStorage.setItem(lsKey("lastSubmit"), getTodayStr());
+const getCumScore  = () => Number(localStorage.getItem(lsKey("cumScore"))||0);
+const addCumScore  = n  => { const v=getCumScore()+n; localStorage.setItem(lsKey("cumScore"),v); return v; };
+const getBadgeIds  = () => { const r=localStorage.getItem(lsKey("badges")); return r?JSON.parse(r):[]; };
+const saveBadgeIds = ids=> localStorage.setItem(lsKey("badges"),JSON.stringify(ids));
+const getStreakData= () => { const r=localStorage.getItem(lsKey("streakData")); return r?JSON.parse(r):{count:0,lastDate:""}; };
+const saveStreak   = obj=> localStorage.setItem(lsKey("streakData"),JSON.stringify(obj));
 
 /* ══════════════════════════════
    레벨 / 배지 유틸
@@ -120,38 +88,34 @@ function getNextLevel(cum) {
   return null;
 }
 function calcNewBadges(cum, score, existingIds) {
-  return BADGES.filter(b=>
-    !existingIds.includes(b.id) && b.check(cum, score)
-  );
+  return BADGES.filter(b=> !existingIds.includes(b.id) && b.check(cum,score));
 }
 
 /* ══════════════════════════════
    연속 streak 계산
-   (전날 제출했을 때만 연속, 중간 빠지면 1로 초기화)
+   전날 제출했을 때만 연속, 빠지면 1로 초기화
 ══════════════════════════════ */
 function calcStreak() {
-  const sd   = getStreakData();
+  const sd  = getStreakData();
+  const yd  = new Date(); yd.setDate(yd.getDate()-1);
+  const yes = `${yd.getFullYear()}-${yd.getMonth()+1}-${yd.getDate()}`;
   const today = getTodayStr();
-
-  // 어제 날짜 문자열
-  const yd  = new Date();
-  yd.setDate(yd.getDate()-1);
-  const yesterday = `${yd.getFullYear()}-${yd.getMonth()+1}-${yd.getDate()}`;
-
-  let newCount;
-  if(sd.lastDate === yesterday) {
-    newCount = sd.count + 1;          // 연속
-  } else if(sd.lastDate === today) {
-    newCount = sd.count;              // 오늘 이미 제출 (방어)
-  } else {
-    newCount = 1;                     // 끊김 → 새로 시작
-  }
-  return newCount;
+  if(sd.lastDate===today)   return sd.count;       // 이미 오늘 제출
+  if(sd.lastDate===yes)     return sd.count+1;     // 연속
+  return 1;                                         // 끊김
 }
 
-function commitStreak(count) {
-  saveStreakData({count, lastDate: getTodayStr()});
-  currentStreak = count;
+/* ══════════════════════════════
+   탭 전환
+══════════════════════════════ */
+function switchTab(tabId, btn) {
+  document.querySelectorAll(".tab-page").forEach(p=>p.classList.add("hidden"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById(tabId).classList.remove("hidden");
+  btn.classList.add("active");
+
+  // 학급현황판 진입 시 데이터 로드
+  if(tabId==="class-page") loadClassRanking();
 }
 
 /* ══════════════════════════════
@@ -162,26 +126,26 @@ function login() {
   const name = document.getElementById("user-name").value.trim();
   if(!no||!name){ alert("번호와 이름을 입력하세요!"); return; }
 
-  // 명단 검증
-  const found = STUDENTS.find(s=> String(s.no)===no && s.name===name);
-  if(!found){ alert("번호 또는 이름이 명단과 일치하지 않아요 😅"); return; }
+  const found = STUDENTS.find(s=> String(s.no)===String(no) && s.name===name);
+  if(!found){ alert("번호 또는 이름이 명단과 일치하지 않아요 😅\n(예: 번호 3, 이름 김소은)"); return; }
 
-  currentNo   = no;
-  currentName = name;
+  currentNo     = no;
+  currentName   = name;
   currentStreak = getStreakData().count;
 
   document.getElementById("login-page").classList.add("hidden");
-  document.getElementById("main-page").classList.remove("hidden");
+  document.getElementById("app-body").classList.remove("hidden");
+  document.getElementById("header-sub").textContent = `${name} 지킴이의 환경 기록 🌱`;
 
   renderCalendar();
   loadAllData();
 }
 
 /* ══════════════════════════════
-   급식판 클릭
+   급식판
 ══════════════════════════════ */
 document.querySelectorAll(".food-slot").forEach(slot=>{
-  slot.addEventListener("click", ()=>{
+  slot.addEventListener("click",()=>{
     slot.classList.toggle("active");
     updateTotalScore();
   });
@@ -191,82 +155,67 @@ document.querySelectorAll(".food-slot").forEach(slot=>{
    미션 버튼
 ══════════════════════════════ */
 function setMission(btn, id, score) {
-  missionScores[id] = score;
-  btn.parentElement.querySelectorAll(".mission-btn")
-     .forEach(b=>b.classList.remove("selected"));
+  missionScores[id]=score;
+  btn.parentElement.querySelectorAll(".mission-btn").forEach(b=>b.classList.remove("selected"));
   btn.classList.add("selected");
   updateTotalScore();
 }
 
-/* ══════════════════════════════
-   총점 계산
-══════════════════════════════ */
 function updateTotalScore() {
-  let s = 0;
-  const active = document.querySelectorAll(".food-slot.active");
-  s += active.length * 4;
-  Object.values(missionScores).forEach(v=>{ s+=v; });
-  totalScore = s;
-  document.getElementById("total-score").innerText = s+"점";
+  let s=0;
+  document.querySelectorAll(".food-slot.active").forEach(()=>s+=4);
+  Object.values(missionScores).forEach(v=>s+=v);
+  totalScore=s;
+  document.getElementById("total-score").innerText=s+"점";
 }
 
 /* ══════════════════════════════
    점수 제출
 ══════════════════════════════ */
 function submitScore() {
-  if(hasSubmittedToday()){
-    alert("오늘은 이미 제출했어요 😊\n내일 다시 도전해봐요!"); return;
-  }
+  if(hasSubmitted()){ alert("오늘은 이미 제출했어요 😊\n내일 다시 도전해봐요!"); return; }
 
-  const today     = new Date().getDate();
-  const newStreak = calcStreak();
-  const streakBonus = (newStreak % 5 === 0) ? 10 : 0;
+  const today      = new Date().getDate();
+  const newStreak  = calcStreak();
+  const streakBonus= (newStreak%5===0)?10:0;
 
-  // 레벨/배지 보너스 계산
-  const prevCum   = getCumScore();
-  const prevLevel = getLevel(prevCum);
-  const prevIds   = getBadgeIds();
+  const prevCum    = getCumScore();
+  const prevLevel  = getLevel(prevCum);
+  const prevIds    = getBadgeIds();
 
-  let baseScore = totalScore + streakBonus;
+  const baseScore  = totalScore+streakBonus;
+  const tempCum    = prevCum+baseScore;
+  const newBadges  = calcNewBadges(tempCum,baseScore,prevIds);
+  const newLevel   = getLevel(tempCum);
+  const levelUp    = newLevel.name!==prevLevel.name;
+  const bonusExtra = (newBadges.length*50)+(levelUp?50:0);
+  const finalScore = baseScore+bonusExtra;
+  const newCum     = prevCum+finalScore;
+  const allBadgeIds= [...prevIds,...newBadges.map(b=>b.id)];
 
-  // 임시 누적으로 새 배지/레벨 미리 계산
-  const tempCum   = prevCum + baseScore;
-  const newBadges = calcNewBadges(tempCum, baseScore, prevIds);
-  const newLevel  = getLevel(tempCum);
-  const levelUp   = newLevel.name !== prevLevel.name;
-
-  const bonusExtra = (newBadges.length * 50) + (levelUp ? 50 : 0);
-  const finalScore = baseScore + bonusExtra;
-  const newCum     = prevCum + finalScore;
-  const allBadgeIds= [...prevIds, ...newBadges.map(b=>b.id)];
-
-  // 저장
-  markSubmittedToday();
+  markSubmit();
   addCumScore(finalScore);
-  commitStreak(newStreak);
+  saveStreak({count:newStreak, lastDate:getTodayStr()});
   saveBadgeIds(allBadgeIds);
+  currentStreak=newStreak;
 
   // 달력 발자국
-  const targetDay = document.querySelector(`.day[data-day="${today}"]`);
+  const targetDay=document.querySelector(`.day[data-day="${today}"]`);
   if(targetDay){
-    const pawClass = (newStreak%5===0) ? "gold-paw":"green-paw";
-    targetDay.innerHTML = `<div>${today}</div><div class="${pawClass}">🐾</div>`;
+    const pawClass=(newStreak%5===0)?"gold-paw":"green-paw";
+    targetDay.innerHTML=`<div>${today}</div><div class="${pawClass}">🐾</div>`;
   }
 
-  renderLevelBadge(finalScore, newCum);
+  renderLevelBadge(finalScore,newCum);
 
-  // 미션별 점수 분해
-  const mealScore = document.querySelectorAll(".food-slot.active").length * 4;
-  const todayDate = new Date();
-
-  const payload = {
-    date:   `${todayDate.getFullYear()}-${todayDate.getMonth()+1}-${todayDate.getDate()}`,
-    no:     currentNo,
-    name:   currentName,
-    score:  finalScore,
-    streak: newStreak,
-    badges: allBadgeIds.join(","),
-    level:  newLevel.name,
+  /* ── payload: 미션별 점수를 명시적 키로 전달 ── */
+  const mealScore = document.querySelectorAll(".food-slot.active").length*4;
+  const d=new Date();
+  const payload={
+    date:`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
+    no:currentNo, name:currentName,
+    score:finalScore, streak:newStreak,
+    badges:allBadgeIds.join(","), level:newLevel.name,
     m_meal: mealScore,
     m1: missionScores[1]||0,
     m2: missionScores[2]||0,
@@ -278,102 +227,90 @@ function submitScore() {
     m8: missionScores[8]||0,
   };
 
-  fetch(WEB_APP_URL,{
-    method:"POST",
-    body:JSON.stringify(payload),
-    headers:{"Content-Type":"text/plain"},
-  })
-  .then(r=>r.json())
-  .then(()=>{
-    showSubmitPopup(finalScore, streakBonus, bonusExtra, newBadges, levelUp, newLevel, newCum);
-  })
-  .catch(err=>{
-    console.error(err);
-    alert("저장 실패! 인터넷 연결을 확인해주세요.");
-  });
+  console.log("📤 전송 payload:", payload); // 디버그용
+
+  fetch(WEB_APP_URL,{method:"POST",body:JSON.stringify(payload),headers:{"Content-Type":"text/plain"}})
+    .then(r=>r.json())
+    .then(res=>{
+      console.log("✅ 서버 응답:", res);
+      showSubmitPopup(finalScore,streakBonus,bonusExtra,newBadges,levelUp,newLevel,newCum);
+    })
+    .catch(err=>{ console.error(err); alert("저장 실패! 인터넷 연결을 확인해주세요."); });
 }
 
 /* ══════════════════════════════
    팝업
 ══════════════════════════════ */
-function showSubmitPopup(score, streakBonus, bonusExtra, newBadges, levelUp, level, cum) {
-  const nextLevel = getNextLevel(cum);
-  const progress  = nextLevel
-    ? Math.min(100,Math.round(((cum-level.minScore)/(nextLevel.minScore-level.minScore))*100))
+function showSubmitPopup(score,streakBonus,bonusExtra,newBadges,levelUp,level,cum) {
+  const nextLv=getNextLevel(cum);
+  const progress=nextLv
+    ? Math.min(100,Math.round(((cum-level.minScore)/(nextLv.minScore-level.minScore))*100))
     : 100;
 
-  let bonusLines = "";
+  let bonusLines="";
   if(streakBonus>0)
-    bonusLines += `<div class="popup-bonus">🔥 연속 5일 달성! +${streakBonus}점</div>`;
+    bonusLines+=`<div class="popup-bonus">🔥 연속 5일 달성! +${streakBonus}점</div>`;
   if(levelUp)
-    bonusLines += `<div class="popup-bonus" style="border-color:#43a047;color:#2e7d32">🎉 레벨업! +50점</div>`;
+    bonusLines+=`<div class="popup-bonus" style="border-color:#43a047;color:#2e7d32">🎉 레벨업! +50점</div>`;
   if(newBadges.length>0)
-    bonusLines += `<div class="popup-bonus" style="border-color:#7b1fa2;color:#7b1fa2">🏅 새 배지 ${newBadges.length}개 획득! +${newBadges.length*50}점</div>`;
+    bonusLines+=`<div class="popup-bonus" style="border-color:#7b1fa2;color:#7b1fa2">🏅 새 배지 ${newBadges.length}개! +${newBadges.length*50}점</div>`;
 
-  const badgesHTML = newBadges.length>0
-    ? `<div class="popup-new-badges">
-        ${newBadges.map(b=>`<span class="badge-chip">${b.emoji} ${b.name}</span>`).join("")}
-       </div>` : "";
+  const badgesHTML=newBadges.length>0
+    ?`<div class="popup-new-badges">${newBadges.map(b=>`<span class="badge-chip">${b.emoji} ${b.name}</span>`).join("")}</div>`:"";
 
-  const popup = document.createElement("div");
-  popup.className = "popup";
-  popup.innerHTML = `
+  const popup=document.createElement("div");
+  popup.className="popup";
+  popup.innerHTML=`
     <div class="popup-box">
       <div class="bear">🐻‍❄️</div>
       <h2>빙하가 지켜졌어요!</h2>
       <p class="popup-text">${score}점의 노력으로<br>해수면이 0.0001cm 낮아졌어요!</p>
-      ${bonusLines}
-      ${badgesHTML}
+      ${bonusLines}${badgesHTML}
       <div class="popup-level">
         <span class="level-emoji">${level.emoji}</span>
         <span class="level-name">${level.name}</span>
-        ${nextLevel
-          ? `<div class="popup-progress-bar"><div class="popup-progress-fill" style="width:${progress}%"></div></div>
-             <p class="popup-progress-text">다음 레벨까지 ${nextLevel.minScore-cum}점</p>`
-          : `<p style="color:#43a047;font-weight:bold;margin:4px 0">🎊 최고 레벨 달성!</p>`}
+        ${nextLv
+          ?`<div class="popup-progress-bar"><div class="popup-progress-fill" style="width:${progress}%"></div></div>
+            <p class="popup-progress-text">다음 레벨까지 ${nextLv.minScore-cum}점</p>`
+          :`<p style="color:#43a047;font-weight:bold;margin:4px 0">🎊 최고 레벨 달성!</p>`}
       </div>
-      <button onclick="goClassPage()">학급 현황판 보기</button>
+      <button onclick="closePopup();switchTab('my-page',document.querySelector('[data-tab=my-page]'))">마이페이지 보기</button>
     </div>`;
   document.body.appendChild(popup);
 }
 
-function closePopup(){
-  const p=document.querySelector(".popup"); if(p) p.remove();
-}
+function closePopup(){ const p=document.querySelector(".popup"); if(p) p.remove(); }
 
 /* ══════════════════════════════
    레벨 & 배지 렌더링
 ══════════════════════════════ */
-function renderLevelBadge(todayScore=0, overrideCum=null) {
-  const cum     = overrideCum!==null ? overrideCum : getCumScore();
-  const level   = getLevel(cum);
-  const nextLv  = getNextLevel(cum);
-  const earnedIds = getBadgeIds();
-  const progress= nextLv && nextLv.minScore>level.minScore
-    ? Math.min(100,Math.round(((cum-level.minScore)/(nextLv.minScore-level.minScore))*100))
-    : 100;
+function renderLevelBadge(todayScore=0,overrideCum=null){
+  const cum=overrideCum!==null?overrideCum:getCumScore();
+  const level=getLevel(cum);
+  const nextLv=getNextLevel(cum);
+  const earnedIds=getBadgeIds();
+  const progress=nextLv&&nextLv.minScore>level.minScore
+    ?Math.min(100,Math.round(((cum-level.minScore)/(nextLv.minScore-level.minScore))*100)):100;
 
-  const el = document.getElementById("level-section");
+  const el=document.getElementById("level-section");
   if(!el) return;
-
-  el.innerHTML = `
+  el.innerHTML=`
     <div class="level-display">
       <div class="level-icon">${level.emoji}</div>
       <div class="level-info">
         <div class="level-title">${level.name}</div>
         <div class="level-cumulative">누적 ${cum}점</div>
         ${nextLv
-          ? `<div class="progress-wrap">
+          ?`<div class="progress-wrap">
                <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
                <div class="progress-label">다음 레벨 ${nextLv.name}까지 ${nextLv.minScore-cum}점</div>
              </div>`
-          : `<div class="progress-label" style="color:#43a047;font-weight:bold">🎊 최고 레벨 달성!</div>`}
+          :`<div class="progress-label" style="color:#43a047;font-weight:bold">🎊 최고 레벨 달성!</div>`}
       </div>
     </div>
-
     <div class="badge-grid">
       ${BADGES.map(b=>{
-        const got = earnedIds.includes(b.id);
+        const got=earnedIds.includes(b.id);
         return `<div class="badge-item ${got?"badge-earned":"badge-locked"}">
           <div class="badge-emoji">${got?b.emoji:"🔒"}</div>
           <div class="badge-name">${b.short}</div>
@@ -381,14 +318,11 @@ function renderLevelBadge(todayScore=0, overrideCum=null) {
         </div>`;
       }).join("")}
     </div>
-
     <div class="level-ladder">
       ${LEVELS.map(l=>{
-        const active = l.name===level.name;
-        const done   = cum>=l.minScore;
+        const active=l.name===level.name, done=cum>=l.minScore;
         return `<div class="ladder-step ${active?"ladder-active":done?"ladder-done":""}">
-          <span>${l.emoji}</span>
-          <span class="ladder-name">${l.name}</span>
+          <span>${l.emoji}</span><span class="ladder-name">${l.name}</span>
           <span class="ladder-score">${l.minScore}점~</span>
         </div>`;
       }).join("")}
@@ -396,122 +330,72 @@ function renderLevelBadge(todayScore=0, overrideCum=null) {
 }
 
 /* ══════════════════════════════
-   달력 (월 이동 가능)
+   달력 (월 이동)
 ══════════════════════════════ */
-function renderCalendar() {
-  const calTitle = document.getElementById("cal-title");
-  const grid     = document.getElementById("calendar-grid");
+function renderCalendar(){
+  const calTitle=document.getElementById("cal-title");
+  const grid=document.getElementById("calendar-grid");
   if(!grid) return;
-
-  calTitle.textContent = `${calViewYear}년 ${calViewMonth+1}월`;
-  grid.innerHTML = "";
-
-  ["일","월","화","수","목","금","토"].forEach(d=>{
-    grid.innerHTML += `<div class="week-name">${d}</div>`;
-  });
-
-  const firstDay = new Date(calViewYear, calViewMonth, 1).getDay();
-  const lastDate = new Date(calViewYear, calViewMonth+1, 0).getDate();
-
-  for(let i=0;i<firstDay;i++) grid.innerHTML += "<div></div>";
-  for(let d=1;d<=lastDate;d++){
-    grid.innerHTML += `<div class="day" data-day="${d}" data-year="${calViewYear}" data-month="${calViewMonth+1}">${d}</div>`;
-  }
-
-  // 서버 데이터 있으면 즉시 발자국 표시
+  calTitle.textContent=`${calViewYear}년 ${calViewMonth+1}월`;
+  grid.innerHTML="";
+  ["일","월","화","수","목","금","토"].forEach(d=>{ grid.innerHTML+=`<div class="week-name">${d}</div>`; });
+  const firstDay=new Date(calViewYear,calViewMonth,1).getDay();
+  const lastDate=new Date(calViewYear,calViewMonth+1,0).getDate();
+  for(let i=0;i<firstDay;i++) grid.innerHTML+="<div></div>";
+  for(let d=1;d<=lastDate;d++)
+    grid.innerHTML+=`<div class="day" data-day="${d}" data-year="${calViewYear}" data-month="${calViewMonth+1}">${d}</div>`;
   if(allServerData.length>0) markCalendarPaws();
-  // 개인 분석도 갱신
   renderMissionAnalysis();
 }
 
-function prevMonth(){
-  calViewMonth--;
-  if(calViewMonth<0){ calViewMonth=11; calViewYear--; }
-  renderCalendar();
-}
-function nextMonth(){
-  calViewMonth++;
-  if(calViewMonth>11){ calViewMonth=0; calViewYear++; }
-  renderCalendar();
-}
+function prevMonth(){ calViewMonth--; if(calViewMonth<0){calViewMonth=11;calViewYear--;} renderCalendar(); }
+function nextMonth(){ calViewMonth++; if(calViewMonth>11){calViewMonth=0;calViewYear++;} renderCalendar(); }
 
-/* 발자국 표시 — 연속 5일째마다 금색 */
-function markCalendarPaws() {
-  const myRecords = allServerData
+function markCalendarPaws(){
+  const myRecords=allServerData
     .filter(r=>Number(r.no)===Number(currentNo))
     .sort((a,b)=>new Date(a.date)-new Date(b.date));
 
-  // 전체 streak 순서 재계산 (연속 판단)
-  const streakOrder = [];
+  // 전체 streak 재계산 (연속 판단)
+  const streakOrder=[];
   for(let i=0;i<myRecords.length;i++){
-    if(i===0){
-      streakOrder.push(1);
-    } else {
-      const prev = new Date(myRecords[i-1].date.split("T")[0]);
-      const curr = new Date(myRecords[i].date.split("T")[0]);
-      const diff = Math.round((curr-prev)/(1000*60*60*24));
-      streakOrder.push(diff===1 ? streakOrder[i-1]+1 : 1);
-    }
+    if(i===0){ streakOrder.push(1); continue; }
+    const prev=new Date(myRecords[i-1].date.split("T")[0]);
+    const curr=new Date(myRecords[i].date.split("T")[0]);
+    const diff=Math.round((curr-prev)/(1000*60*60*24));
+    streakOrder.push(diff===1?streakOrder[i-1]+1:1);
   }
 
   myRecords.forEach((rec,idx)=>{
-    const ds    = rec.date.split("T")[0];
-    const parts = ds.split("-");
-    const y=Number(parts[0]), m=Number(parts[1]), d=Number(parts[2]);
-    if(y!==calViewYear || m!==calViewMonth+1) return;
-
-    const streak  = streakOrder[idx];
-    const pawClass= (streak%5===0) ? "gold-paw":"green-paw";
-    const target  = document.querySelector(`.day[data-day="${d}"]`);
+    const ds=rec.date.split("T")[0];
+    const [y,m,d]=ds.split("-").map(Number);
+    if(y!==calViewYear||m!==calViewMonth+1) return;
+    const pawClass=(streakOrder[idx]%5===0)?"gold-paw":"green-paw";
+    const target=document.querySelector(`.day[data-day="${d}"]`);
     if(target) target.innerHTML=`<div>${d}</div><div class="${pawClass}">🐾</div>`;
   });
 }
 
 /* ══════════════════════════════
-   개인 미션 분석 (잘한/못한 항목)
+   개인 미션 분석
 ══════════════════════════════ */
-function renderMissionAnalysis() {
-  const el = document.getElementById("mission-analysis");
+function renderMissionAnalysis(){
+  const el=document.getElementById("mission-analysis");
   if(!el) return;
-
-  // 현재 보고 있는 달 기준
-  const myRecords = allServerData.filter(r=>{
-    const ds=r.date.split("T")[0];
-    const parts=ds.split("-");
-    return Number(r.no)===Number(currentNo)
-      && Number(parts[0])===calViewYear
-      && Number(parts[1])===calViewMonth+1;
+  const myRecords=allServerData.filter(r=>{
+    const ds=r.date.split("T")[0]; const [y,m]=ds.split("-").map(Number);
+    return Number(r.no)===Number(currentNo)&&y===calViewYear&&m===calViewMonth+1;
   });
-
   if(myRecords.length===0){
-    el.innerHTML=`<p class="analysis-empty">아직 이번 달 기록이 없어요 🌱</p>`;
-    return;
+    el.innerHTML=`<p class="analysis-empty">아직 이번 달 기록이 없어요 🌱</p>`; return;
   }
-
-  // 항목별 합산 (m_meal, m1~m8)
-  const keys  = ["m_meal","m1","m2","m3","m4","m5","m6","m7","m8"];
-  const sums  = {};
-  const counts= {};
-  keys.forEach(k=>{ sums[k]=0; counts[k]=0; });
-
+  const sums=MISSION_KEYS.map(()=>0);
   myRecords.forEach(r=>{
-    keys.forEach(k=>{
-      const v=Number(r[k]||0);
-      sums[k]+=v;
-      if(v>0) counts[k]++;
-    });
+    MISSION_KEYS.forEach((k,i)=>{ sums[i]+=Number(r[k]||0); });
   });
-
-  // 평균
-  const avgs = keys.map((k,i)=>({
-    key:k, name:MISSION_NAMES[i],
-    avg: myRecords.length>0 ? sums[k]/myRecords.length : 0,
-  }));
-
-  avgs.sort((a,b)=>b.avg-a.avg);
-  const best  = avgs[0];
-  const worst = avgs[avgs.length-1];
-
+  const avgs=MISSION_NAMES.map((name,i)=>({name,avg:sums[i]/myRecords.length}));
+  const sorted=[...avgs].sort((a,b)=>b.avg-a.avg);
+  const best=sorted[0], worst=sorted[sorted.length-1];
   el.innerHTML=`
     <div class="analysis-row">
       <div class="analysis-card best">
@@ -528,337 +412,248 @@ function renderMissionAnalysis() {
 }
 
 /* ══════════════════════════════
-   개인 그래프 (해당 월 전체 날짜)
+   개인 그래프 (이번 달 전체)
 ══════════════════════════════ */
-async function renderGraph() {
-  const container = document.getElementById("score-chart-container");
+async function renderGraph(){
+  const container=document.getElementById("score-chart-container");
   if(!container) return;
-
-  const now   = new Date();
-  const year  = now.getFullYear();
-  const month = now.getMonth();
-  const lastDate = new Date(year, month+1, 0).getDate();
-
-  // 해당 월 1일~말일 라벨
-  const labels = Array.from({length:lastDate},(_,i)=>`${month+1}/${i+1}`);
-
-  // 내 기록을 날짜별 점수로 매핑
-  const scoreMap = {};
-  allServerData
-    .filter(r=>Number(r.no)===Number(currentNo))
-    .forEach(r=>{
-      const ds=r.date.split("T")[0];
-      const parts=ds.split("-");
-      if(Number(parts[0])===year && Number(parts[1])===month+1){
-        scoreMap[Number(parts[2])] = Number(r.score||0);
-      }
-    });
-
-  const scores = labels.map((_,i)=> scoreMap[i+1]!==undefined ? scoreMap[i+1] : null);
-  const hasData = scores.some(s=>s!==null);
-
-  if(!hasData){
-    container.innerHTML=`<p style="text-align:center;color:#888;padding:40px 0">아직 이번 달 기록이 없어요 🌱</p>`;
+  const now=new Date(); const year=now.getFullYear(); const month=now.getMonth();
+  const lastDate=new Date(year,month+1,0).getDate();
+  const labels=Array.from({length:lastDate},(_,i)=>`${month+1}/${i+1}`);
+  const scoreMap={};
+  allServerData.filter(r=>Number(r.no)===Number(currentNo)).forEach(r=>{
+    const [y,m,d]=r.date.split("T")[0].split("-").map(Number);
+    if(y===year&&m===month+1) scoreMap[d]=Number(r.score||0);
+  });
+  const scores=labels.map((_,i)=>scoreMap[i+1]!==undefined?scoreMap[i+1]:null);
+  if(!scores.some(s=>s!==null)){
+    container.innerHTML=`<p style="text-align:center;color:#888;padding:30px 0">아직 이번 달 기록이 없어요 🌱</p>`;
     return;
   }
-
-  container.innerHTML=`
-    <div style="position:relative;width:100%;height:220px;">
-      <canvas id="myScoreChart" role="img" aria-label="이번 달 환경 점수 그래프"></canvas>
-    </div>`;
-
-  if(!window.Chart){
-    await new Promise((res,rej)=>{
-      const s=document.createElement("script");
-      s.src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js";
-      s.onload=res; s.onerror=rej;
-      document.head.appendChild(s);
-    });
-  }
-
+  container.innerHTML=`<div style="position:relative;width:100%;height:210px;"><canvas id="myScoreChart"></canvas></div>`;
+  if(!window.Chart) await loadChartJs();
   if(scoreChart){ scoreChart.destroy(); scoreChart=null; }
-
-  scoreChart = new Chart(document.getElementById("myScoreChart"),{
+  scoreChart=new Chart(document.getElementById("myScoreChart"),{
     type:"bar",
-    data:{
-      labels,
-      datasets:[{
-        label:"점수",
-        data:scores,
-        backgroundColor: scores.map(s=>
-          s===null?"transparent": s>=80?"rgba(251,192,45,0.8)":"rgba(67,160,71,0.7)"
-        ),
-        borderColor: scores.map(s=>
-          s===null?"transparent": s>=80?"#f57f17":"#2e7d32"
-        ),
-        borderWidth:1.5,
-        borderRadius:4,
-      }],
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>ctx.parsed.y!==null?`${ctx.parsed.y}점`:"미제출"}},
-      },
+    data:{labels,datasets:[{
+      label:"점수", data:scores,
+      backgroundColor:scores.map(s=>s===null?"transparent":s>=80?"rgba(251,192,45,.8)":"rgba(67,160,71,.7)"),
+      borderColor:scores.map(s=>s===null?"transparent":s>=80?"#f57f17":"#2e7d32"),
+      borderWidth:1.5, borderRadius:4,
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y!==null?`${ctx.parsed.y}점`:"미제출"}}},
       scales:{
-        y:{beginAtZero:true, max:110,
-           ticks:{callback:v=>v+"점", font:{size:11}},
-           grid:{color:"rgba(0,0,0,0.05)"}},
-        x:{ticks:{font:{size:9}, autoSkip:true, maxRotation:45},
-           grid:{display:false}},
-      },
-    },
+        y:{beginAtZero:true,max:130,ticks:{callback:v=>v+"점",font:{size:11}},grid:{color:"rgba(0,0,0,.05)"}},
+        x:{ticks:{font:{size:9},autoSkip:true,maxRotation:45},grid:{display:false}},
+      }},
   });
 }
 
 /* ══════════════════════════════
    전체 데이터 불러오기
 ══════════════════════════════ */
-async function loadAllData() {
+async function loadAllData(){
   try{
-    const res  = await fetch(WEB_APP_URL);
-    allServerData = await res.json();
+    const res=await fetch(WEB_APP_URL);
+    allServerData=await res.json();
+    console.log("📥 서버 데이터 샘플:", allServerData[0]); // 헤더 확인용
     markCalendarPaws();
     renderGraph();
     renderLevelBadge();
     renderMissionAnalysis();
-  } catch(e){
-    console.error("데이터 로드 실패",e);
-  }
-}
-
-/* ══════════════════════════════
-   현황판 이동
-══════════════════════════════ */
-function goClassPage(){
-  closePopup();
-  document.getElementById("main-page").classList.add("hidden");
-  document.getElementById("class-page").classList.remove("hidden");
-  loadClassRanking();
-}
-function backToMain(){
-  document.getElementById("class-page").classList.add("hidden");
-  document.getElementById("main-page").classList.remove("hidden");
+  }catch(e){ console.error("데이터 로드 실패",e); }
 }
 
 /* ══════════════════════════════
    학급 현황판
 ══════════════════════════════ */
 async function loadClassRanking(){
-  const rankingEl = document.getElementById("ranking-list");
-  rankingEl.innerHTML = "불러오는 중...";
-
+  document.getElementById("top3-section").innerHTML="<p style='color:#888'>불러오는 중...</p>";
   try{
-    const res  = await fetch(WEB_APP_URL);
-    const data = await res.json();
+    const res=await fetch(WEB_APP_URL);
+    const data=await res.json();
 
-    // 이번 달 기간
-    const now   = new Date();
-    const y     = now.getFullYear();
-    const m     = now.getMonth()+1;
+    const now=new Date(); const y=now.getFullYear(); const m=now.getMonth()+1;
 
-    // 학생별 집계 (이번 달 누적)
-    const monthlyMap = {}; // name -> {score, missionSums}
-    const totalMap   = {}; // name -> 전체 누적
-    const levelMap   = {}; // name -> level (최신)
-    const badgeMap   = {}; // name -> badge ids
-    const mKeys = ["m_meal","m1","m2","m3","m4","m5","m6","m7","m8"];
-
+    // 학생별 집계 초기화 (STUDENTS 순서 = 번호순 고정)
+    const monthlyMap={};
+    const totalMap={};
+    const badgeMap={};
     STUDENTS.forEach(s=>{
-      monthlyMap[s.name]={score:0, ms:Array(9).fill(0)};
+      monthlyMap[s.name]={score:0, ms:Array(MISSION_KEYS.length).fill(0)};
       totalMap[s.name]=0;
     });
 
     data.forEach(r=>{
-      const nm = r.name;
+      const nm=r.name;
       if(!monthlyMap[nm]) return;
-
-      const ds=String(r.date).split("T")[0];
-      const parts=ds.split("-");
-      const ry=Number(parts[0]), rm=Number(parts[1]);
-
-      // 전체 누적
-      totalMap[nm] = (totalMap[nm]||0) + Number(r.score||0);
-      levelMap[nm] = r.level || "";
-      if(r.badges) badgeMap[nm] = r.badges;
-
-      // 이번 달
-      if(ry===y && rm===m){
-        monthlyMap[nm].score += Number(r.score||0);
-        mKeys.forEach((k,i)=>{
-          monthlyMap[nm].ms[i] += Number(r[k]||0);
+      const [ry,rm]=r.date.split("T")[0].split("-").map(Number);
+      totalMap[nm]=(totalMap[nm]||0)+Number(r.score||0);
+      if(r.badges) badgeMap[nm]=r.badges;
+      if(ry===y&&rm===m){
+        monthlyMap[nm].score+=Number(r.score||0);
+        MISSION_KEYS.forEach((k,i)=>{
+          monthlyMap[nm].ms[i]+=Number(r[k]||0);
         });
       }
     });
 
-    // 이번 달 순위
-    const monthlyRanking = STUDENTS
-      .map(s=>({...s, score:monthlyMap[s.name].score}))
-      .sort((a,b)=>b.score-a.score);
+    // 이번 달 점수 기준 순위 → 동점자 공동 순위
+    const scored=STUDENTS.map(s=>({...s,monthScore:monthlyMap[s.name].score}))
+      .sort((a,b)=>b.monthScore-a.monthScore);
+    const rankMap={};
+    let rank=1;
+    for(let i=0;i<scored.length;i++){
+      if(i>0&&scored[i].monthScore<scored[i-1].monthScore) rank=i+1;
+      rankMap[scored[i].name]=rank;
+    }
 
-    // 항목별 1위 (이번 달)
-    const missionWinners = mKeys.map((k,i)=>{
-      let best={name:"-", score:-1};
-      STUDENTS.forEach(s=>{
-        const v=monthlyMap[s.name].ms[i];
-        if(v>best.score) best={name:s.name, score:v};
-      });
-      return {missionName:MISSION_NAMES[i], ...best};
+    // 항목별 1위 (이번 달) — 동점 공동처리
+    const missionWinners=MISSION_KEYS.map((k,i)=>{
+      let maxScore=-1;
+      STUDENTS.forEach(s=>{ const v=monthlyMap[s.name].ms[i]; if(v>maxScore) maxScore=v; });
+      const winners=STUDENTS.filter(s=>monthlyMap[s.name].ms[i]===maxScore&&maxScore>0).map(s=>s.name);
+      return {missionName:MISSION_NAMES[i], names:winners, score:maxScore};
     });
 
-    // 렌더링
-    buildClassPage(monthlyRanking, missionWinners, totalMap, levelMap, badgeMap);
-
-  } catch(e){
+    buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap, scored);
+  }catch(e){
     console.error(e);
-    rankingEl.innerHTML="<p>불러오기 실패 😢</p>";
+    document.getElementById("top3-section").innerHTML="<p>불러오기 실패 😢</p>";
   }
 }
 
-function buildClassPage(monthlyRanking, missionWinners, totalMap, levelMap, badgeMap){
-  // 1~3위
-  const top3 = monthlyRanking.slice(0,3);
+function buildClassPage(monthlyMap, missionWinners, totalMap, badgeMap, rankMap, scored){
   const medals=["🥇","🥈","🥉"];
 
+  /* TOP 3 — 동점자 공동 */
+  const top3Ranks=[1,2,3];
   let topHtml=`<div class="class-section-title">🏆 이번 달 TOP 3</div>`;
-  top3.forEach((s,i)=>{
-    topHtml+=`
-      <div class="ranking-item ${s.name===currentName?"ranking-me":""}">
-        <span class="rank-medal">${medals[i]}</span>
-        <span class="rank-name">${s.name}${s.name===currentName?" (나)":""}</span>
-        <span class="rank-score">${s.score}점</span>
+  top3Ranks.forEach(r=>{
+    const group=scored.filter(s=>rankMap[s.name]===r);
+    if(!group.length) return;
+    const medal=medals[r-1]||`${r}위`;
+    group.forEach(s=>{
+      const isMe=s.name===currentName;
+      topHtml+=`<div class="ranking-item ${isMe?"ranking-me":""}">
+        <span class="rank-medal">${medal}</span>
+        <span class="rank-name">${s.name}${isMe?" (나)":""}</span>
+        <span class="rank-score">${s.monthScore}점</span>
       </div>`;
+    });
   });
   document.getElementById("top3-section").innerHTML=topHtml;
 
-  // 항목별 1위
+  /* 항목별 1위 */
   let mwHtml=`<div class="class-section-title">⭐ 이번 달 항목별 1위</div><div class="mission-winner-grid">`;
   missionWinners.forEach(w=>{
-    mwHtml+=`
-      <div class="mission-winner-card">
-        <div class="mw-mission">${w.missionName}</div>
-        <div class="mw-name">${w.name}</div>
-        <div class="mw-score">${w.score}점</div>
-      </div>`;
+    const nameStr=w.names.length?w.names.join(", "):"-";
+    const scoreStr=w.score>0?`${w.score}점`:"기록 없음";
+    mwHtml+=`<div class="mission-winner-card">
+      <div class="mw-mission">${w.missionName}</div>
+      <div class="mw-name">${nameStr}</div>
+      <div class="mw-score">${scoreStr}</div>
+    </div>`;
   });
   mwHtml+="</div>";
   document.getElementById("mission-winner-section").innerHTML=mwHtml;
 
-  // 전체 명단 (28명)
-  let listHtml=`<div class="class-section-title">📋 우리 반 전체 명단</div>`;
-  monthlyRanking.forEach((s,i)=>{
-    const lv    = getLevel(totalMap[s.name]||0);
-    const bids  = badgeMap[s.name] ? badgeMap[s.name].split(",") : [];
-    const earned= BADGES.filter(b=>bids.includes(b.id));
-    const isMe  = s.name===currentName;
-    listHtml+=`
-      <div class="student-row ${isMe?"student-me":""}">
-        <span class="student-rank">${i+1}</span>
-        <span class="student-name">${s.name}${isMe?" (나)":""}</span>
-        <span class="student-level">${lv.emoji} ${lv.name}</span>
-        <span class="student-badges">${earned.map(b=>b.emoji).join(" ")||"-"}</span>
-        <span class="student-score">${s.score}점</span>
-      </div>`;
+  /* 전체 명단 — 번호순 고정, 이번 달 순위 표시 */
+  let listHtml=`<div class="class-section-title">📋 우리 반 전체 명단 (번호순)</div>
+    <div class="student-header">
+      <span>번호</span><span>이름</span><span>레벨</span><span>배지</span><span>이번달</span><span>순위</span>
+    </div>`;
+  STUDENTS.forEach(s=>{
+    const lv=getLevel(totalMap[s.name]||0);
+    const bids=badgeMap[s.name]?badgeMap[s.name].split(","):[];
+    const earned=BADGES.filter(b=>bids.includes(b.id));
+    const isMe=s.name===currentName;
+    const rank=rankMap[s.name];
+    const rankStr=rank<=3?medals[rank-1]:`${rank}위`;
+    listHtml+=`<div class="student-row ${isMe?"student-me":""}">
+      <span class="student-rank">${s.no}</span>
+      <span class="student-name">${s.name}${isMe?" (나)":""}</span>
+      <span class="student-level">${lv.emoji}</span>
+      <span class="student-badges">${earned.map(b=>b.emoji).join("")||"-"}</span>
+      <span class="student-score">${monthlyMap[s.name].score}점</span>
+      <span class="student-rank-badge">${rankStr}</span>
+    </div>`;
   });
   document.getElementById("ranking-list").innerHTML=listHtml;
 
-  // 학급 누적 그래프
-  renderClassChart(monthlyRanking);
+  /* 그래프 */
+  renderClassChart(STUDENTS.map(s=>({name:s.name,score:monthlyMap[s.name].score})));
 
-  // 룰 안내
+  /* 룰 안내 (간소화) */
   document.getElementById("rules-section").innerHTML=`
     <div class="class-section-title">📖 점수 규칙 안내</div>
     <div class="rules-box">
-      <div class="rule-item">🍱 급식 다 먹기 — 칸마다 <b>+4점</b> (최대 5칸 = 20점)</div>
-      <div class="rule-item">🌎 환경 미션 — ❌ 0점 / 🔺 5점 / ⭕ 10점 (8개 미션)</div>
-      <div class="rule-item">🔥 5일 연속 달성 — <b>+10점 보너스</b> (중간에 하루라도 빠지면 초기화!)</div>
-      <div class="rule-item">🎉 레벨업 시 — <b>+50점 보너스</b></div>
-      <div class="rule-item">🏅 배지 획득 시 — <b>배지 1개당 +50점 보너스</b></div>
-      <div class="rule-item rule-levels">
-        <b>레벨 기준</b><br>
-        🌱 씨앗 지킴이 0점~ &nbsp;|&nbsp;
-        🌿 새싹 지킴이 300점~ &nbsp;|&nbsp;
-        🌳 나무 지킴이 1000점~ &nbsp;|&nbsp;
-        🌲 숲 지킴이 3000점~ &nbsp;|&nbsp;
-        🌍 지구 지킴이 6000점~
+      <div class="rule-item">🔥 <b>5일 연속 달성</b> — +10점 보너스 (중간에 하루라도 빠지면 초기화!)</div>
+      <div class="rule-item">🎉 <b>레벨업 시</b> — +50점 보너스</div>
+      <div class="rule-item">🏅 <b>배지 획득 시</b> — 배지 1개당 +50점 보너스</div>
+      <div class="rule-item">🏆 <b>동점자</b> — 공동 순위로 표시</div>
+      <div class="rule-item rule-levels"><b>레벨 기준</b><br>
+        🌱 씨앗 0점~ | 🌿 새싹 300점~ | 🌳 나무 1,000점~ | 🌲 숲 3,000점~ | 🌍 지구 6,000점~
       </div>
-      <div class="rule-item rule-levels">
-        <b>배지 기준</b><br>
-        💯 완벽한 하루(100점) &nbsp;|&nbsp;
-        🥉 누적 1000점 &nbsp;|&nbsp;
-        🥈 2500점 &nbsp;|&nbsp;
-        🥇 5000점 &nbsp;|&nbsp;
-        🏆 7500점 &nbsp;|&nbsp;
-        👑 10000점
+      <div class="rule-item rule-levels"><b>배지 기준</b><br>
+        💯 완벽한 하루(100점) | 🥉 1,000점 | 🥈 2,500점 | 🥇 5,000점 | 🏆 7,500점 | 👑 10,000점
       </div>
     </div>`;
 }
 
 /* ══════════════════════════════
-   학급 전체 누적 그래프
+   학급 그래프
 ══════════════════════════════ */
-async function renderClassChart(monthlyRanking) {
-  const container = document.getElementById("class-chart-container");
+async function renderClassChart(studentScores){
+  const container=document.getElementById("class-chart-container");
   if(!container) return;
-
-  const labels = monthlyRanking.map(s=>s.name);
-  const scores = monthlyRanking.map(s=>s.score);
-
+  // 번호순(입력 순서) 유지
+  const labels=studentScores.map(s=>s.name);
+  const scores=studentScores.map(s=>s.score);
   container.innerHTML=`
     <div class="class-section-title">📊 이번 달 누적 점수 그래프</div>
-    <div style="position:relative;width:100%;height:${Math.max(300, labels.length*32)}px;">
-      <canvas id="classChart" role="img" aria-label="학급 이번 달 누적 점수"></canvas>
+    <div style="position:relative;width:100%;height:${Math.max(320,labels.length*30)}px;">
+      <canvas id="classChart"></canvas>
     </div>`;
-
-  if(!window.Chart){
-    await new Promise((res,rej)=>{
-      const s=document.createElement("script");
-      s.src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js";
-      s.onload=res; s.onerror=rej;
-      document.head.appendChild(s);
-    });
-  }
-
+  if(!window.Chart) await loadChartJs();
   if(classChart){ classChart.destroy(); classChart=null; }
-
-  const colors = scores.map(s=>
-    s>=100?"rgba(251,192,45,0.8)":"rgba(67,160,71,0.7)"
-  );
-
-  classChart = new Chart(document.getElementById("classChart"),{
+  classChart=new Chart(document.getElementById("classChart"),{
     type:"bar",
-    data:{
-      labels,
-      datasets:[{
-        label:"이번 달 점수",
-        data:scores,
-        backgroundColor:colors,
-        borderColor:colors.map(c=>c.replace("0.8","1").replace("0.7","1")),
-        borderWidth:1,
-        borderRadius:4,
-      }],
-    },
-    options:{
-      indexAxis:"y",
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}점`}}},
+    data:{labels,datasets:[{
+      label:"이번 달 점수", data:scores,
+      backgroundColor:scores.map(s=>s>0?"rgba(67,160,71,.75)":"rgba(200,200,200,.5)"),
+      borderRadius:4, borderWidth:0,
+    }]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.x}점`}}},
       scales:{
-        x:{beginAtZero:true,
-           ticks:{callback:v=>v+"점", font:{size:11}},
-           grid:{color:"rgba(0,0,0,0.05)"}},
-        y:{ticks:{font:{size:12}}, grid:{display:false}},
-      },
-    },
+        x:{beginAtZero:true,ticks:{callback:v=>v+"점",font:{size:11}},grid:{color:"rgba(0,0,0,.05)"}},
+        y:{ticks:{font:{size:11}},grid:{display:false}},
+      }},
+  });
+}
+
+function loadChartJs(){
+  return new Promise((res,rej)=>{
+    const s=document.createElement("script");
+    s.src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js";
+    s.onload=res; s.onerror=rej;
+    document.head.appendChild(s);
   });
 }
 
 /* ══════════════════════════════
    window.onload
 ══════════════════════════════ */
-window.onload = function(){
-  document.getElementById("login-btn").addEventListener("click", login);
+window.onload=function(){
+  const btn=document.getElementById("login-btn");
+  btn.addEventListener("click",login);
+
+  // 엔터키 로그인
+  ["user-no","user-name"].forEach(id=>{
+    document.getElementById(id).addEventListener("keydown",e=>{
+      if(e.key==="Enter") login();
+    });
+  });
 };
