@@ -4,7 +4,7 @@
 
 /* ── 상수 ── */
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbzh-XqLW1rCkOfzj_arB6xP9EHUkql9uKjbJwP6H8F1QLpl0QJSH1nMSeGUT9VDUW6eiA/exec";
+  "https://script.google.com/macros/s/AKfycbwz4j6nfier9ifM8mwWk-FdSlD-hdLwGrYb35UTYlzuTiSZmcqrtUNyXQNVV5bn5Gb90g/exec";
 
 const STUDENTS = [
   {no:1,name:"강하영"},{no:2,name:"김루하"},{no:3,name:"김소은"},
