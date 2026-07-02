@@ -43,6 +43,7 @@ let currentStreak = 0;
 let currentNo     = "";
 let currentName   = "";
 let allServerData = [];
+let selectedDate = getTodayStr(); 
 let calViewYear   = new Date().getFullYear();
 let calViewMonth  = new Date().getMonth();
 let scoreChart    = null;
@@ -155,7 +156,10 @@ function updateTotalScore() {
    점수 제출
 ══════════════════════════════ */
 function submitScore() {
-  if(hasSubmitted()){ alert("오늘은 이미 제출했어요 😊\n내일 다시 도전해봐요!"); return; }
+  if (allServerData.some(r => String(r.no) === String(currentNo) && r.date.split("T")[0] === selectedDate)) {
+    alert("이미 제출한 날짜입니다. 수정 및 중복 제출은 불가능합니다.");
+    return;
+  }
 
   const today      = new Date().getDate();
   const newStreak  = calcStreak();
@@ -189,8 +193,8 @@ function submitScore() {
   const mealScore = document.querySelectorAll(".food-slot.active").length*4;
   const d=new Date();
   const payload={
-    date:`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`,
-    no:currentNo, name:currentName,
+    date: selectedDate, 
+    no: currentNo, name: currentName,
     score:finalScore, streak:newStreak,
     badges:"", level:newLevel.name,
     m_meal: mealScore,
