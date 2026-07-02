@@ -1,7 +1,7 @@
 /* ================================================
    초록 지구 지킴이 — app.js
    ================================================ */
-
+ 
 /* ── 상수 ── */
 const WEB_APP_URL =
   "https://script.google.com/macros/s/AKfycbyAKHaytykpZHEInGk6lrs4cpfoQ_IP3QobaCAGbnrOw86FYh5EndH4v61AbYqjBAeqlg/exec";
