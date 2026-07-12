@@ -1,10 +1,10 @@
 /* ================================================
    초록 지구 지킴이 — app.js
    ================================================ */
- 
+
 /* ── 상수 ── */
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbyAKHaytykpZHEInGk6lrs4cpfoQ_IP3QobaCAGbnrOw86FYh5EndH4v61AbYqjBAeqlg/exec";
+  "https://script.google.com/macros/s/AKfycbzh-XqLW1rCkOfzj_arB6xP9EHUkql9uKjbJwP6H8F1QLpl0QJSH1nMSeGUT9VDUW6eiA/exec";
 
 const STUDENTS = [
   {no:1,name:"강하영"},{no:2,name:"김루하"},{no:3,name:"김소은"},
@@ -55,8 +55,9 @@ let selectedDate  = "";   // "YYYY-M-D" 형식, 날짜 선택 화면에서 설�
 const lsKey           = s => `eco_${currentNo}_${currentName}_${s}`;
 const getTodayStr     = () => { const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; };
 const getSelectedStr  = () => selectedDate || getTodayStr();
-const hasSubmitted    = () => localStorage.getItem(lsKey("lastSubmit")) === getSelectedStr();
-const markSubmit      = () => localStorage.setItem(lsKey("lastSubmit"), getSelectedStr());
+/* 날짜별 개별 키 → 날짜마다 독립 중복 차단 */
+const hasSubmitted    = () => localStorage.getItem(lsKey("sub_" + getSelectedStr())) === "1";
+const markSubmit      = () => localStorage.setItem(lsKey("sub_" + getSelectedStr()), "1");
 const getCumScore  = () => Number(localStorage.getItem(lsKey("cumScore"))||0);
 const addCumScore  = n  => { const v=getCumScore()+n; localStorage.setItem(lsKey("cumScore"),v); return v; };
 
@@ -150,7 +151,7 @@ function updateDateStatus(isoVal) {
   // isoVal: "2025-06-03" 형식
   const [y,m,d] = isoVal.split("-").map(Number);
   const dateStr = `${y}-${m}-${d}`;
-  const submitted = localStorage.getItem(lsKey("lastSubmit")) === dateStr;
+  const submitted = localStorage.getItem(lsKey("sub_" + dateStr)) === "1";
   const statusEl = document.getElementById("date-submit-status");
   if(submitted){
     statusEl.textContent = "✅ 이 날짜는 이미 제출했어요";
@@ -221,7 +222,62 @@ function updateTotalScore() {
    점수 제출
 ══════════════════════════════ */
 function submitScore() {
-  if(hasSubmitted()){ alert("오늘은 이미 제출했어요 😊\n내일 다시 도전해봐요!"); return; }
+  if(hasSubmitted()){
+    alert(`${getSelectedStr()} 날짜는 이미 제출했어요 😊`);
+    return;
+  }
+  /* 양심 확인 팝업 */
+  showConsciencePopup();
+}
+
+function showConsciencePopup() {
+  const popup = document.createElement("div");
+  popup.className = "popup";
+  popup.id = "conscience-popup";
+  popup.innerHTML = `
+    <div class="popup-box">
+      <div style="font-size:56px;margin-bottom:12px">🌍</div>
+      <h2 style="color:#2e7d32;margin-bottom:8px">잠깐만요!</h2>
+      <p style="font-size:16px;line-height:1.7;color:#444;margin:12px 0">
+        오늘 환경 미션을<br>
+        <b style="color:#2e7d32">정말 양심적으로</b> 입력했나요?<br>
+        <span style="font-size:13px;color:#888">한 번 제출하면 수정할 수 없어요</span>
+      </p>
+      <div style="display:flex;gap:10px;margin-top:16px;justify-content:center">
+        <button onclick="retryInput()" style="
+          padding:13px 22px;border:2px solid #43a047;border-radius:12px;
+          background:white;color:#43a047;font-size:15px;font-weight:bold;cursor:pointer">
+          🔄 다시 할게요
+        </button>
+        <button onclick="confirmSubmit()" style="
+          padding:13px 22px;border:none;border-radius:12px;
+          background:#43a047;color:white;font-size:15px;font-weight:bold;cursor:pointer">
+          ✅ 맞아요, 제출!
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(popup);
+}
+
+function retryInput() {
+  const popup = document.getElementById("conscience-popup");
+  if(popup) popup.remove();
+  /* 입력 초기화 */
+  document.querySelectorAll(".food-slot").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".mission-btn").forEach(b=>b.classList.remove("selected"));
+  Object.keys(missionScores).forEach(k=>delete missionScores[k]);
+  totalScore = 0;
+  document.getElementById("total-score").innerText = "0점";
+}
+
+function confirmSubmit() {
+  const popup = document.getElementById("conscience-popup");
+  if(popup) popup.remove();
+  doSubmit();
+}
+
+function doSubmit() {
+  if(hasSubmitted()){ alert(`${getSelectedStr()} 날짜는 이미 제출했어요 😊`); return; }
 
   const selParts   = getSelectedStr().split("-").map(Number);
   const today      = selParts[2];  // 선택된 날짜의 일(day)
